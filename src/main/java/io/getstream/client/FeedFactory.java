@@ -21,16 +21,12 @@ public final class FeedFactory {
         return new FlatFeed(streamRepository, feedSlug, id);
     }
 
-    public NotificationFeed createNotificationFeed() {
-        return new NotificationFeed(streamRepository);
+    public NotificationFeed createNotificationFeed(final String feedSlug, final String id) {
+        return new NotificationFeed(streamRepository, feedSlug, id);
     }
 
-    public AggregatedFeed createAggregatedFeed() {
-        return new AggregatedFeed(streamRepository);
+    public AggregatedFeed createAggregatedFeed(final String feedSlug, final String id) {
+        return new AggregatedFeed(streamRepository, feedSlug, id);
     }
-
-	public AggregatedFeed getAggregatedFeed(final String feedId) throws IOException {
-		return (AggregatedFeed) streamRepository.getFeed(Feed.AGGREGATED, feedId);
-	}
 
 }
