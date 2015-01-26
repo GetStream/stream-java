@@ -1,4 +1,4 @@
-package io.getstream.client.model;
+package io.getstream.client.model.feeds;
 
 public enum Feed {
 

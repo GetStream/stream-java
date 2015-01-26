@@ -1,6 +1,6 @@
 package io.getstream.client;
 
-import io.getstream.client.model.BaseActivity;
+import io.getstream.client.model.activities.BaseActivity;
 
 public class CustomActivity extends BaseActivity {
 

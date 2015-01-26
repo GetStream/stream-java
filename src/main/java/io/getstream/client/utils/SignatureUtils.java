@@ -33,11 +33,15 @@ public class SignatureUtils {
 		SecretKeySpec signingKey = new SecretKeySpec(toSHA1(secretKey), HMAC_SHA1);
 		Mac mac = Mac.getInstance(HMAC_SHA1);
 		mac.init(signingKey);
-		return new String(Base64.encode(mac.doFinal(feedId.getBytes(UTF_8))));
+		return escapeDigest(new String(Base64.encode(mac.doFinal(feedId.getBytes(UTF_8)))));
 	}
 
     private static byte[] toSHA1(final String key) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         return MessageDigest.getInstance("SHA-1").digest(key.getBytes(UTF_8));
+    }
+
+    private static String escapeDigest(final String digest) {
+        return digest.replace("+", "-").replace("/", "_").replaceAll("^=+", "").replaceAll("=+$", "");
     }
 
 }

@@ -1,8 +1,9 @@
-package io.getstream.client.model;
+package io.getstream.client.model.feeds;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.internal.Nullable;
-import io.getstream.client.service.StreamRepository;
+import io.getstream.client.exception.StreamClientException;
+import io.getstream.client.model.activities.BaseActivity;
+import io.getstream.client.service.StreamRepositoryRestImpl;
 
 import java.io.IOException;
 import java.security.InvalidKeyException;
@@ -18,19 +19,19 @@ public abstract class BaseFeed<T extends BaseActivity> {
 
     private final String id;
 
-	@Nullable
+	//@Nullable
 	protected long maxLength = 0L;
 
-	@Nullable
+	//@Nullable
 	protected boolean isRealtimeEnabled = false;
 
     @JsonIgnore
-    private StreamRepository streamRepository;
+    private StreamRepositoryRestImpl streamRepository;
 
     @JsonIgnore
     private Feed feedType;
 
-    public BaseFeed(Feed feedType, StreamRepository streamRepository, String feedSlug, String userId) {
+    public BaseFeed(Feed feedType, StreamRepositoryRestImpl streamRepository, String feedSlug, String userId) {
         this.streamRepository = streamRepository;
         this.feedType = feedType;
         this.feedSlug = feedSlug;
@@ -38,31 +39,28 @@ public abstract class BaseFeed<T extends BaseActivity> {
         this.id = feedSlug.concat(":").concat(userId);
     }
 
-    public void addActivity(T activity) throws SignatureException, IOException, InvalidKeyException, NoSuchAlgorithmException {
+    public void addActivity(T activity) throws IOException, StreamClientException {
         streamRepository.addActivity(this, activity);
-    }
-
-    public void addActivities(List<T> activity) {
     }
 
     public void remove() {
 
     }
 
-    public void follow() {
-
+    public void follow(String targetFeedId) throws IOException, StreamClientException {
+        streamRepository.follow(this, targetFeedId);
     }
 
-    public void unfollow() {
-
+    public void unfollow(String targetFeedId) throws IOException, StreamClientException {
+        streamRepository.unfollow(this, targetFeedId);
     }
 
-    public List<String> getFollowers() {
-        return null;
+    public List<FeedFollow> getFollowers() throws IOException, StreamClientException {
+        return streamRepository.getFollowers(this);
     }
 
-    public List<String> getFollowing() {
-        return null;
+    public List<FeedFollow> getFollowing() throws IOException, StreamClientException {
+        return streamRepository.getFollowing(this);
     }
 
     public String getFeedSlug() {

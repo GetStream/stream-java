@@ -2,22 +2,17 @@ package io.getstream.client;
 
 import io.getstream.client.config.AuthenticationHandlerConfiguration;
 import io.getstream.client.config.ClientConfiguration;
-import io.getstream.client.model.BaseFeed;
-import io.getstream.client.model.Feed;
-import io.getstream.client.service.StreamRepository;
 import io.getstream.client.service.StreamRepositoryRestImpl;
-
-import java.io.IOException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class StreamClient {
 
-    public static final String BASE_ENDPOINT = "https://getstream.io/api";
+    public static final String BASE_ENDPOINT = "https://api.getstream.io/api/v1.0/";
 
     private final AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
 
-    private final StreamRepository streamRepository;
+    private final StreamRepositoryRestImpl streamRepository;
 
     public StreamClient(final ClientConfiguration clientConfiguration, final String key, final String secretKey) {
         checkNotNull(clientConfiguration, "Client configuration cannot be null.");
@@ -32,7 +27,7 @@ public class StreamClient {
         return new FeedFactory(this);
     }
 
-	public StreamRepository getStreamRepository() {
+	public StreamRepositoryRestImpl getStreamRepository() {
 		return streamRepository;
 	}
 }

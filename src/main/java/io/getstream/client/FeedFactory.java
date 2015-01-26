@@ -1,17 +1,13 @@
 package io.getstream.client;
 
-import io.getstream.client.model.AggregatedFeed;
-import io.getstream.client.model.Feed;
-import io.getstream.client.model.FlatFeed;
-import io.getstream.client.model.NotificationFeed;
-import io.getstream.client.model.UserFeed;
-import io.getstream.client.service.StreamRepository;
-
-import java.io.IOException;
+import io.getstream.client.model.feeds.AggregatedFeed;
+import io.getstream.client.model.feeds.FlatFeed;
+import io.getstream.client.model.feeds.NotificationFeed;
+import io.getstream.client.service.StreamRepositoryRestImpl;
 
 public final class FeedFactory {
 
-    private final StreamRepository streamRepository;
+    private final StreamRepositoryRestImpl streamRepository;
 
     public FeedFactory(final StreamClient streamClient) {
         this.streamRepository = streamClient.getStreamRepository();

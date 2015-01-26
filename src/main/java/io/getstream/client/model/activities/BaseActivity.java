@@ -1,4 +1,4 @@
-package io.getstream.client.model;
+package io.getstream.client.model.activities;
 
 import java.util.Date;
 import java.util.List;
