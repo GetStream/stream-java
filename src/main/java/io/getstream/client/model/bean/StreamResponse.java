@@ -1,18 +1,24 @@
 package io.getstream.client.model.bean;
 
-import javax.xml.datatype.Duration;
+import java.util.List;
 
 public class StreamResponse<T> {
 
     private String duration;
 
-    private T results;
+    private List<T> results;
 
-    public T getResults() {
+	private String next;
+
+    public List<T> getResults() {
         return results;
     }
 
     public String getDuration() {
         return duration;
     }
+
+	public String getNext() {
+		return next;
+	}
 }

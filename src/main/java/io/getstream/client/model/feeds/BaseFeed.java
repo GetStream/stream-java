@@ -1,20 +1,20 @@
 package io.getstream.client.model.feeds;
 
 import io.getstream.client.exception.StreamClientException;
-import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.service.StreamRepositoryRestImpl;
 
 import java.io.IOException;
 import java.util.List;
 
-public abstract class BaseFeed<T extends BaseActivity> {
+public abstract class BaseFeed {
 
-    protected final String feedSlug;
-    protected final String userId;
-    private final String id;
+	protected final StreamRepositoryRestImpl streamRepository;
+	protected final String feedSlug;
+	protected final String userId;
+	private final String id;
+
 	protected long maxLength = 0L;
 	protected boolean isRealtimeEnabled = false;
-    private StreamRepositoryRestImpl streamRepository;
     private Feed feedType;
 
     public BaseFeed(Feed feedType, StreamRepositoryRestImpl streamRepository, String feedSlug, String userId) {
@@ -23,18 +23,6 @@ public abstract class BaseFeed<T extends BaseActivity> {
         this.feedSlug = feedSlug;
         this.userId = userId;
         this.id = feedSlug.concat(":").concat(userId);
-    }
-
-    public void addActivity(T activity) throws IOException, StreamClientException {
-        streamRepository.addActivity(this, activity);
-    }
-
-    public void remove() {
-
-    }
-
-    public <T extends BaseActivity> List<T> getActivities() {
-        return streamRepository.getActivities(this);
     }
 
     public void follow(String targetFeedId) throws IOException, StreamClientException {

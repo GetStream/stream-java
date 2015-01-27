@@ -17,6 +17,8 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
@@ -67,27 +69,29 @@ public class StreamRepositoryRestImpl {
 	}
 
     public <T extends BaseActivity> void addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException {
-        HttpPost httpPost = new HttpPost(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}")
-                                                 .queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId()));
+		HttpPost request = new HttpPost(UriBuilder.fromUri(baseEndpoint)
+				.path("feed").path("{feedSlug}").path("{userId}/")
+				.queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId()));
+		LOG.debug("Invoking url: '{}'", request.getURI());
+		request.setEntity(new StringEntity(OBJECT_MAPPER.writeValueAsString(activity), ContentType.APPLICATION_JSON));
+		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
+			if (checkResponseStatus(response) != 201) {
+				throw new StreamClientException("Error creating activity");
+			}
+		}
+	}
 
-        //addAuthentication(feed, httpPost).setEntity(new StringEntity(OBJECT_MAPPER.writeValueAsString(activity)));
-        try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
-            HttpEntity entity = response.getEntity();
-            if (checkResponseStatus(response) != 200) {
-                throw new StreamClientException("Error adding activity");
-            }
-        }
-    }
-
-    public <T extends BaseActivity> List<T> getActivities(BaseFeed feed, T activity) throws IOException, StreamClientException {
-        HttpGet request = new HttpGet(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}")
+    public <T extends BaseActivity> List<T> getActivities(BaseFeed feed) throws IOException, StreamClientException {
+        HttpGet request = new HttpGet(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}/")
                                               .queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId()));
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
             HttpEntity entity = response.getEntity();
             if (checkResponseStatus(response) != 200) {
                 throw new StreamClientException("Error retrieving activity");
             }
-            return OBJECT_MAPPER.readValue(entity.getContent(), new TypeReference<List<T>>(){});
+			StreamResponse<T> streamResponse = OBJECT_MAPPER.readValue(entity.getContent(),
+					new TypeReference<StreamResponse<T>>(){});
+			return streamResponse.getResults();
         }
     }
 
@@ -141,8 +145,8 @@ public class StreamRepositoryRestImpl {
             if (checkResponseStatus(response) != 200) {
                 throw new StreamClientException("Error retrieving following");
             }
-            StreamResponse<List<FeedFollow>> streamResponse = OBJECT_MAPPER.readValue(entity.getContent(),
-                                                   new TypeReference<StreamResponse<List<FeedFollow>>>(){});
+            StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(entity.getContent(),
+                                                   new TypeReference<StreamResponse<FeedFollow>>(){});
             return streamResponse.getResults();
         }
     }
@@ -156,16 +160,18 @@ public class StreamRepositoryRestImpl {
             if (checkResponseStatus(response) != 200) {
                 throw new StreamClientException("Error retrieving followers");
             }
-            StreamResponse<List<FeedFollow>> streamResponse = OBJECT_MAPPER.readValue(entity.getContent(),
-                                                    new TypeReference<StreamResponse<List<FeedFollow>>>(){});
+            StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(entity.getContent(),
+                                                    new TypeReference<StreamResponse<FeedFollow>>(){});
             return streamResponse.getResults();
         }
     }
 
     private int checkResponseStatus(CloseableHttpResponse response) throws IOException {
-        LOG.debug(EntityUtils.toString(response.getEntity(), "UTF-8"));
         final int responseCode = response.getStatusLine().getStatusCode();
-        LOG.debug("Response code: {}", responseCode);
+		if (responseCode != 200) {
+			LOG.debug("Response code: {}", responseCode);
+			LOG.debug(EntityUtils.toString(response.getEntity(), "UTF-8"));
+		}
         return responseCode;
     }
 

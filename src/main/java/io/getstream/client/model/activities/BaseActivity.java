@@ -1,9 +1,11 @@
 package io.getstream.client.model.activities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.Date;
 import java.util.List;
 
-public class BaseActivity {
+public abstract class BaseActivity {
 
     protected String actor;
     protected String verb;
@@ -11,6 +13,8 @@ public class BaseActivity {
     protected String target;
     protected Date time;
     protected List<String> to;
+
+	@JsonProperty("foreign_id")
     protected String foreignId;
 
     public String getActor() {
@@ -68,12 +72,4 @@ public class BaseActivity {
     public void setForeignId(String foreignId) {
         this.foreignId = foreignId;
     }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("actor: " + actor);
-        return stringBuilder.toString();
-    }
-
 }
