@@ -11,6 +11,7 @@ import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.feeds.FeedFollow;
 import io.getstream.client.utils.SignatureUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -18,6 +19,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +32,7 @@ import java.net.URISyntaxException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.util.Collections;
 import java.util.List;
 
 public class StreamRepositoryRestImpl {
@@ -103,23 +106,26 @@ public class StreamRepositoryRestImpl {
 
     public void follow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
         HttpPost request = new HttpPost(UriBuilder.fromUri(baseEndpoint)
-                                              .path("feed").path("{feedSlug}").path("{userId}").path("following")
-                                              .queryParam("target", targetFeedId)
+                                              .path("feed").path("{feedSlug}").path("{userId}").path("following/")
                                               .queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId()));
+
+        request.setEntity(new UrlEncodedFormEntity(
+                                  Collections.singletonList(new BasicNameValuePair("target", targetFeedId))));
+
+        LOG.debug("Invoking url: '{}'", request.getURI());
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
-            HttpEntity entity = response.getEntity();
-            if (checkResponseStatus(response) != 200) {
-                throw new StreamClientException("Error adding activity");
+            if (checkResponseStatus(response) != 201) {
+                throw new StreamClientException("Error follow target: " + targetFeedId);
             }
         }
     }
 
     public void unfollow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
         HttpDelete request = new HttpDelete(UriBuilder.fromUri(baseEndpoint)
-                                                .path("feed").path("{feedSlug}").path("{userId}").path("following").path("{target}")
+                                                .path("feed").path("{feedSlug}").path("{userId}").path("following").path("{target}/")
                                                 .queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId(), targetFeedId));
+        LOG.debug("Invoking url: '{}'", request.getURI());
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
-            HttpEntity entity = response.getEntity();
             if (checkResponseStatus(response) != 200) {
                 throw new StreamClientException("Error unfollowing the feed: " + targetFeedId);
             }
@@ -135,7 +141,9 @@ public class StreamRepositoryRestImpl {
             if (checkResponseStatus(response) != 200) {
                 throw new StreamClientException("Error retrieving following");
             }
-            return OBJECT_MAPPER.readValue(entity.getContent(), new TypeReference<List<FeedFollow>>(){});
+            StreamResponse<List<FeedFollow>> streamResponse = OBJECT_MAPPER.readValue(entity.getContent(),
+                                                   new TypeReference<StreamResponse<List<FeedFollow>>>(){});
+            return streamResponse.getResults();
         }
     }
 
@@ -155,8 +163,10 @@ public class StreamRepositoryRestImpl {
     }
 
     private int checkResponseStatus(CloseableHttpResponse response) throws IOException {
-        //LOG.debug(EntityUtils.toString(response.getEntity(), "UTF-8"));
-        return response.getStatusLine().getStatusCode();
+        LOG.debug(EntityUtils.toString(response.getEntity(), "UTF-8"));
+        final int responseCode = response.getStatusLine().getStatusCode();
+        LOG.debug("Response code: {}", responseCode);
+        return responseCode;
     }
 
     private HttpRequestBase addAuthentication(BaseFeed feed, HttpRequestBase httpRequest) {

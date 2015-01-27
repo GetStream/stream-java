@@ -32,7 +32,26 @@ public class IntegrationTest {
         FeedFactory feedFactory = new FeedFactory(streamClient);
 
         FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-        System.out.println(flatFeed.getFollowing());
+        List<FeedFollow> following = flatFeed.getFollowing();
     }
 
+    @Test
+    public void shouldFollow() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
+                                                            "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+        FeedFactory feedFactory = new FeedFactory(streamClient);
+
+        FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
+        flatFeed.follow("user:4");
+    }
+
+    @Test
+    public void shouldUnfollow() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
+                                                            "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+        FeedFactory feedFactory = new FeedFactory(streamClient);
+
+        FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
+        flatFeed.unfollow("user:4");
+    }
 }

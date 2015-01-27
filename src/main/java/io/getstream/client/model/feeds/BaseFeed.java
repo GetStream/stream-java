@@ -1,34 +1,20 @@
 package io.getstream.client.model.feeds;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.service.StreamRepositoryRestImpl;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 import java.util.List;
 
 public abstract class BaseFeed<T extends BaseActivity> {
 
     protected final String feedSlug;
-
     protected final String userId;
-
     private final String id;
-
-	//@Nullable
 	protected long maxLength = 0L;
-
-	//@Nullable
 	protected boolean isRealtimeEnabled = false;
-
-    @JsonIgnore
     private StreamRepositoryRestImpl streamRepository;
-
-    @JsonIgnore
     private Feed feedType;
 
     public BaseFeed(Feed feedType, StreamRepositoryRestImpl streamRepository, String feedSlug, String userId) {
@@ -45,6 +31,10 @@ public abstract class BaseFeed<T extends BaseActivity> {
 
     public void remove() {
 
+    }
+
+    public <T extends BaseActivity> List<T> getActivities() {
+        return streamRepository.getActivities(this);
     }
 
     public void follow(String targetFeedId) throws IOException, StreamClientException {
