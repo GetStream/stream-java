@@ -7,6 +7,7 @@ import io.getstream.client.model.feeds.FlatFeed;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -58,8 +59,12 @@ public class IntegrationTest {
 		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
 		FeedFactory feedFactory = new FeedFactory(streamClient);
+
 		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		assertThat(flatFeed.getActivities().size(), is(0));
+		FlatFeed.ActivityBuilder<SimpleActivity> activityBuilder = flatFeed.newActivityBuilder(SimpleActivity.class);
+		for (SimpleActivity activity : activityBuilder.getActivities()) {
+			System.out.println(activity.getId());
+		}
 	}
 
 	@Test
@@ -67,7 +72,15 @@ public class IntegrationTest {
 		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
 		FeedFactory feedFactory = new FeedFactory(streamClient);
+
 		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		flatFeed.addActivity(new SimpleActivity());
+		FlatFeed.ActivityBuilder<SimpleActivity> activityBuilder = flatFeed.newActivityBuilder(SimpleActivity.class);
+		SimpleActivity activity = new SimpleActivity();
+		activity.setActor("actor");
+		activity.setObject("object");
+		activity.setTarget("target");
+		activity.setTo(Arrays.asList("user:1"));
+		activity.setVerb("verb");
+		activityBuilder.addActivity(activity);
 	}
 }

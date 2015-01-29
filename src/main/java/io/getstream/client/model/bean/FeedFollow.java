@@ -1,4 +1,4 @@
-package io.getstream.client.model.feeds;
+package io.getstream.client.model.bean;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

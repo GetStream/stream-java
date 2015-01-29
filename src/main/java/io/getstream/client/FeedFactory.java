@@ -3,11 +3,11 @@ package io.getstream.client;
 import io.getstream.client.model.feeds.AggregatedFeed;
 import io.getstream.client.model.feeds.FlatFeed;
 import io.getstream.client.model.feeds.NotificationFeed;
-import io.getstream.client.service.StreamRepositoryRestImpl;
+import io.getstream.client.service.StreamRepository;
 
 public final class FeedFactory {
 
-    private final StreamRepositoryRestImpl streamRepository;
+    private final StreamRepository streamRepository;
 
     public FeedFactory(final StreamClient streamClient) {
         this.streamRepository = streamClient.getStreamRepository();

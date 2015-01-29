@@ -1,14 +1,17 @@
 package io.getstream.client.model.feeds;
 
 import io.getstream.client.exception.StreamClientException;
-import io.getstream.client.service.StreamRepositoryRestImpl;
+import io.getstream.client.model.activities.BaseActivity;
+import io.getstream.client.model.bean.FeedFilter;
+import io.getstream.client.model.bean.FeedFollow;
+import io.getstream.client.service.StreamRepository;
 
 import java.io.IOException;
 import java.util.List;
 
 public abstract class BaseFeed {
 
-	protected final StreamRepositoryRestImpl streamRepository;
+	protected final StreamRepository streamRepository;
 	protected final String feedSlug;
 	protected final String userId;
 	private final String id;
@@ -17,7 +20,7 @@ public abstract class BaseFeed {
 	protected boolean isRealtimeEnabled = false;
     private Feed feedType;
 
-    public BaseFeed(Feed feedType, StreamRepositoryRestImpl streamRepository, String feedSlug, String userId) {
+    public BaseFeed(Feed feedType, StreamRepository streamRepository, String feedSlug, String userId) {
         this.streamRepository = streamRepository;
         this.feedType = feedType;
         this.feedSlug = feedSlug;
@@ -25,7 +28,11 @@ public abstract class BaseFeed {
         this.id = feedSlug.concat(":").concat(userId);
     }
 
-    public void follow(String targetFeedId) throws IOException, StreamClientException {
+	public <T extends BaseActivity> ActivityBuilder<T> newActivityBuilder(Class<T> clazz) {
+		return new ActivityBuilder<>(clazz);
+	}
+
+	public void follow(String targetFeedId) throws IOException, StreamClientException {
         streamRepository.follow(this, targetFeedId);
     }
 
@@ -34,14 +41,22 @@ public abstract class BaseFeed {
     }
 
     public List<FeedFollow> getFollowers() throws IOException, StreamClientException {
-        return streamRepository.getFollowers(this);
+        return streamRepository.getFollowers(this, new FeedFilter.Builder().build());
     }
 
-    public List<FeedFollow> getFollowing() throws IOException, StreamClientException {
-        return streamRepository.getFollowing(this);
+	public List<FeedFollow> getFollowers(FeedFilter filter) throws IOException, StreamClientException {
+		return streamRepository.getFollowers(this, filter);
+	}
+
+	public List<FeedFollow> getFollowing() throws IOException, StreamClientException {
+        return streamRepository.getFollowing(this, new FeedFilter.Builder().build());
     }
 
-    public String getFeedSlug() {
+	public List<FeedFollow> getFollowing(FeedFilter filter) throws IOException, StreamClientException {
+		return streamRepository.getFollowing(this, filter);
+	}
+
+	public String getFeedSlug() {
         return feedSlug;
     }
 
@@ -50,7 +65,6 @@ public abstract class BaseFeed {
     }
 
     public long getMaxLength() {
-
         return maxLength;
     }
 
@@ -61,4 +75,24 @@ public abstract class BaseFeed {
     public String getId() {
         return id;
     }
+
+	public class ActivityBuilder<T extends BaseActivity> {
+		private final Class<T> type;
+
+		public ActivityBuilder(Class type) {
+			this.type = type;
+		}
+
+		public void addActivity(T activity) throws IOException, StreamClientException {
+			streamRepository.addActivity(BaseFeed.this, activity);
+		}
+
+		public List<T> getActivities() throws IOException, StreamClientException {
+			return streamRepository.getActivities(BaseFeed.this, type, new FeedFilter.Builder().build());
+		}
+
+		public List<T> getActivities(final FeedFilter filter) throws IOException, StreamClientException {
+			return streamRepository.getActivities(BaseFeed.this, type, filter);
+		}
+	}
 }

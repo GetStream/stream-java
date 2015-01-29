@@ -1,7 +1,5 @@
 package io.getstream.client.config;
 
-import org.apache.http.client.AuthenticationHandler;
-
 import java.util.Properties;
 
 public class ClientConfiguration {

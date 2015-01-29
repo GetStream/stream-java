@@ -7,17 +7,36 @@ import java.util.List;
 
 public abstract class BaseActivity {
 
+	protected String id;
     protected String actor;
     protected String verb;
     protected String object;
     protected String target;
     protected Date time;
     protected List<String> to;
+	protected String origin;
+	protected String duration;
 
 	@JsonProperty("foreign_id")
     protected String foreignId;
 
-    public String getActor() {
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getOrigin() {
+		return origin;
+	}
+
+	public void setOrigin(String origin) {
+		this.origin = origin;
+	}
+
+	public String getActor() {
         return actor;
     }
 
@@ -72,4 +91,12 @@ public abstract class BaseActivity {
     public void setForeignId(String foreignId) {
         this.foreignId = foreignId;
     }
+
+	public String getDuration() {
+		return duration;
+	}
+
+	public void setDuration(String duration) {
+		this.duration = duration;
+	}
 }

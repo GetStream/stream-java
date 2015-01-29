@@ -2,6 +2,7 @@ package io.getstream.client;
 
 import io.getstream.client.config.AuthenticationHandlerConfiguration;
 import io.getstream.client.config.ClientConfiguration;
+import io.getstream.client.service.StreamRepository;
 import io.getstream.client.service.StreamRepositoryRestImpl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -12,7 +13,7 @@ public class StreamClient {
 
     private final AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
 
-    private final StreamRepositoryRestImpl streamRepository;
+    private final StreamRepository streamRepository;
 
     public StreamClient(final ClientConfiguration clientConfiguration, final String key, final String secretKey) {
         checkNotNull(clientConfiguration, "Client configuration cannot be null.");
@@ -27,7 +28,7 @@ public class StreamClient {
         return new FeedFactory(this);
     }
 
-	public StreamRepositoryRestImpl getStreamRepository() {
+	public StreamRepository getStreamRepository() {
 		return streamRepository;
 	}
 }

@@ -2,13 +2,15 @@ package io.getstream.client.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableList;
 import io.getstream.client.StreamClient;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
+import io.getstream.client.model.bean.FeedFilter;
+import io.getstream.client.model.bean.FeedFollow;
 import io.getstream.client.model.bean.StreamResponse;
 import io.getstream.client.model.feeds.BaseFeed;
-import io.getstream.client.model.feeds.FeedFollow;
 import io.getstream.client.utils.SignatureUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -17,7 +19,6 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -37,7 +38,9 @@ import java.security.SignatureException;
 import java.util.Collections;
 import java.util.List;
 
-public class StreamRepositoryRestImpl {
+import static org.apache.http.entity.ContentType.APPLICATION_JSON;
+
+public class StreamRepositoryRestImpl implements StreamRepository {
 
     private final static Logger LOG = LoggerFactory.getLogger(StreamRepositoryRestImpl.class);
 
@@ -50,8 +53,6 @@ public class StreamRepositoryRestImpl {
 	private final String secretKey;
 
 	private CloseableHttpClient httpClient;
-
-    private static final int DEFAULT_LIMIT = 25;
 
     public StreamRepositoryRestImpl(ClientConfiguration streamClient) {
         try {
@@ -68,12 +69,16 @@ public class StreamRepositoryRestImpl {
 		this.httpClient = HttpClients.custom().build();
 	}
 
-    public <T extends BaseActivity> void addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException {
+    @Override
+	public <T extends BaseActivity> void addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException {
 		HttpPost request = new HttpPost(UriBuilder.fromUri(baseEndpoint)
 				.path("feed").path("{feedSlug}").path("{userId}/")
 				.queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId()));
 		LOG.debug("Invoking url: '{}'", request.getURI());
-		request.setEntity(new StringEntity(OBJECT_MAPPER.writeValueAsString(activity), ContentType.APPLICATION_JSON));
+
+		addSignatureToRecipients(activity);
+
+		request.setEntity(new StringEntity(OBJECT_MAPPER.writeValueAsString(activity), APPLICATION_JSON));
 		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
 			if (checkResponseStatus(response) != 201) {
 				throw new StreamClientException("Error creating activity");
@@ -81,34 +86,38 @@ public class StreamRepositoryRestImpl {
 		}
 	}
 
-    public <T extends BaseActivity> List<T> getActivities(BaseFeed feed) throws IOException, StreamClientException {
-        HttpGet request = new HttpGet(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}/")
-                                              .queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId()));
-        try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
-            HttpEntity entity = response.getEntity();
-            if (checkResponseStatus(response) != 200) {
-                throw new StreamClientException("Error retrieving activity");
-            }
-			StreamResponse<T> streamResponse = OBJECT_MAPPER.readValue(entity.getContent(),
-					new TypeReference<StreamResponse<T>>(){});
-			return streamResponse.getResults();
-        }
-    }
+	@Override
+	public <T extends BaseActivity> List<T> getActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
+		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}/")
+				.queryParam(API_KEY, apiKey)).build(feed.getFeedSlug(), feed.getUserId()));
+		LOG.debug("Invoking url: '{}'", request.getURI());
 
-    public void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException {
+		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
+			HttpEntity responseEntity = response.getEntity();
+			if (checkResponseStatus(response) != 200) {
+				throw new StreamClientException("Error retrieving activity");
+			}
+			StreamResponse<T> streamResponse = OBJECT_MAPPER.readValue(responseEntity.getContent(),
+					OBJECT_MAPPER.getTypeFactory().constructParametricType(StreamResponse.class, type));
+			return streamResponse.getResults();
+		}
+	}
+
+	@Override
+	public void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException {
         HttpDelete request = new HttpDelete(UriBuilder.fromUri(baseEndpoint)
                                               .path("feed").path("{feedSlug}").path("{userId}").path("{id}")
                                               .queryParam(API_KEY, apiKey)
                                               .build(feed.getFeedSlug(), feed.getUserId(), activityId));
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
-            HttpEntity entity = response.getEntity();
             if (checkResponseStatus(response) != 200) {
                 throw new StreamClientException("Error delete activity");
             }
         }
     }
 
-    public void follow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
+    @Override
+	public void follow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
         HttpPost request = new HttpPost(UriBuilder.fromUri(baseEndpoint)
                                               .path("feed").path("{feedSlug}").path("{userId}").path("following/")
                                               .queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId()));
@@ -124,7 +133,8 @@ public class StreamRepositoryRestImpl {
         }
     }
 
-    public void unfollow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
+    @Override
+	public void unfollow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
         HttpDelete request = new HttpDelete(UriBuilder.fromUri(baseEndpoint)
                                                 .path("feed").path("{feedSlug}").path("{userId}").path("following").path("{target}/")
                                                 .queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId(), targetFeedId));
@@ -136,9 +146,10 @@ public class StreamRepositoryRestImpl {
         }
     }
 
-    public List<FeedFollow> getFollowing(BaseFeed feed) throws StreamClientException, IOException {
-        HttpGet request = new HttpGet(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}").path("following/")
-                                              .queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId()));
+    @Override
+	public List<FeedFollow> getFollowing(BaseFeed feed, FeedFilter filter) throws StreamClientException, IOException {
+        HttpGet request = new HttpGet(filter.apply(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}").path("following/")
+                                              .queryParam(API_KEY, apiKey)).build(feed.getFeedSlug(), feed.getUserId()));
         LOG.debug("Invoking the following url '{}'", request.getURI());
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
             HttpEntity entity = response.getEntity();
@@ -151,9 +162,10 @@ public class StreamRepositoryRestImpl {
         }
     }
 
-    public List<FeedFollow> getFollowers(BaseFeed feed) throws StreamClientException, IOException {
-        HttpGet request = new HttpGet(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}").path("followers/")
-                                              .queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId()));
+    @Override
+	public List<FeedFollow> getFollowers(BaseFeed feed, FeedFilter filter) throws StreamClientException, IOException {
+        HttpGet request = new HttpGet(filter.apply(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}").path("followers/")
+                                              .queryParam(API_KEY, apiKey)).build(feed.getFeedSlug(), feed.getUserId()));
         LOG.debug("Invoking the followers url '{}'", request.getURI());
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
             HttpEntity entity = response.getEntity();
@@ -168,8 +180,8 @@ public class StreamRepositoryRestImpl {
 
     private int checkResponseStatus(CloseableHttpResponse response) throws IOException {
         final int responseCode = response.getStatusLine().getStatusCode();
-		if (responseCode != 200) {
-			LOG.debug("Response code: {}", responseCode);
+		LOG.debug("Response code: {}", responseCode);
+		if ((responseCode != 200)&&(responseCode != 201)) {
 			LOG.debug(EntityUtils.toString(response.getEntity(), "UTF-8"));
 		}
         return responseCode;
@@ -184,4 +196,16 @@ public class StreamRepositoryRestImpl {
         }
         return httpRequest;
     }
+
+	private void addSignatureToRecipients(BaseActivity activity) {
+		ImmutableList.Builder<String> recipients = ImmutableList.builder();
+		for (String recipient : activity.getTo()) {
+			try {
+				recipients.add(String.format("%s %s", recipient, SignatureUtils.calculateHMAC(secretKey, recipient.replace(":", ""))));
+			} catch (SignatureException | NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException e) {
+				throw new RuntimeException("Fatal error: cannot create authentication token.");
+			}
+		}
+		activity.setTo(recipients.build());
+	}
 }

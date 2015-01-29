@@ -5,7 +5,6 @@ import com.sun.jersey.core.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -16,7 +15,7 @@ public class SignatureUtils {
     public static final String UTF_8 = "UTF-8";
 
     private SignatureUtils() {
-		throw new IllegalStateException();
+		throw new AssertionError();
 	}
 
 	/**
