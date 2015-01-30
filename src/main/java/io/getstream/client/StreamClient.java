@@ -9,8 +9,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 public class StreamClient {
 
-    public static final String BASE_ENDPOINT = "https://api.getstream.io/api/v1.0/";
-
     private final AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
 
     private final StreamRepository streamRepository;

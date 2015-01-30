@@ -9,7 +9,11 @@ import io.getstream.client.model.bean.FeedFollow;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ *
+ */
 public interface StreamRepository {
+
 	void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException;
 
 	void follow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException;
@@ -22,5 +26,5 @@ public interface StreamRepository {
 
 	<T extends BaseActivity> List<T> getActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
 
-	<T extends BaseActivity> void addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException;
+	<T extends BaseActivity> T addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException;
 }

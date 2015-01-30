@@ -1,6 +1,9 @@
 package io.getstream.client.config;
 
-import java.util.Properties;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.IOException;
 
 public class ClientConfiguration {
 
@@ -12,14 +15,23 @@ public class ClientConfiguration {
     private int maxConnectionsPerRoute = 1024;
     private long keepAlive = 0;
     private int retries = 0;
+	private StreamRegion region = StreamRegion.US_EAST;
 
     private AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
 
-    private static ClientConfiguration fromProperties(final Properties properties) {
-        return new ClientConfiguration();
+    private static ClientConfiguration fromJsonString(final String jsonString) throws IOException {
+		return new ObjectMapper().readValue(jsonString, new TypeReference<ClientConfiguration>() {});
     }
 
-    public long getTimeout() {
+	public StreamRegion getRegion() {
+		return region;
+	}
+
+	public void setRegion(StreamRegion region) {
+		this.region = region;
+	}
+
+	public long getTimeout() {
         return timeout;
     }
 
@@ -90,6 +102,4 @@ public class ClientConfiguration {
     public void setAuthenticationHandlerConfiguration(AuthenticationHandlerConfiguration authenticationHandlerConfiguration) {
         this.authenticationHandlerConfiguration = authenticationHandlerConfiguration;
     }
-
-    //TODO add proxy support
 }

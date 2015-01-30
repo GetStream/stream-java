@@ -3,6 +3,7 @@ package io.getstream.client;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.SimpleActivity;
+import io.getstream.client.model.bean.FeedFilter;
 import io.getstream.client.model.feeds.FlatFeed;
 import org.junit.Test;
 
@@ -82,5 +83,16 @@ public class IntegrationTest {
 		activity.setTo(Arrays.asList("user:1"));
 		activity.setVerb("verb");
 		activityBuilder.addActivity(activity);
+	}
+
+	@Test
+	public void shouldGetActivitiesWithFilter() throws IOException, StreamClientException {
+		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
+				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+		FeedFactory feedFactory = new FeedFactory(streamClient);
+
+		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
+		FlatFeed.ActivityBuilder<SimpleActivity> activityBuilder = flatFeed.newActivityBuilder(SimpleActivity.class);
+		activityBuilder.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
 	}
 }

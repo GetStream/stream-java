@@ -1,6 +1,8 @@
 package io.getstream.client.utils;
 
+import com.google.common.collect.ImmutableList;
 import com.sun.jersey.core.util.Base64;
+import io.getstream.client.model.activities.BaseActivity;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -8,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 
 public class SignatureUtils {
 
@@ -16,6 +19,23 @@ public class SignatureUtils {
 
     private SignatureUtils() {
 		throw new AssertionError();
+	}
+
+	/**
+	 * Sign all the recipients in the activity.
+	 * @param secretKey Secret key
+	 * @param activity Activity to sign.
+	 */
+	public static void addSignatureToRecipients(final String secretKey, final BaseActivity activity) {
+		ImmutableList.Builder<String> recipients = ImmutableList.builder();
+		for (String recipient : activity.getTo()) {
+			try {
+				recipients.add(String.format("%s %s", recipient, SignatureUtils.calculateHMAC(secretKey, recipient.replace(":", ""))));
+			} catch (SignatureException | NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException e) {
+				throw new RuntimeException("Fatal error: cannot create authentication token.");
+			}
+		}
+		activity.setTo(recipients.build());
 	}
 
 	/**
