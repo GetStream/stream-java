@@ -16,8 +16,6 @@ public abstract class BaseFeed {
 	protected final String userId;
 	private final String id;
 
-	protected long maxLength = 0L;
-
     public BaseFeed(StreamRepository streamRepository, String feedSlug, String userId) {
         this.streamRepository = streamRepository;
         this.feedSlug = feedSlug;
@@ -59,10 +57,6 @@ public abstract class BaseFeed {
 
     public String getUserId() {
         return userId;
-    }
-
-    public long getMaxLength() {
-        return maxLength;
     }
 
     public String getId() {

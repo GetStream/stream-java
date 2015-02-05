@@ -1,8 +1,10 @@
 package io.getstream.client;
 
 import io.getstream.client.config.ClientConfiguration;
+import io.getstream.client.config.StreamRegion;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.SimpleActivity;
+import io.getstream.client.model.bean.FeedFollow;
 import io.getstream.client.model.feeds.FlatFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import org.junit.Ignore;
@@ -10,6 +12,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,14 +29,27 @@ public class IntegrationTest {
 		assertThat(flatFeed.getFollowers().size(), is(2));
     }
 
-    @Test
+	@Ignore
+	public void shouldGetFollowersFromDifferentRegion() throws IOException, StreamClientException {
+		ClientConfiguration clientConfiguration = new ClientConfiguration();
+		clientConfiguration.setRegion(StreamRegion.US_WEST);
+		StreamClient streamClient = new StreamClient(clientConfiguration, "nfq26m3qgfyp",
+				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+		FeedFactory feedFactory = new FeedFactory(streamClient);
+
+		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
+		assertThat(flatFeed.getFollowers().size(), is(2));
+	}
+
+	@Test
     public void shouldGetFollowing() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
                                                             "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
         FeedFactory feedFactory = new FeedFactory(streamClient);
 
         FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		assertThat(flatFeed.getFollowing().size(), is(1));
+		List<FeedFollow> following = flatFeed.getFollowing();
+		assertThat(following.size(), is(1));
     }
 
     @Test
@@ -47,13 +63,20 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldUnfollow() throws IOException, StreamClientException {
+    public void shouldUnfollow() throws IOException, StreamClientException, InterruptedException {
         StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
                                                             "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
         FeedFactory feedFactory = new FeedFactory(streamClient);
 
         FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-        flatFeed.unfollow("user:4");
+
+		List<FeedFollow> following = flatFeed.getFollowing();
+		assertThat(following.size(), is(1));
+
+		flatFeed.unfollow("user:4");
+
+		List<FeedFollow> followingAgain = flatFeed.getFollowing();
+		assertThat(followingAgain.size(), is(0));
     }
 
 	@Test
@@ -69,7 +92,7 @@ public class IntegrationTest {
 		}
 	}
 
-	@Ignore
+	@Test
 	public void shouldAddActivity() throws IOException, StreamClientException {
 		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
