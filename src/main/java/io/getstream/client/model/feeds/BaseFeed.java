@@ -2,7 +2,7 @@ package io.getstream.client.model.feeds;
 
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
-import io.getstream.client.model.bean.FeedFilter;
+import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.model.bean.FeedFollow;
 import io.getstream.client.service.StreamRepository;
 
@@ -17,12 +17,9 @@ public abstract class BaseFeed {
 	private final String id;
 
 	protected long maxLength = 0L;
-	protected boolean isRealtimeEnabled = false;
-    private Feed feedType;
 
-    public BaseFeed(Feed feedType, StreamRepository streamRepository, String feedSlug, String userId) {
+    public BaseFeed(StreamRepository streamRepository, String feedSlug, String userId) {
         this.streamRepository = streamRepository;
-        this.feedType = feedType;
         this.feedSlug = feedSlug;
         this.userId = userId;
         this.id = feedSlug.concat(":").concat(userId);
@@ -36,11 +33,11 @@ public abstract class BaseFeed {
         streamRepository.follow(this, targetFeedId);
     }
 
-    public void unfollow(String targetFeedId) throws IOException, StreamClientException {
+	public void unfollow(String targetFeedId) throws IOException, StreamClientException {
         streamRepository.unfollow(this, targetFeedId);
     }
 
-    public List<FeedFollow> getFollowers() throws IOException, StreamClientException {
+	public List<FeedFollow> getFollowers() throws IOException, StreamClientException {
         return streamRepository.getFollowers(this, new FeedFilter.Builder().build());
     }
 
@@ -66,10 +63,6 @@ public abstract class BaseFeed {
 
     public long getMaxLength() {
         return maxLength;
-    }
-
-    public boolean isRealtimeEnabled() {
-        return isRealtimeEnabled;
     }
 
     public String getId() {

@@ -12,7 +12,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
-public class SignatureUtils {
+public final class SignatureUtils {
 
 	private static final String HMAC_SHA1 = "HmacSHA1";
     public static final String UTF_8 = "UTF-8";

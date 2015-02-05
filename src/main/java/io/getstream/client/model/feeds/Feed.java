@@ -1,30 +1,22 @@
 package io.getstream.client.model.feeds;
 
-public enum Feed {
+import io.getstream.client.exception.StreamClientException;
+import io.getstream.client.model.bean.FeedFollow;
+import io.getstream.client.model.filters.FeedFilter;
 
-    USER (UserFeed.class, "user"),
-    FLAT (FlatFeed.class, "flat"),
-    AGGREGATED (AggregatedFeed.class, "aggregated"),
-    NOTIFICATION (NotificationFeed.class, "notification");
+import java.io.IOException;
+import java.util.List;
 
-    private final String path;
-    private final Class<? extends BaseFeed> classType;
+public interface Feed {
+	void follow(String targetFeedId) throws IOException, StreamClientException;
 
-    private Feed(Class<? extends BaseFeed> classType, final String path) {
-        this.classType = classType;
-        this.path = path;
-    }
+	void unfollow(String targetFeedId) throws IOException, StreamClientException;
 
-    public String getPath() {
-        return path;
-    }
+	List<FeedFollow> getFollowers() throws IOException, StreamClientException;
 
-    @Override
-    public String toString() {
-        return path;
-    }
+	List<FeedFollow> getFollowers(FeedFilter filter) throws IOException, StreamClientException;
 
-    public Class<? extends BaseFeed> getClassType() {
-        return classType;
-    }
+	List<FeedFollow> getFollowing() throws IOException, StreamClientException;
+
+	List<FeedFollow> getFollowing(FeedFilter filter) throws IOException, StreamClientException;
 }

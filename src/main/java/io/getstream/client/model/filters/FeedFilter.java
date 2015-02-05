@@ -1,6 +1,6 @@
-package io.getstream.client.model.bean;
+package io.getstream.client.model.filters;
 
-import com.sun.deploy.util.StringUtils;
+import com.google.common.base.Joiner;
 
 import javax.ws.rs.core.UriBuilder;
 import java.util.List;
@@ -76,7 +76,7 @@ public class FeedFilter {
 			uriBuilder.queryParam(PARAM_ID_LOWER_THAN_EQUALS, this.idLowerThanEquals);
 		}
 		if (null != this.feedIds) {
-			uriBuilder.queryParam(PARAM_FEED_IDS, StringUtils.join(this.feedIds, ","));
+			uriBuilder.queryParam(PARAM_FEED_IDS, Joiner.on(",").join(this.feedIds));
 		}
 	 	return uriBuilder;
 	}

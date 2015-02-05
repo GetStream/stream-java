@@ -3,7 +3,7 @@ package io.getstream.client;
 import io.getstream.client.config.AuthenticationHandlerConfiguration;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.service.StreamRepository;
-import io.getstream.client.service.StreamRepositoryRestImpl;
+import io.getstream.client.service.StreamRepositoryImpl;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -19,7 +19,7 @@ public class StreamClient {
         this.authenticationHandlerConfiguration.setApiKey(checkNotNull(key, "API key cannot be null."));
         this.authenticationHandlerConfiguration.setSecretKey(checkNotNull(secretKey, "API secret key cannot be null."));
         clientConfiguration.setAuthenticationHandlerConfiguration(authenticationHandlerConfiguration);
-		this.streamRepository = new StreamRepositoryRestImpl(clientConfiguration);
+		this.streamRepository = new StreamRepositoryImpl(clientConfiguration);
     }
 
     public FeedFactory getFeedFactory() {

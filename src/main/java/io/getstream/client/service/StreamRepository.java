@@ -2,8 +2,8 @@ package io.getstream.client.service;
 
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
-import io.getstream.client.model.bean.FeedFilter;
 import io.getstream.client.model.feeds.BaseFeed;
+import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.model.bean.FeedFollow;
 
 import java.io.IOException;

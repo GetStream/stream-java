@@ -5,10 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
-import io.getstream.client.model.bean.FeedFilter;
+import io.getstream.client.model.feeds.BaseFeed;
+import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.model.bean.FeedFollow;
 import io.getstream.client.model.bean.StreamResponse;
-import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.utils.SignatureUtils;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -36,9 +36,9 @@ import java.util.List;
 import static io.getstream.client.utils.SignatureUtils.addSignatureToRecipients;
 import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 
-public class StreamRepositoryRestImpl implements StreamRepository {
+public class StreamRepositoryImpl implements StreamRepository {
 
-    private final static Logger LOG = LoggerFactory.getLogger(StreamRepositoryRestImpl.class);
+    private final static Logger LOG = LoggerFactory.getLogger(StreamRepositoryImpl.class);
 
     private static final String API_KEY = "api_key";
 
@@ -50,7 +50,7 @@ public class StreamRepositoryRestImpl implements StreamRepository {
 
 	private CloseableHttpClient httpClient;
 
-	public StreamRepositoryRestImpl(ClientConfiguration streamClient) {
+	public StreamRepositoryImpl(ClientConfiguration streamClient) {
 		this.baseEndpoint = streamClient.getRegion().getEndpoint();
 		this.apiKey = streamClient.getAuthenticationHandlerConfiguration().getApiKey();
 		this.secretKey = streamClient.getAuthenticationHandlerConfiguration().getSecretKey();
