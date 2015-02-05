@@ -82,7 +82,7 @@ public class IntegrationTest {
 	@Test
 	public void shouldGetActivities() throws IOException, StreamClientException {
 		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
-				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2----");
 		FeedFactory feedFactory = new FeedFactory(streamClient);
 
 		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
@@ -92,7 +92,7 @@ public class IntegrationTest {
 		}
 	}
 
-	@Test
+	@Ignore
 	public void shouldAddActivity() throws IOException, StreamClientException {
 		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");

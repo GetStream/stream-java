@@ -3,7 +3,9 @@ package io.getstream.client.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.getstream.client.config.ClientConfiguration;
+import io.getstream.client.exception.InvalidOrMissingInputException;
 import io.getstream.client.exception.StreamClientException;
+import io.getstream.client.exception.StreamExceptionHandler;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
@@ -19,6 +21,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +50,7 @@ public class StreamRepositoryImpl implements StreamRepository {
     private final URI baseEndpoint;
     private final String apiKey;
 	private final String secretKey;
+    private final StreamExceptionHandler exceptionHandler;
 
 	private CloseableHttpClient httpClient;
 
@@ -54,8 +58,14 @@ public class StreamRepositoryImpl implements StreamRepository {
 		this.baseEndpoint = streamClient.getRegion().getEndpoint();
 		this.apiKey = streamClient.getAuthenticationHandlerConfiguration().getApiKey();
 		this.secretKey = streamClient.getAuthenticationHandlerConfiguration().getSecretKey();
-		this.httpClient = HttpClients.custom().build();
-	}
+        this.exceptionHandler = new StreamExceptionHandler(OBJECT_MAPPER);
+        this.httpClient = initClient();
+    }
+
+    private CloseableHttpClient initClient() {
+        PoolingHttpClientConnectionManager cm = new PoolingHttpClientConnectionManager();
+        return HttpClients.custom().setConnectionManager(cm).build();
+    }
 
     @Override
 	public <T extends BaseActivity> T addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException {
@@ -141,12 +151,6 @@ public class StreamRepositoryImpl implements StreamRepository {
         }
 	}
 
-	public CloseableHttpResponse getActivitiesStream(BaseFeed feed, FeedFilter filter) throws IOException, StreamClientException {
-		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}/")
-				.queryParam(API_KEY, apiKey)).build(feed.getFeedSlug(), feed.getUserId()));
-		return httpClient.execute(addAuthentication(feed, request));
-	}
-
 	private void fireAndForget(final HttpRequestBase request) throws IOException, StreamClientException {
 		LOG.debug("Invoking url: '{}", request.getURI());
 		try (CloseableHttpResponse response = httpClient.execute(request)) {
@@ -155,16 +159,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 	}
 
 	private void handleResponseCode(final int responseCode) throws StreamClientException {
-		switch (responseCode) {
-			case 400:
-				throw new StreamClientException("Error delete activity");
-			case 401:
-				throw new StreamClientException("Error delete activity");
-			case 404:
-				throw new StreamClientException();
-			case 500:
-				throw new StreamClientException("Error delete activity");
-		}
+        exceptionHandler.han
 	}
 
     private HttpRequestBase addAuthentication(BaseFeed feed, HttpRequestBase httpRequest) {
