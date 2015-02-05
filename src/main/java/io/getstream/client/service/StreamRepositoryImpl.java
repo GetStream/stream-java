@@ -68,8 +68,8 @@ public class StreamRepositoryImpl implements StreamRepository {
 		request.setEntity(new StringEntity(OBJECT_MAPPER.writeValueAsString(activity), APPLICATION_JSON));
 		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
 			handleResponseCode(response.getStatusLine().getStatusCode());
-			return (T) OBJECT_MAPPER.readValue(response.getEntity().getContent(),
-					activity.getClass());
+			return OBJECT_MAPPER.readValue(response.getEntity().getContent(),
+					OBJECT_MAPPER.getTypeFactory().constructType(activity.getClass()));
 		}
 	}
 
