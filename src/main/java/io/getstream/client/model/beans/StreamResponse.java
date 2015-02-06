@@ -1,4 +1,4 @@
-package io.getstream.client.model.bean;
+package io.getstream.client.model.beans;
 
 import java.util.List;
 

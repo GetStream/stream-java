@@ -1,6 +1,8 @@
 package io.getstream.client.model.activities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.google.common.base.MoreObjects;
 
 import java.util.Date;
 import java.util.List;
@@ -13,7 +15,10 @@ public abstract class BaseActivity {
     protected String object;
     protected String target;
     protected Date time;
+
+	@JsonDeserialize(contentUsing = ActivitySignedRecipientDeserializer.class)
     protected List<String> to;
+
 	protected String origin;
 	protected String duration;
 
@@ -98,5 +103,19 @@ public abstract class BaseActivity {
 
 	public void setDuration(String duration) {
 		this.duration = duration;
+	}
+
+	@Override
+	public String toString() {
+		return MoreObjects.toStringHelper(this)
+				.add("id", this.id)
+				.add("actor", this.actor)
+				.add("verb", this.verb)
+				.add("object", this.object)
+				.add("target", this.target)
+				.add("time", this.time)
+				.add("to", this.to.toString())
+				.add("origin", this.origin)
+				.add("duration", this.duration).toString();
 	}
 }

@@ -4,7 +4,7 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
-import io.getstream.client.model.bean.FeedFollow;
+import io.getstream.client.model.beans.FeedFollow;
 
 import java.io.IOException;
 import java.util.List;
