@@ -1,7 +1,7 @@
 package io.getstream.client.config;
 
+import io.getstream.client.utils.UriBuilder;
 
-import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
 public enum StreamRegion {
@@ -16,7 +16,7 @@ public enum StreamRegion {
 	}
 
 	public URI getEndpoint() {
-		return UriBuilder.fromUri(this.endpoint).path(VERSION).build();
+		return UriBuilder.fromEndpoint(this.endpoint).path(VERSION).build();
 	}
 
 	private final static String VERSION = "v1.0";

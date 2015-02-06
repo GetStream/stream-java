@@ -64,7 +64,7 @@ public abstract class BaseFeed {
     }
 
 	public class ActivityBuilder<T extends BaseActivity> {
-		private final Class<T> type;
+		protected final Class<T> type;
 
 		public ActivityBuilder(Class type) {
 			this.type = type;

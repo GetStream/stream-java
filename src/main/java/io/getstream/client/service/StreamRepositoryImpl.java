@@ -11,6 +11,7 @@ import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.utils.SignatureUtils;
+import io.getstream.client.utils.UriBuilder;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -26,7 +27,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -82,9 +82,10 @@ public class StreamRepositoryImpl implements StreamRepository {
 
     @Override
 	public <T extends BaseActivity> T addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException {
-		HttpPost request = new HttpPost(UriBuilder.fromUri(baseEndpoint)
-				.path("feed").path("{feedSlug}").path("{userId}/")
-				.queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId()));
+		HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
+				.queryParam(API_KEY, apiKey).build());
+		LOG.debug("Invoking the following url '{}'", request.getURI());
 
 		addSignatureToRecipients(secretKey, activity);
 
@@ -98,8 +99,10 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	@Override
 	public <T extends BaseActivity> List<T> getActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
-		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}/")
-				.queryParam(API_KEY, apiKey)).build(feed.getFeedSlug(), feed.getUserId()));
+		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
+				.queryParam(API_KEY, apiKey)).build());
+		LOG.debug("Invoking the following url '{}'", request.getURI());
 
 		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
 			handleResponseCode(response);
@@ -111,18 +114,17 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	@Override
 	public void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException {
-        HttpDelete request = new HttpDelete(UriBuilder.fromUri(baseEndpoint)
-                                              .path("feed").path("{feedSlug}").path("{userId}").path("{id}")
-                                              .queryParam(API_KEY, apiKey)
-                                              .build(feed.getFeedSlug(), feed.getUserId(), activityId));
+        HttpDelete request = new HttpDelete(UriBuilder.fromEndpoint(baseEndpoint)
+                                              .path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path(activityId)
+                                              .queryParam(API_KEY, apiKey).build());
 		fireAndForget(addAuthentication(feed, request));
     }
 
     @Override
 	public void follow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
-        HttpPost request = new HttpPost(UriBuilder.fromUri(baseEndpoint)
-                                              .path("feed").path("{feedSlug}").path("{userId}").path("following/")
-                                              .queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId()));
+        HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
+                                              .path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")
+                                              .queryParam(API_KEY, apiKey).build());
 
         request.setEntity(new UrlEncodedFormEntity(
 				Collections.singletonList(new BasicNameValuePair("target", targetFeedId))));
@@ -131,16 +133,17 @@ public class StreamRepositoryImpl implements StreamRepository {
 
     @Override
 	public void unfollow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
-        HttpDelete request = new HttpDelete(UriBuilder.fromUri(baseEndpoint)
-                                                .path("feed").path("{feedSlug}").path("{userId}").path("following").path("{target}/")
-                                                .queryParam(API_KEY, apiKey).build(feed.getFeedSlug(), feed.getUserId(), targetFeedId));
+        HttpDelete request = new HttpDelete(UriBuilder.fromEndpoint(baseEndpoint)
+                                                .path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following").path(targetFeedId + "/")
+                                                .queryParam(API_KEY, apiKey).build());
 		fireAndForget(addAuthentication(feed, request));
     }
 
     @Override
 	public List<FeedFollow> getFollowing(BaseFeed feed, FeedFilter filter) throws StreamClientException, IOException {
-        HttpGet request = new HttpGet(filter.apply(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}").path("following/")
-                                              .queryParam(API_KEY, apiKey)).build(feed.getFeedSlug(), feed.getUserId()));
+        HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")
+                .queryParam(API_KEY, apiKey)).build());
         LOG.debug("Invoking the following url '{}'", request.getURI());
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
 			handleResponseCode(response);
@@ -152,8 +155,9 @@ public class StreamRepositoryImpl implements StreamRepository {
 
     @Override
 	public List<FeedFollow> getFollowers(BaseFeed feed, FeedFilter filter) throws StreamClientException, IOException {
-        HttpGet request = new HttpGet(filter.apply(UriBuilder.fromUri(baseEndpoint).path("feed").path("{feedSlug}").path("{userId}").path("followers/")
-                                              .queryParam(API_KEY, apiKey)).build(feed.getFeedSlug(), feed.getUserId()));
+        HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("followers/")
+                .queryParam(API_KEY, apiKey)).build());
         LOG.debug("Invoking the followers url '{}'", request.getURI());
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
 			handleResponseCode(response);

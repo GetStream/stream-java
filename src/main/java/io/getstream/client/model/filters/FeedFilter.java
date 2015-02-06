@@ -1,8 +1,8 @@
 package io.getstream.client.model.filters;
 
 import com.google.common.base.Joiner;
+import io.getstream.client.utils.UriBuilder;
 
-import javax.ws.rs.core.UriBuilder;
 import java.util.List;
 
 public class FeedFilter {

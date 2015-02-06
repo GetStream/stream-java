@@ -1,11 +1,11 @@
 package io.getstream.client.utils;
 
 import com.google.common.collect.ImmutableList;
-import com.sun.jersey.core.util.Base64;
 import io.getstream.client.model.activities.BaseActivity;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -52,7 +52,7 @@ public final class SignatureUtils {
 		SecretKeySpec signingKey = new SecretKeySpec(toSHA1(secretKey), HMAC_SHA1);
 		Mac mac = Mac.getInstance(HMAC_SHA1);
 		mac.init(signingKey);
-		return escapeDigest(new String(Base64.encode(mac.doFinal(feedId.getBytes(UTF_8)))));
+		return escapeDigest(DatatypeConverter.printBase64Binary(mac.doFinal(feedId.getBytes(UTF_8))));
 	}
 
     private static byte[] toSHA1(final String key) throws UnsupportedEncodingException, NoSuchAlgorithmException {

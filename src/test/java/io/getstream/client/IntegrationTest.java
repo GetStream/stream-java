@@ -7,6 +7,7 @@ import io.getstream.client.exception.InvalidOrMissingInputException;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.FeedFollow;
+import io.getstream.client.model.feeds.AggregatedFeed;
 import io.getstream.client.model.feeds.FlatFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import org.junit.Ignore;
@@ -142,5 +143,16 @@ public class IntegrationTest {
 
 		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
 		flatFeed.follow("user:4");
+	}
+
+	@Test
+	public void shouldGetActivitiesFromAggregatedFeed() throws IOException, StreamClientException {
+		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
+				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+		FeedFactory feedFactory = new FeedFactory(streamClient);
+
+		AggregatedFeed aggregatedFeed = feedFactory.createAggregatedFeed("user", "2");
+		FlatFeed.ActivityBuilder<SimpleActivity> activityBuilder = aggregatedFeed.newActivityBuilder(SimpleActivity.class);
+		activityBuilder.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
 	}
 }
