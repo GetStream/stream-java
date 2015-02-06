@@ -7,14 +7,11 @@ import java.io.IOException;
 
 public class ClientConfiguration {
 
-    private long timeout = 500;
-    private long connectionTimeout = 500;
+    private int timeout = 5000;
+    private int connectionTimeout = 500;
     private long timeToLive = 3600;
-    private boolean cookiesEnabled = false;
     private int maxConnections = 1024;
     private int maxConnectionsPerRoute = 1024;
-    private long keepAlive = 0;
-    private int retries = 0;
 	private StreamRegion region = StreamRegion.US_EAST;
 
     private AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
@@ -31,19 +28,19 @@ public class ClientConfiguration {
 		this.region = region;
 	}
 
-	public long getTimeout() {
+	public int getTimeout() {
         return timeout;
     }
 
-    public void setTimeout(long timeout) {
+    public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
 
-    public long getConnectionTimeout() {
+    public int getConnectionTimeout() {
         return connectionTimeout;
     }
 
-    public void setConnectionTimeout(long connectionTimeout) {
+    public void setConnectionTimeout(int connectionTimeout) {
         this.connectionTimeout = connectionTimeout;
     }
 
@@ -53,14 +50,6 @@ public class ClientConfiguration {
 
     public void setTimeToLive(long timeToLive) {
         this.timeToLive = timeToLive;
-    }
-
-    public boolean isCookiesEnabled() {
-        return cookiesEnabled;
-    }
-
-    public void setCookiesEnabled(boolean cookiesEnabled) {
-        this.cookiesEnabled = cookiesEnabled;
     }
 
     public int getMaxConnections() {
@@ -77,22 +66,6 @@ public class ClientConfiguration {
 
     public void setMaxConnectionsPerRoute(int maxConnectionsPerRoute) {
         this.maxConnectionsPerRoute = maxConnectionsPerRoute;
-    }
-
-    public long getKeepAlive() {
-        return keepAlive;
-    }
-
-    public void setKeepAlive(long keepAlive) {
-        this.keepAlive = keepAlive;
-    }
-
-    public int getRetries() {
-        return retries;
-    }
-
-    public void setRetries(int retries) {
-        this.retries = retries;
     }
 
     public AuthenticationHandlerConfiguration getAuthenticationHandlerConfiguration() {

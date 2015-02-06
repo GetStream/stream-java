@@ -3,7 +3,7 @@ package io.getstream.client.model.feeds;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.filters.FeedFilter;
-import io.getstream.client.model.bean.FeedFollow;
+import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.service.StreamRepository;
 
 import java.io.IOException;
@@ -70,8 +70,8 @@ public abstract class BaseFeed {
 			this.type = type;
 		}
 
-		public void addActivity(T activity) throws IOException, StreamClientException {
-			streamRepository.addActivity(BaseFeed.this, activity);
+		public T addActivity(T activity) throws IOException, StreamClientException {
+			return streamRepository.addActivity(BaseFeed.this, activity);
 		}
 
 		public List<T> getActivities() throws IOException, StreamClientException {
