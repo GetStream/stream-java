@@ -23,10 +23,6 @@ public abstract class BaseFeed {
         this.id = feedSlug.concat(":").concat(userId);
     }
 
-	public <T extends BaseActivity> ActivityBuilder<T> newActivityBuilder(Class<T> clazz) {
-		return new ActivityBuilder<>(clazz);
-	}
-
 	public void follow(String targetFeedId) throws IOException, StreamClientException {
         streamRepository.follow(this, targetFeedId);
     }
@@ -62,24 +58,4 @@ public abstract class BaseFeed {
     public String getId() {
         return id;
     }
-
-	public class ActivityBuilder<T extends BaseActivity> {
-		protected final Class<T> type;
-
-		public ActivityBuilder(Class type) {
-			this.type = type;
-		}
-
-		public T addActivity(T activity) throws IOException, StreamClientException {
-			return streamRepository.addActivity(BaseFeed.this, activity);
-		}
-
-		public List<T> getActivities() throws IOException, StreamClientException {
-			return streamRepository.getActivities(BaseFeed.this, type, new FeedFilter.Builder().build());
-		}
-
-		public List<T> getActivities(final FeedFilter filter) throws IOException, StreamClientException {
-			return streamRepository.getActivities(BaseFeed.this, type, filter);
-		}
-	}
 }

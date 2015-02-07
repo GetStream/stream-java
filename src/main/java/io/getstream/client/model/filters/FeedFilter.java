@@ -25,7 +25,7 @@ public class FeedFilter {
 	private Integer idLowerThan = null;
 	private List<String> feedIds = null;
 
-	private FeedFilter() {
+	protected FeedFilter() {
 	}
 
 	public int getLimit() {
@@ -82,7 +82,7 @@ public class FeedFilter {
 	}
 
 	public static class Builder {
-		private final FeedFilter feedFilter;
+		protected final FeedFilter feedFilter;
 
 		public Builder() {
 			feedFilter = new FeedFilter();

@@ -90,7 +90,7 @@ public class IntegrationTest {
 		FeedFactory feedFactory = new FeedFactory(streamClient);
 
 		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		FlatFeed.ActivityBuilder<SimpleActivity> activityBuilder = flatFeed.newActivityBuilder(SimpleActivity.class);
+		FlatFeed.ActivityMediator<SimpleActivity> activityBuilder = flatFeed.newActivityMediator(SimpleActivity.class);
 		for (SimpleActivity activity : activityBuilder.getActivities()) {
 			assertThat(activity.getId(), containsString("11e4-8080-8000609bdac9"));
 		}
@@ -103,7 +103,7 @@ public class IntegrationTest {
 		FeedFactory feedFactory = new FeedFactory(streamClient);
 
 		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		FlatFeed.ActivityBuilder<SimpleActivity> activityBuilder = flatFeed.newActivityBuilder(SimpleActivity.class);
+		FlatFeed.ActivityMediator<SimpleActivity> activityBuilder = flatFeed.newActivityMediator(SimpleActivity.class);
 		SimpleActivity activity = new SimpleActivity();
 		activity.setActor("actor");
 		activity.setObject("object");
@@ -120,7 +120,7 @@ public class IntegrationTest {
 		FeedFactory feedFactory = new FeedFactory(streamClient);
 
 		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		FlatFeed.ActivityBuilder<SimpleActivity> activityBuilder = flatFeed.newActivityBuilder(SimpleActivity.class);
+		FlatFeed.ActivityMediator<SimpleActivity> activityBuilder = flatFeed.newActivityMediator(SimpleActivity.class);
 		activityBuilder.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
 	}
 
@@ -131,7 +131,7 @@ public class IntegrationTest {
 		FeedFactory feedFactory = new FeedFactory(streamClient);
 
 		FlatFeed flatFeed = feedFactory.createFlatFeed("foo", "2");
-		FlatFeed.ActivityBuilder<SimpleActivity> activityBuilder = flatFeed.newActivityBuilder(SimpleActivity.class);
+		FlatFeed.ActivityMediator<SimpleActivity> activityBuilder = flatFeed.newActivityMediator(SimpleActivity.class);
 		activityBuilder.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
 	}
 
@@ -152,7 +152,10 @@ public class IntegrationTest {
 		FeedFactory feedFactory = new FeedFactory(streamClient);
 
 		AggregatedFeed aggregatedFeed = feedFactory.createAggregatedFeed("user", "2");
-		FlatFeed.ActivityBuilder<SimpleActivity> activityBuilder = aggregatedFeed.newActivityBuilder(SimpleActivity.class);
-		activityBuilder.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
+
+        AggregatedFeed.ActivityMediator<SimpleActivity> activityMediator =
+                aggregatedFeed.newActivityMediator(SimpleActivity.class);
+
+        activityMediator.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(), true);
 	}
 }

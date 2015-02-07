@@ -36,7 +36,7 @@ public class UriBuilder {
 
 	public UriBuilder path(String path) {
 		String uriPath = uri.getPath();
-		if (uriPath.endsWith(PATH_SEPARATOR)) {
+		if (null != uriPath && uriPath.endsWith(PATH_SEPARATOR)) {
 			this.uri.setPath(uriPath.concat(path));
 		} else {
 			this.uri.setPath(uriPath.concat(PATH_SEPARATOR).concat(path));

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public class ClientConfiguration {
 
     private int timeout = 5000;
@@ -17,6 +19,7 @@ public class ClientConfiguration {
     private AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
 
     private static ClientConfiguration fromJsonString(final String jsonString) throws IOException {
+        checkNotNull(jsonString, "Input string cannot be null");
 		return new ObjectMapper().readValue(jsonString, new TypeReference<ClientConfiguration>() {});
     }
 
