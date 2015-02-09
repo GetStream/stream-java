@@ -1,4 +1,4 @@
-package io.getstream.client.service;
+package io.getstream.client.repo;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -162,8 +162,7 @@ public class StreamRepositoryImpl implements StreamRepository {
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
 			handleResponseCode(response);
             StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
-					new TypeReference<StreamResponse<FeedFollow>>() {
-					});
+					new TypeReference<StreamResponse<FeedFollow>>() {});
             return streamResponse.getResults();
         }
 	}

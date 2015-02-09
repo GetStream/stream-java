@@ -7,9 +7,11 @@ import io.getstream.client.exception.InvalidOrMissingInputException;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.FeedFollow;
-import io.getstream.client.model.feeds.AggregatedFeed;
-import io.getstream.client.model.feeds.FlatFeed;
+import io.getstream.client.model.beans.MarkedActivity;
+import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
+import io.getstream.client.service.FlatActivityService;
+import io.getstream.client.service.NotificationActivityService;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -27,10 +29,8 @@ public class IntegrationTest {
     public void shouldGetFollowers() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
                                                             "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
-        FeedFactory feedFactory = new FeedFactory(streamClient);
-
-        FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		assertThat(flatFeed.getFollowers().size(), is(2));
+        Feed feed = streamClient.newFeed("user", "2");
+		assertThat(feed.getFollowers().size(), is(2));
     }
 
 	@Ignore
@@ -39,20 +39,18 @@ public class IntegrationTest {
 		clientConfiguration.setRegion(StreamRegion.US_WEST);
 		StreamClient streamClient = new StreamClient(clientConfiguration, "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
-		FeedFactory feedFactory = new FeedFactory(streamClient);
 
-		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		assertThat(flatFeed.getFollowers().size(), is(2));
+        Feed feed = streamClient.newFeed("user", "2");
+		assertThat(feed.getFollowers().size(), is(2));
 	}
 
 	@Test
     public void shouldGetFollowing() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
                                                             "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
-        FeedFactory feedFactory = new FeedFactory(streamClient);
 
-        FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		List<FeedFollow> following = flatFeed.getFollowing();
+        Feed feed = streamClient.newFeed("user", "2");
+		List<FeedFollow> following = feed.getFollowing();
 		assertThat(following.size(), is(1));
     }
 
@@ -60,26 +58,23 @@ public class IntegrationTest {
     public void shouldFollow() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
                                                             "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
-        FeedFactory feedFactory = new FeedFactory(streamClient);
-
-        FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-        flatFeed.follow("user:4");
+        Feed feed = streamClient.newFeed("user", "2");
+        feed.follow("user:4");
     }
 
     @Test
     public void shouldUnfollow() throws IOException, StreamClientException, InterruptedException {
         StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
                                                             "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
-        FeedFactory feedFactory = new FeedFactory(streamClient);
 
-        FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
+        Feed feed = streamClient.newFeed("user", "2");
 
-		List<FeedFollow> following = flatFeed.getFollowing();
+		List<FeedFollow> following = feed.getFollowing();
 		assertThat(following.size(), is(1));
 
-		flatFeed.unfollow("user:4");
+        feed.unfollow("user:4");
 
-		List<FeedFollow> followingAgain = flatFeed.getFollowing();
+		List<FeedFollow> followingAgain = feed.getFollowing();
 		assertThat(followingAgain.size(), is(0));
     }
 
@@ -87,11 +82,10 @@ public class IntegrationTest {
 	public void shouldGetActivities() throws IOException, StreamClientException {
 		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
-		FeedFactory feedFactory = new FeedFactory(streamClient);
 
-		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		FlatFeed.ActivityMediator<SimpleActivity> activityBuilder = flatFeed.newActivityMediator(SimpleActivity.class);
-		for (SimpleActivity activity : activityBuilder.getActivities()) {
+        Feed feed = streamClient.newFeed("user", "2");
+        FlatActivityService<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+		for (SimpleActivity activity : flatActivityService.getActivities()) {
 			assertThat(activity.getId(), containsString("11e4-8080-8000609bdac9"));
 		}
 	}
@@ -100,62 +94,57 @@ public class IntegrationTest {
 	public void shouldAddActivity() throws IOException, StreamClientException {
 		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
-		FeedFactory feedFactory = new FeedFactory(streamClient);
 
-		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		FlatFeed.ActivityMediator<SimpleActivity> activityBuilder = flatFeed.newActivityMediator(SimpleActivity.class);
+        Feed feed = streamClient.newFeed("user", "2");
+        FlatActivityService<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
 		SimpleActivity activity = new SimpleActivity();
 		activity.setActor("actor");
 		activity.setObject("object");
 		activity.setTarget("target");
 		activity.setTo(Arrays.asList("user:1", "user:4"));
 		activity.setVerb("verb");
-		activityBuilder.addActivity(activity);
+        flatActivityService.addActivity(activity);
 	}
 
 	@Test
 	public void shouldGetActivitiesWithFilter() throws IOException, StreamClientException {
 		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
-		FeedFactory feedFactory = new FeedFactory(streamClient);
 
-		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		FlatFeed.ActivityMediator<SimpleActivity> activityBuilder = flatFeed.newActivityMediator(SimpleActivity.class);
-		activityBuilder.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
+        Feed feed = streamClient.newFeed("user", "2");
+        FlatActivityService<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        flatActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
 	}
 
 	@Test(expected = InvalidOrMissingInputException.class)
 	public void shouldGetInvalidOrMissingInputException() throws IOException, StreamClientException {
 		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
-		FeedFactory feedFactory = new FeedFactory(streamClient);
 
-		FlatFeed flatFeed = feedFactory.createFlatFeed("foo", "2");
-		FlatFeed.ActivityMediator<SimpleActivity> activityBuilder = flatFeed.newActivityMediator(SimpleActivity.class);
-		activityBuilder.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
+        Feed feed = streamClient.newFeed("foo", "2");
+        FlatActivityService<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        flatActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
 	}
 
 	@Test(expected = AuthenticationFailedException.class)
 	public void shouldGetAuthenticationFailed() throws IOException, StreamClientException {
 		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
 				"foo");
-		FeedFactory feedFactory = new FeedFactory(streamClient);
 
-		FlatFeed flatFeed = feedFactory.createFlatFeed("user", "2");
-		flatFeed.follow("user:4");
+        Feed feed = streamClient.newFeed("user", "2");
+        feed.follow("user:4");
 	}
 
 	@Test
 	public void shouldGetActivitiesFromAggregatedFeed() throws IOException, StreamClientException {
 		StreamClient streamClient = new StreamClient(new ClientConfiguration(), "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
-		FeedFactory feedFactory = new FeedFactory(streamClient);
 
-		AggregatedFeed aggregatedFeed = feedFactory.createAggregatedFeed("user", "2");
-
-        AggregatedFeed.ActivityMediator<SimpleActivity> activityMediator =
-                aggregatedFeed.newActivityMediator(SimpleActivity.class);
-
-        activityMediator.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(), true);
+        Feed feed = streamClient.newFeed("user", "2");
+        NotificationActivityService<SimpleActivity> notificationActivityService =
+                feed.newNotificationActivityService(SimpleActivity.class);
+        notificationActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(),
+                                  null,
+                                  new MarkedActivity.Builder().withActivityId("user:1").withActivityId("user:2").build());
 	}
 }
