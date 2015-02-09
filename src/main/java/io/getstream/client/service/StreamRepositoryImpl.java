@@ -85,7 +85,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 		HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
 				.queryParam(API_KEY, apiKey).build());
-		LOG.debug("Invoking the following url '{}'", request.getURI());
+		LOG.debug("Invoking url: '{}'", request.getURI());
 
 		addSignatureToRecipients(secretKey, activity);
 
@@ -102,7 +102,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
 				.queryParam(API_KEY, apiKey)).build());
-		LOG.debug("Invoking the following url '{}'", request.getURI());
+		LOG.debug("Invoking url: '{}'", request.getURI());
 
 		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
 			handleResponseCode(response);
@@ -144,7 +144,7 @@ public class StreamRepositoryImpl implements StreamRepository {
         HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")
                 .queryParam(API_KEY, apiKey)).build());
-        LOG.debug("Invoking the following url '{}'", request.getURI());
+        LOG.debug("Invoking url: '{}'", request.getURI());
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
 			handleResponseCode(response);
             StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
@@ -158,7 +158,7 @@ public class StreamRepositoryImpl implements StreamRepository {
         HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("followers/")
                 .queryParam(API_KEY, apiKey)).build());
-        LOG.debug("Invoking the followers url '{}'", request.getURI());
+        LOG.debug("Invoking url: '{}'", request.getURI());
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
 			handleResponseCode(response);
             StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
