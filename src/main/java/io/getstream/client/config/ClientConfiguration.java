@@ -12,8 +12,7 @@ public class ClientConfiguration {
     private int timeout = 5000;
     private int connectionTimeout = 500;
     private long timeToLive = 3600;
-    private int maxConnections = 1024;
-    private int maxConnectionsPerRoute = 1024;
+    private int maxConnections = 20;
 	private StreamRegion region = StreamRegion.US_EAST;
 
     private AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
@@ -61,14 +60,6 @@ public class ClientConfiguration {
 
     public void setMaxConnections(int maxConnections) {
         this.maxConnections = maxConnections;
-    }
-
-    public int getMaxConnectionsPerRoute() {
-        return maxConnectionsPerRoute;
-    }
-
-    public void setMaxConnectionsPerRoute(int maxConnectionsPerRoute) {
-        this.maxConnectionsPerRoute = maxConnectionsPerRoute;
     }
 
     public AuthenticationHandlerConfiguration getAuthenticationHandlerConfiguration() {

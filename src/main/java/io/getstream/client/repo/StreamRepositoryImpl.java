@@ -12,17 +12,15 @@ import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.utils.SignatureUtils;
 import io.getstream.client.utils.UriBuilder;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +33,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static io.getstream.client.utils.SignatureUtils.addSignatureToRecipients;
 import static org.apache.http.entity.ContentType.APPLICATION_JSON;
@@ -55,29 +52,12 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	private CloseableHttpClient httpClient;
 
-	public StreamRepositoryImpl(ClientConfiguration streamClient) {
+	public StreamRepositoryImpl(ClientConfiguration streamClient, CloseableHttpClient closeableHttpClient) {
 		this.baseEndpoint = streamClient.getRegion().getEndpoint();
 		this.apiKey = streamClient.getAuthenticationHandlerConfiguration().getApiKey();
 		this.secretKey = streamClient.getAuthenticationHandlerConfiguration().getSecretKey();
         this.exceptionHandler = new StreamExceptionHandler(OBJECT_MAPPER);
-        this.httpClient = initClient(streamClient);
-    }
-
-	//TODO move somewhere else the client implementation
-	//TODO getRawClient
-	//TODO keepAlive strategy must be implemented
-    private CloseableHttpClient initClient(final ClientConfiguration config) {
-        PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
-				config.getTimeToLive(), TimeUnit.MILLISECONDS);
-		connectionManager.setDefaultMaxPerRoute(config.getMaxConnectionsPerRoute());
-		connectionManager.setMaxTotal(config.getMaxConnections());
-        return HttpClients.custom()
-				.setDefaultRequestConfig(RequestConfig.custom()
-						.setConnectTimeout(config.getConnectionTimeout())
-						.setSocketTimeout(config.getTimeout()).build())
-				.setMaxConnPerRoute(config.getMaxConnectionsPerRoute())
-				.setMaxConnTotal(config.getMaxConnections())
-				.setConnectionManager(connectionManager).build();
+        this.httpClient = closeableHttpClient;
     }
 
     @Override
@@ -90,7 +70,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 		addSignatureToRecipients(secretKey, activity);
 
 		request.setEntity(new StringEntity(OBJECT_MAPPER.writeValueAsString(activity), APPLICATION_JSON));
-		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
+		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
 			handleResponseCode(response);
 			return OBJECT_MAPPER.readValue(response.getEntity().getContent(),
 					OBJECT_MAPPER.getTypeFactory().constructType(activity.getClass()));
@@ -104,7 +84,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 				.queryParam(API_KEY, apiKey)).build());
 		LOG.debug("Invoking url: '{}'", request.getURI());
 
-		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
+		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
 			handleResponseCode(response);
 			StreamResponse<T> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
 					OBJECT_MAPPER.getTypeFactory().constructParametricType(StreamResponse.class, type));
@@ -145,7 +125,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")
                 .queryParam(API_KEY, apiKey)).build());
         LOG.debug("Invoking url: '{}'", request.getURI());
-        try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
+        try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
 			handleResponseCode(response);
             StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
                                                    new TypeReference<StreamResponse<FeedFollow>>(){});
@@ -159,7 +139,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("followers/")
                 .queryParam(API_KEY, apiKey)).build());
         LOG.debug("Invoking url: '{}'", request.getURI());
-        try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request))) {
+        try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
 			handleResponseCode(response);
             StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
 					new TypeReference<StreamResponse<FeedFollow>>() {});
@@ -169,7 +149,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	private void fireAndForget(final HttpRequestBase request) throws IOException, StreamClientException {
 		LOG.debug("Invoking url: '{}", request.getURI());
-		try (CloseableHttpResponse response = httpClient.execute(request)) {
+		try (CloseableHttpResponse response = httpClient.execute(request, HttpClientContext.create())) {
 			handleResponseCode(response);
 		}
 	}
