@@ -41,13 +41,13 @@ public class StreamClientImpl implements StreamClient {
 	private CloseableHttpClient initClient(final ClientConfiguration config) {
 		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
 				config.getTimeToLive(), TimeUnit.MILLISECONDS);
-		connectionManager.setDefaultMaxPerRoute(config.getMaxConnections());
+		connectionManager.setDefaultMaxPerRoute(config.getMaxConnectionsPerRoute());
 		connectionManager.setMaxTotal(config.getMaxConnections());
 		return HttpClients.custom()
 				.setDefaultRequestConfig(RequestConfig.custom()
 						.setConnectTimeout(config.getConnectionTimeout())
 						.setSocketTimeout(config.getTimeout()).build())
-				.setMaxConnPerRoute(config.getMaxConnections())
+				.setMaxConnPerRoute(config.getMaxConnectionsPerRoute())
 				.setMaxConnTotal(config.getMaxConnections())
 				.setConnectionManager(connectionManager).build();
 	}
