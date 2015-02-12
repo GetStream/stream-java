@@ -9,6 +9,7 @@ import io.getstream.client.repo.StreamRepository;
 import io.getstream.client.repo.StreamRepositoryImpl;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
@@ -44,6 +45,7 @@ public class StreamClientImpl implements StreamClient {
 		connectionManager.setDefaultMaxPerRoute(config.getMaxConnectionsPerRoute());
 		connectionManager.setMaxTotal(config.getMaxConnections());
 		return HttpClients.custom()
+				.setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
 				.setUserAgent("Apache-HttpClient/io.getstream java client")
 				.setDefaultRequestConfig(RequestConfig.custom()
 						.setConnectTimeout(config.getConnectionTimeout())
