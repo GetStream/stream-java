@@ -25,6 +25,8 @@ public interface Feed {
 
 	List<FeedFollow> getFollowing(FeedFilter filter) throws IOException, StreamClientException;
 
+	void deleteActivity(String activityId) throws IOException, StreamClientException;
+
     <T extends BaseActivity> AggregatedActivityService<T> newAggregatedActivityService(Class<T> clazz);
 
     <T extends BaseActivity> FlatActivityService<T> newFlatActivityService(Class<T> clazz);
@@ -32,4 +34,10 @@ public interface Feed {
     <T extends BaseActivity> UserActivityService<T> newUserActivityService(Class<T> clazz);
 
     <T extends BaseActivity> NotificationActivityService<T> newNotificationActivityService(Class<T> clazz);
+
+	void deleteActivities(List<String> activityIds) throws IOException, StreamClientException;
+
+	void unfollow(List<String> targetFeedIds) throws IOException, StreamClientException;
+
+	void follow(List<String> targetFeedIds) throws IOException, StreamClientException;
 }

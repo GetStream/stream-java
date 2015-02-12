@@ -27,7 +27,7 @@ public class StreamClientImpl implements StreamClient {
 
     private FeedFactory feedFactory;
 
-    public StreamClientImpl(final ClientConfiguration clientConfiguration, final String key, final String secretKey) {
+	public StreamClientImpl(final ClientConfiguration clientConfiguration, final String key, final String secretKey) {
         checkNotNull(clientConfiguration, "Client configuration cannot be null.");
         this.authenticationHandlerConfiguration = new AuthenticationHandlerConfiguration();
         this.authenticationHandlerConfiguration.setApiKey(checkNotNull(key, "API key cannot be null."));
@@ -44,6 +44,7 @@ public class StreamClientImpl implements StreamClient {
 		connectionManager.setDefaultMaxPerRoute(config.getMaxConnectionsPerRoute());
 		connectionManager.setMaxTotal(config.getMaxConnections());
 		return HttpClients.custom()
+				.setUserAgent("Apache-HttpClient/io.getstream java client")
 				.setDefaultRequestConfig(RequestConfig.custom()
 						.setConnectTimeout(config.getConnectionTimeout())
 						.setSocketTimeout(config.getTimeout()).build())

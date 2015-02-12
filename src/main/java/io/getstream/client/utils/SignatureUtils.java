@@ -1,6 +1,8 @@
 package io.getstream.client.utils;
 
 import com.google.common.collect.ImmutableList;
+import io.getstream.client.exception.InvalidOrMissingInputException;
+import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 
 import javax.crypto.Mac;
@@ -26,7 +28,10 @@ public final class SignatureUtils {
 	 * @param secretKey Secret key
 	 * @param activity Activity to sign.
 	 */
-	public static void addSignatureToRecipients(final String secretKey, final BaseActivity activity) {
+	public static void addSignatureToRecipients(final String secretKey, final BaseActivity activity) throws StreamClientException {
+		if (activity.getTo() == null || activity.getTo().isEmpty() ) {
+			throw new InvalidOrMissingInputException("Field 'to' cannot be empty.");
+		}
 		ImmutableList.Builder<String> recipients = ImmutableList.builder();
 		for (String recipient : activity.getTo()) {
 			try {

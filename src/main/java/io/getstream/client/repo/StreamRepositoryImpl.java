@@ -2,6 +2,7 @@ package io.getstream.client.repo;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.handlers.StreamExceptionHandler;
@@ -43,7 +44,8 @@ public class StreamRepositoryImpl implements StreamRepository {
 
     private static final String API_KEY = "api_key";
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setPropertyNamingStrategy(
+					PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
 
     private final URI baseEndpoint;
     private final String apiKey;
@@ -95,7 +97,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 	@Override
 	public void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException {
         HttpDelete request = new HttpDelete(UriBuilder.fromEndpoint(baseEndpoint)
-                                              .path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path(activityId)
+                                              .path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path(activityId + "/")
                                               .queryParam(API_KEY, apiKey).build());
 		fireAndForget(addAuthentication(feed, request));
     }
@@ -167,4 +169,8 @@ public class StreamRepositoryImpl implements StreamRepository {
         }
         return httpRequest;
     }
+
+	public static ObjectMapper getObjectMapper() {
+		return OBJECT_MAPPER;
+	}
 }

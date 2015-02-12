@@ -12,6 +12,7 @@ import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.service.FlatActivityService;
 import io.getstream.client.service.NotificationActivityService;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -24,6 +25,13 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IntegrationTest {
+
+	@BeforeClass
+	public static void setLog() {
+		System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+		System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+		System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "DEBUG");
+	}
 
     @Test
     public void shouldGetFollowers() throws IOException, StreamClientException {
@@ -53,7 +61,7 @@ public class IntegrationTest {
 
         Feed feed = streamClient.newFeed("user", "2");
 		List<FeedFollow> following = feed.getFollowing();
-		assertThat(following.size(), is(1));
+		assertThat(following.size(), is(3));
 		streamClient.shutdown();
     }
 
@@ -74,12 +82,12 @@ public class IntegrationTest {
         Feed feed = streamClient.newFeed("user", "2");
 
 		List<FeedFollow> following = feed.getFollowing();
-		assertThat(following.size(), is(1));
+		assertThat(following.size(), is(3));
 
         feed.unfollow("user:4");
 
 		List<FeedFollow> followingAgain = feed.getFollowing();
-		assertThat(followingAgain.size(), is(0));
+		assertThat(followingAgain.size(), is(2));
 		streamClient.shutdown();
     }
 
@@ -91,7 +99,7 @@ public class IntegrationTest {
         Feed feed = streamClient.newFeed("user", "2");
         FlatActivityService<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
 		for (SimpleActivity activity : flatActivityService.getActivities()) {
-			assertThat(activity.getId(), containsString("11e4-8080-8000609bdac9"));
+			assertThat(activity.getId(), containsString("11e4-8080"));
 		}
 		streamClient.shutdown();
 	}
@@ -156,6 +164,17 @@ public class IntegrationTest {
         notificationActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(),
                                   null,
                                   new MarkedActivity.Builder().withActivityId("user:1").withActivityId("user:2").build());
+		streamClient.shutdown();
+	}
+
+	@Test
+	public void shouldDeleteActivity() throws IOException, StreamClientException {
+		StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
+				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+
+		Feed feed = streamClient.newFeed("user", "9");
+		feed.deleteActivities(Arrays.asList("6d95a136-b2af-11e4-8080-80003ad855af",
+				"6d79af6c-b2af-11e4-8080-80003ad855af"));
 		streamClient.shutdown();
 	}
 }

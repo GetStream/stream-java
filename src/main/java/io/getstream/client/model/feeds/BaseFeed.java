@@ -27,42 +27,78 @@ public class BaseFeed implements Feed {
         this.id = feedSlug.concat(":").concat(userId);
     }
 
+	@Override
 	public void follow(String targetFeedId) throws IOException, StreamClientException {
         streamRepository.follow(this, targetFeedId);
     }
 
+	@Override
+	public void follow(List<String> targetFeedIds) throws IOException, StreamClientException {
+		for (String targetFeedId : targetFeedIds) {
+			streamRepository.follow(this, targetFeedId);
+		}
+	}
+
+	@Override
 	public void unfollow(String targetFeedId) throws IOException, StreamClientException {
         streamRepository.unfollow(this, targetFeedId);
     }
 
+	@Override
+	public void unfollow(List<String> targetFeedIds) throws IOException, StreamClientException {
+		for (String targetFeedId : targetFeedIds) {
+			streamRepository.unfollow(this, targetFeedId);
+		}
+	}
+
+	@Override
 	public List<FeedFollow> getFollowers() throws IOException, StreamClientException {
         return streamRepository.getFollowers(this, new FeedFilter.Builder().build());
     }
 
+	@Override
 	public List<FeedFollow> getFollowers(FeedFilter filter) throws IOException, StreamClientException {
 		return streamRepository.getFollowers(this, filter);
 	}
 
+	@Override
 	public List<FeedFollow> getFollowing() throws IOException, StreamClientException {
         return streamRepository.getFollowing(this, new FeedFilter.Builder().build());
     }
 
+	@Override
 	public List<FeedFollow> getFollowing(FeedFilter filter) throws IOException, StreamClientException {
 		return streamRepository.getFollowing(this, filter);
 	}
 
-    public <T extends BaseActivity> AggregatedActivityService<T> newAggregatedActivityService(Class<T> clazz) {
+	@Override
+	public void deleteActivity(String activityId) throws IOException, StreamClientException {
+		streamRepository.deleteActivityById(this, activityId);
+	}
+
+	@Override
+	public void deleteActivities(List<String> activityIds) throws IOException, StreamClientException {
+		for (String activityId : activityIds) {
+			streamRepository.deleteActivityById(this, activityId);
+		}
+	}
+
+	@Override
+	public <T extends BaseActivity> AggregatedActivityService<T> newAggregatedActivityService(Class<T> clazz) {
         return new AggregatedActivityService<>(this, clazz, streamRepository);
     }
 
+	@Override
     public <T extends BaseActivity> FlatActivityService<T> newFlatActivityService(Class<T> clazz) {
         return new FlatActivityService<>(this, clazz, streamRepository);
     }
 
+	@Override
     public <T extends BaseActivity> UserActivityService<T> newUserActivityService(Class<T> clazz) {
         return new UserActivityService<>(this, clazz, streamRepository);
     }
 
+	@Override
     public <T extends BaseActivity> NotificationActivityService<T> newNotificationActivityService(Class<T> clazz) {
         return new NotificationActivityService<>(this, clazz, streamRepository);
     }
