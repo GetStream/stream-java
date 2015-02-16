@@ -2,6 +2,9 @@ package io.getstream.client.exception;
 
 import com.google.common.base.MoreObjects;
 
+/**
+ * This is a genera exception thrown by the StreamClient.
+ */
 public abstract class StreamClientException extends Exception {
 
     private int httpStatusCode;

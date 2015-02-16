@@ -1,5 +1,8 @@
 package io.getstream.client.exception;
 
+/**
+ * In case the authentication failed on remote side (http status code: 401).
+ */
 public class InvalidOrMissingInputException extends StreamClientException {
 
     public InvalidOrMissingInputException() {

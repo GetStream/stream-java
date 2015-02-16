@@ -1,5 +1,8 @@
 package io.getstream.client.exception;
 
+/**
+ * In case of invalid input on remote side (http status code: 400).
+ */
 public class InternalServerException extends StreamClientException {
     public InternalServerException() {
         super();

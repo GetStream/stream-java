@@ -4,6 +4,9 @@ import io.getstream.client.utils.UriBuilder;
 
 import java.net.URI;
 
+/**
+ * GetStream.io supports multiple locations. This is the list of available regions.
+ */
 public enum StreamRegion {
 
 	US_EAST ("https://us-east-api.getstream.io/api"),

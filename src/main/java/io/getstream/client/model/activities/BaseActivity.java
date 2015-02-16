@@ -7,6 +7,10 @@ import com.google.common.base.MoreObjects;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Activity on GetStream.io has mandatory fields which are used to define its behaviour.
+ * Any custom activity must be a subclasses of BaseActivity.
+ */
 public abstract class BaseActivity {
 
 	protected String id;

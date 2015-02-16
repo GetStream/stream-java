@@ -7,17 +7,49 @@ import java.io.IOException;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * ClientConfiguration holds configuration params for the http client.
+ */
 public class ClientConfiguration {
 
+	/**
+	 * Socket timeout in ms.
+	 */
     private int timeout = 5000;
-    private int connectionTimeout = 500;
-    private long timeToLive = 3600;
-    private int maxConnections = 20;
+
+	/**
+	 * Connection timeout in ms.
+	 */
+	private int connectionTimeout = 500;
+
+	/**
+	 * TimeToLive in ms.
+	 */
+	private long timeToLive = 3600;
+
+	/**
+	 * Max concurrent connection the pool should handle.
+	 */
+	private int maxConnections = 20;
+
+	/**
+	 * Max concurrent connection per route.
+	 */
     private int maxConnectionsPerRoute = 20;
+
+	/**
+	 * Stream location.
+	 */
 	private StreamRegion region = StreamRegion.US_EAST;
 
     private AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
 
+	/**
+	 * Create a ClientConfiguration bean from a given json string.
+	 * @param jsonString Json representation of ClientConfiguration bean.
+	 * @return
+	 * @throws IOException in case the object cannot be parsed correctly.
+	 */
     private static ClientConfiguration fromJsonString(final String jsonString) throws IOException {
         checkNotNull(jsonString, "Input string cannot be null");
 		return new ObjectMapper().readValue(jsonString, new TypeReference<ClientConfiguration>() {});

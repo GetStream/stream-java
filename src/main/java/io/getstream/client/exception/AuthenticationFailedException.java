@@ -1,5 +1,8 @@
 package io.getstream.client.exception;
 
+/**
+ * In case the authentication failed on remote side (http status code: 401/403).
+ */
 public class AuthenticationFailedException extends StreamClientException {
 
     public AuthenticationFailedException() {

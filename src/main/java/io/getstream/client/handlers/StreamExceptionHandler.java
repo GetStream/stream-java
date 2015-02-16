@@ -12,14 +12,29 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
+/**
+ * It provides a mechanism to translate the http status code (different from 200)
+ * in a proper java Exception.
+ */
 public class StreamExceptionHandler {
 
     private final ObjectMapper objectMapper;
 
+	/**
+	 * Create the object using the ObjectMapper to deserialize the json response coming from
+	 * remote side.
+	 * @param objectMapper
+	 */
     public StreamExceptionHandler(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
+	/**
+	 * Translate http status code to Java Exception.
+	 * @param response Response
+	 * @throws IOException
+	 * @throws StreamClientException
+	 */
     public void handleResponseCode(final CloseableHttpResponse response) throws IOException, StreamClientException {
         switch (response.getStatusLine().getStatusCode()) {
             case 400:

@@ -1,5 +1,8 @@
 package io.getstream.client.exception;
 
+/**
+ * In case of invalid URI (http status code: 404).
+ */
 public class ResourceNotFoundException extends StreamClientException {
 
     public ResourceNotFoundException() {

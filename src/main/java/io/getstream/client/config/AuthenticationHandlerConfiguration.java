@@ -1,9 +1,20 @@
 package io.getstream.client.config;
 
+/**
+ * Bean designed to hold authentication credentials to access
+ * getstream.io.
+ */
 public class AuthenticationHandlerConfiguration {
 
+	/**
+	 * Getstream.io's API key.
+	 */
     private String apiKey;
-    private String secretKey;
+
+	/**
+	 * Getstream.io's secret key.
+	 */
+	private String secretKey;
 
     public String getApiKey() {
         return apiKey;

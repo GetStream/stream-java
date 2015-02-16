@@ -1,5 +1,8 @@
 package io.getstream.client.exception;
 
+/**
+ * In case the URI built is invalid.
+ */
 public class UriBuilderException extends RuntimeException {
 	public UriBuilderException() {
 		super();
