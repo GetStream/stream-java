@@ -2,6 +2,9 @@ package io.getstream.client.model.beans;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * Map the response message coming from GetStream.io server.
+ */
 public class StreamErrorResponse {
 
 	private int code;

@@ -5,6 +5,9 @@ import io.getstream.client.utils.UriBuilder;
 
 import java.util.List;
 
+/**
+ * General filter to filter out activities/follower/following.
+ */
 public class FeedFilter {
 
 	private final static String PARAM_LIMIT = "limit";
@@ -56,6 +59,11 @@ public class FeedFilter {
 		return feedIds;
 	}
 
+	/**
+	 * Apply the filter on the given URI.
+	 * @param uriBuilder Add attributes to the given {@link UriBuilder}.
+	 * @return
+	 */
 	public UriBuilder apply(UriBuilder uriBuilder) {
 		if (null != this.limit) {
 			uriBuilder.queryParam(PARAM_LIMIT, this.limit);
@@ -81,6 +89,9 @@ public class FeedFilter {
 	 	return uriBuilder;
 	}
 
+	/**
+	 * Builder to build up a {@link FeedFilter}.
+	 */
 	public static class Builder {
 		protected final FeedFilter feedFilter;
 
@@ -88,6 +99,10 @@ public class FeedFilter {
 			feedFilter = new FeedFilter();
 		}
 
+		/**
+		 * Create a {@link FeedFilter}.
+		 * @return
+		 */
 		public FeedFilter build() {
 			return feedFilter;
 		}

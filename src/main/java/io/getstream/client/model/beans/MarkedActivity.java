@@ -4,6 +4,10 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
+/**
+ * Allow a list of {@link io.getstream.client.model.activities.BaseActivity} to be marked.
+ * The purpose of the mark is given by the context in which it used for.
+ */
 public class MarkedActivity {
 
     private final List<String> activityIds;
@@ -16,6 +20,9 @@ public class MarkedActivity {
         return this.activityIds;
     }
 
+	/**
+	 * Provide an easy way to build an immutable list of activity ids.
+	 */
     public static class Builder {
         private ImmutableList.Builder<String> markedActivity = new ImmutableList.Builder<>();
 
@@ -29,6 +36,10 @@ public class MarkedActivity {
             return this;
         }
 
+		/**
+		 * Build an immutable list of marked activities.
+		 * @return
+		 */
         public MarkedActivity build() {
             return new MarkedActivity(markedActivity.build());
         }

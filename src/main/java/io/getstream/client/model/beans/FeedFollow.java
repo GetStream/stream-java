@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
 
+/**
+ * Contains follower/following-related data.
+ */
 public class FeedFollow {
     @JsonProperty("created_at")
     private Date createdAt;

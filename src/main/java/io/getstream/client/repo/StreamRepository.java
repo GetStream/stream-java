@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- *
+ * Provide low-level access to the GetStream.io REST API.
  */
 public interface StreamRepository {
 

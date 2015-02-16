@@ -2,6 +2,9 @@ package io.getstream.client.model.feeds;
 
 import io.getstream.client.repo.StreamRepository;
 
+/**
+ * Factory class to build a new instance of a feed.
+ */
 public final class BaseFeedFactory implements FeedFactory {
 
     private final StreamRepository streamRepository;

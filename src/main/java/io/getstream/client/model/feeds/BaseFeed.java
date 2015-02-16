@@ -13,6 +13,9 @@ import io.getstream.client.service.UserActivityService;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Provide basic operation to perform against a feed.
+ */
 public class BaseFeed implements Feed {
 
 	protected final StreamRepository streamRepository;
@@ -20,6 +23,13 @@ public class BaseFeed implements Feed {
 	protected final String userId;
 	private final String id;
 
+	/**
+	 * Create a new feed using the given slug and user id.
+	 * @param streamRepository Provide data repository to perform actual operation on a given feed.
+	 *                         It must implement {@link StreamRepository}.
+	 * @param feedSlug
+	 * @param userId
+	 */
     public BaseFeed(StreamRepository streamRepository, String feedSlug, String userId) {
         this.streamRepository = streamRepository;
         this.feedSlug = feedSlug;

@@ -1,7 +1,15 @@
 package io.getstream.client.model.feeds;
 
-import io.getstream.client.model.feeds.Feed;
-
+/**
+ * Factory class to create new feed.
+ */
 public interface FeedFactory {
+
+	/**
+	 * Create new feed.
+	 * @param feedSlug feed slug.
+	 * @param id feed id.
+	 * @return
+	 */
     Feed createFeed(String feedSlug, String id);
 }
