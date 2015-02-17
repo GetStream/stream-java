@@ -1,0 +1,215 @@
+{
+    "duration": "47ms",
+    "next": "",
+    "results": [
+        {
+            "activities": [
+                {
+                    "actor": "1",
+                    "foreign_id": null,
+                    "id": "e4b551ca-7575-11e4-8080-800050f8f98f",
+                    "object": "1",
+                    "origin": null,
+                    "target": null,
+                    "time": "2014-11-26T14:09:53.666",
+                    "to": [],
+                    "verb": "watch"
+                }
+            ],
+            "activity_count": 1,
+            "actor_count": 1,
+            "created_at": "2014-11-26T14:09:53.666000",
+            "group": "1302_2014-11-26",
+            "id": "e4b551ca-7575-11e4-90cc-0cc47a024be0",
+            "updated_at": "2014-11-26T14:09:53.666000",
+            "verb": "watch"
+        },
+        {
+            "activities": [
+                {
+                    "actor": "1",
+                    "foreign_id": null,
+                    "id": "e17c242a-7575-11e4-8080-80003e3c2894",
+                    "object": "1",
+                    "origin": null,
+                    "target": null,
+                    "time": "2014-11-26T14:09:48.259",
+                    "to": [],
+                    "verb": "tweet"
+                },
+                {
+                    "actor": "1",
+                    "foreign_id": null,
+                    "id": "defc2060-7575-11e4-8080-80003e3c2894",
+                    "object": "1",
+                    "origin": null,
+                    "target": null,
+                    "time": "2014-11-26T14:09:44.064",
+                    "to": [],
+                    "verb": "tweet"
+                }
+            ],
+            "activity_count": 2,
+            "actor_count": 1,
+            "created_at": "2014-11-26T14:09:44.064000",
+            "group": "1301_2014-11-26",
+            "id": "e17c242b-7575-11e4-a6ba-0cc47a024be0",
+            "updated_at": "2014-11-26T14:09:48.259000",
+            "verb": "tweet"
+        },
+        {
+            "activities": [
+                {
+                    "actor": "1",
+                    "foreign_id": null,
+                    "id": "a164f664-70bb-11e4-8080-80003e3c2894",
+                    "object": "1",
+                    "origin": null,
+                    "target": null,
+                    "time": "2014-11-20T13:46:29.690",
+                    "to": [],
+                    "verb": "tweet"
+                },
+                {
+                    "actor": "1",
+                    "foreign_id": null,
+                    "id": "6fcc9106-70ad-11e4-8080-80003e3c2894",
+                    "object": "1",
+                    "origin": null,
+                    "target": null,
+                    "time": "2014-11-20T12:04:53.528",
+                    "to": [],
+                    "verb": "tweet"
+                },
+                {
+                    "actor": "1",
+                    "foreign_id": null,
+                    "id": "ba5bc06e-70aa-11e4-8080-80003e3c2894",
+                    "object": "1",
+                    "origin": null,
+                    "target": null,
+                    "time": "2014-11-20T11:45:30.128",
+                    "to": [],
+                    "verb": "tweet"
+                }
+            ],
+            "activity_count": 3,
+            "actor_count": 1,
+            "created_at": "2014-11-20T11:45:30.128000",
+            "group": "1301_2014-11-20",
+            "id": "a164f663-70bb-11e4-85c8-0cc47a0754ae",
+            "updated_at": "2014-11-20T13:46:29.690000",
+            "verb": "tweet"
+        },
+        {
+            "activities": [
+                {
+                    "actor": "1",
+                    "foreign_id": null,
+                    "id": "72c4b028-70ad-11e4-8080-800050f8f98f",
+                    "object": "1",
+                    "origin": null,
+                    "target": null,
+                    "time": "2014-11-20T12:04:58.510",
+                    "to": [],
+                    "verb": "watch"
+                },
+                {
+                    "actor": "1",
+                    "foreign_id": null,
+                    "id": "bd6d2cde-70aa-11e4-8080-800050f8f98f",
+                    "object": "1",
+                    "origin": null,
+                    "target": null,
+                    "time": "2014-11-20T11:45:35.275",
+                    "to": [],
+                    "verb": "watch"
+                }
+            ],
+            "activity_count": 2,
+            "actor_count": 1,
+            "created_at": "2014-11-20T11:45:35.275000",
+            "group": "1302_2014-11-20",
+            "id": "72c4b028-70ad-11e4-8815-0cc47a024be0",
+            "updated_at": "2014-11-20T12:04:58.510000",
+            "verb": "watch"
+        },
+        {
+            "activities": [
+                {
+                    "actor": "1",
+                    "foreign_id": null,
+                    "id": "e744fa54-6ff2-11e4-8080-800050f8f98f",
+                    "object": "1",
+                    "origin": null,
+                    "target": null,
+                    "time": "2014-11-19T13:49:38.078",
+                    "to": [],
+                    "verb": "watch"
+                }
+            ],
+            "activity_count": 1,
+            "actor_count": 1,
+            "created_at": "2014-11-19T13:49:38.078000",
+            "group": "1302_2014-11-19",
+            "id": "e744fa54-6ff2-11e4-8860-0cc47a0754ae",
+            "updated_at": "2014-11-19T13:49:38.078000",
+            "verb": "watch"
+        },
+        {
+            "activities": [
+                {
+                    "actor": "1",
+                    "foreign_id": null,
+                    "id": "408ee71c-6f28-11e4-8080-800050f8f98f",
+                    "object": "1",
+                    "origin": null,
+                    "target": null,
+                    "time": "2014-11-18T13:39:00.043",
+                    "to": [],
+                    "verb": "watch"
+                }
+            ],
+            "activity_count": 1,
+            "actor_count": 1,
+            "created_at": "2014-11-18T13:39:00.043000",
+            "group": "1302_2014-11-18",
+            "id": "408ec1b0-6f28-11e4-917a-0cc47a024be0",
+            "updated_at": "2014-11-18T13:39:00.043000",
+            "verb": "watch"
+        },
+        {
+            "activities": [
+                {
+                    "actor": "1",
+                    "foreign_id": null,
+                    "id": "37db8468-6f28-11e4-8080-80003e3c2894",
+                    "object": "1",
+                    "origin": null,
+                    "target": null,
+                    "time": "2014-11-18T13:38:45.446",
+                    "to": [],
+                    "verb": "tweet"
+                },
+                {
+                    "actor": "1",
+                    "foreign_id": null,
+                    "id": "3165ff1e-6f28-11e4-8080-80003e3c2894",
+                    "object": "1",
+                    "origin": null,
+                    "target": null,
+                    "time": "2014-11-18T13:38:34.610",
+                    "to": [],
+                    "verb": "tweet"
+                }
+            ],
+            "activity_count": 2,
+            "actor_count": 1,
+            "created_at": "2014-11-18T13:38:34.610000",
+            "group": "1301_2014-11-18",
+            "id": "37db6e61-6f28-11e4-b702-0cc47a024be0",
+            "updated_at": "2014-11-18T13:38:45.446000",
+            "verb": "tweet"
+        }
+    ]
+}

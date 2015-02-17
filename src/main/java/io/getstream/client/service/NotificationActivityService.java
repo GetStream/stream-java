@@ -20,7 +20,7 @@ public class NotificationActivityService<T extends BaseActivity> extends Abstrac
         super(feed, type, streamRepository);
     }
 
-    public List<T> getActivities(final FeedFilter filter, final boolean markAsRead, boolean markAsSeen)
+    public List<T> getActivities(final FeedFilter filter, final boolean markAsRead, final boolean markAsSeen)
             throws IOException, StreamClientException {
         return streamRepository.getActivities(this.feed, type, filter);
     }
