@@ -38,6 +38,9 @@ import java.util.List;
 import static io.getstream.client.utils.SignatureUtils.addSignatureToRecipients;
 import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 
+/**
+ * Actual implementation of the Stream's REST API calls.
+ */
 public class StreamRepositoryImpl implements StreamRepository {
 
     private static final Logger LOG = LoggerFactory.getLogger(StreamRepositoryImpl.class);
@@ -45,6 +48,7 @@ public class StreamRepositoryImpl implements StreamRepository {
     private static final String API_KEY = "api_key";
 
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setPropertyNamingStrategy(
+					/* will convert camelStyle to lower_case_style */
 					PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
 
     private final URI baseEndpoint;
@@ -54,6 +58,12 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	private CloseableHttpClient httpClient;
 
+	/**
+	 * Create a new {@link StreamRepository} using the given configuration {@link ClientConfiguration} and
+	 * a pre-instantiated HttpClient {@link CloseableHttpClient}.
+	 * @param streamClient
+	 * @param closeableHttpClient
+	 */
 	public StreamRepositoryImpl(ClientConfiguration streamClient, CloseableHttpClient closeableHttpClient) {
 		this.baseEndpoint = streamClient.getRegion().getEndpoint();
 		this.apiKey = streamClient.getAuthenticationHandlerConfiguration().getApiKey();

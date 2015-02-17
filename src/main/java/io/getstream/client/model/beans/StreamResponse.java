@@ -2,6 +2,10 @@ package io.getstream.client.model.beans;
 
 import java.util.List;
 
+/**
+ * Map Stream's API object response.
+ * @param <T> Type of the items included in the response.
+ */
 public class StreamResponse<T> {
 
     private String duration;

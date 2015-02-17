@@ -1,8 +1,7 @@
 package io.getstream.client.service;
 
-import io.getstream.client.model.activities.BaseActivity;
-import io.getstream.client.service.ActivityService;
 import io.getstream.client.exception.StreamClientException;
+import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.repo.StreamRepository;
@@ -10,6 +9,10 @@ import io.getstream.client.repo.StreamRepository;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Provides operations to be performed against activities.
+ * @param <T>
+ */
 public abstract class AbstractActivityService<T extends BaseActivity> implements ActivityService<T> {
     protected final Class<T> type;
     protected final BaseFeed feed;
