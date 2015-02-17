@@ -10,6 +10,10 @@ import io.getstream.client.repo.StreamRepository;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Provide methods to interact with Aggregated activities of subtype of {@link BaseActivity}.
+ * @param <T>
+ */
 public class AggregatedActivityService<T extends BaseActivity> extends AbstractActivityService<T> {
 
     public AggregatedActivityService(BaseFeed feed, Class type, StreamRepository streamRepository) {

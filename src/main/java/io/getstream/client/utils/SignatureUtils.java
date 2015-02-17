@@ -14,6 +14,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
+/**
+ * Utility class to handle signatures in Stream.io.
+ */
 public final class SignatureUtils {
 
 	private static final String HMAC_SHA1 = "HmacSHA1";

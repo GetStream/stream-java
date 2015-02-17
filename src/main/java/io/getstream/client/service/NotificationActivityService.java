@@ -10,6 +10,10 @@ import io.getstream.client.repo.StreamRepository;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Provide methods to interact with Notification activities of subtype of {@link BaseActivity}.
+ * @param <T>
+ */
 public class NotificationActivityService<T extends BaseActivity> extends AbstractActivityService<T> {
 
     public NotificationActivityService(BaseFeed feed, Class type, StreamRepository streamRepository) {
