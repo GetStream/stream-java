@@ -1,5 +1,6 @@
 package io.getstream.client.repo;
 
+import io.getstream.client.AggregatedActivity;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.feeds.BaseFeed;
@@ -63,7 +64,7 @@ public interface StreamRepository {
 
 	/**
 	 * Lists the activities in the given feed.
-	 * @param feed
+	 * @param feed Feed which the activities belong to
 	 * @param type Type of the activity. Must be a subtype of {@link BaseActivity}
 	 * @param filter Filter out the activities. Limited to 25 items by default.
 	 * @param <T>
@@ -75,7 +76,7 @@ public interface StreamRepository {
 
 	/**
 	 * Add a new activity to the given feed.
-	 * @param feed
+	 * @param feed Feed which the activities belong to
 	 * @param activity Activity to add.
 	 * @param <T>
 	 * @return
@@ -83,4 +84,16 @@ public interface StreamRepository {
 	 * @throws IOException
 	 */
 	<T extends BaseActivity> T addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException;
+
+	/**
+	 * List aggregated activities.
+	 * @param feed Feed which the activities belong to
+	 * @param type Type of the activity. Must be a subtype of {@link BaseActivity}
+	 * @param filter Filter out the activities. Limited to 25 items by default.
+	 * @param <T>
+	 * @return
+	 * @throws IOException
+	 * @throws StreamClientException
+	 */
+	<T extends BaseActivity> List<AggregatedActivity<T>> getAggregatedActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
 }

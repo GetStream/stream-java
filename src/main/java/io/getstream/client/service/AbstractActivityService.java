@@ -14,7 +14,7 @@ import java.util.List;
  * @param <T>
  */
 public abstract class AbstractActivityService<T extends BaseActivity> implements ActivityService<T> {
-    protected final Class<T> type;
+    protected Class<T> type;
     protected final BaseFeed feed;
     protected final StreamRepository streamRepository;
 
@@ -24,7 +24,12 @@ public abstract class AbstractActivityService<T extends BaseActivity> implements
         this.streamRepository = streamRepository;
     }
 
-    @Override
+	public AbstractActivityService(BaseFeed feed, StreamRepository streamRepository) {
+		this.feed = feed;
+		this.streamRepository = streamRepository;
+	}
+
+	@Override
     public T addActivity(T activity) throws IOException, StreamClientException {
         return streamRepository.addActivity(this.feed, activity);
     }

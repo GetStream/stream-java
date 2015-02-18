@@ -10,6 +10,7 @@ import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
+import io.getstream.client.service.AggregatedActivityService;
 import io.getstream.client.service.FlatActivityService;
 import io.getstream.client.service.NotificationActivityService;
 import org.junit.BeforeClass;
@@ -154,7 +155,7 @@ public class IntegrationTest {
 	}
 
 	@Test
-	public void shouldGetActivitiesFromAggregatedFeed() throws IOException, StreamClientException {
+	public void shouldGetActivitiesFromNotificationFeed() throws IOException, StreamClientException {
 		StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
 
@@ -164,6 +165,18 @@ public class IntegrationTest {
         notificationActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(),
                                   null,
                                   new MarkedActivity.Builder().withActivityId("user:1").withActivityId("user:2").build());
+		streamClient.shutdown();
+	}
+
+	@Test
+	public void shouldGetActivitiesFromAggregatedFeed() throws IOException, StreamClientException {
+		StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
+				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+
+		Feed feed = streamClient.newFeed("user", "2");
+		AggregatedActivityService<SimpleActivity> aggregatedActivityService =
+				feed.newAggregatedActivityService(SimpleActivity.class);
+		aggregatedActivityService.getActivities();
 		streamClient.shutdown();
 	}
 

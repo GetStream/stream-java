@@ -1,11 +1,11 @@
 package io.getstream.client.model.feeds;
 
-import io.getstream.client.service.AggregatedActivityService;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
-import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.model.beans.FeedFollow;
+import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.repo.StreamRepository;
+import io.getstream.client.service.AggregatedActivityService;
 import io.getstream.client.service.FlatActivityService;
 import io.getstream.client.service.NotificationActivityService;
 import io.getstream.client.service.UserActivityService;

@@ -106,15 +106,15 @@ public interface Feed {
 	 * @param <T>
 	 * @return
 	 */
-    <T extends BaseActivity> AggregatedActivityService<T> newAggregatedActivityService(Class<T> clazz);
+    <T extends BaseActivity> FlatActivityService<T> newFlatActivityService(Class<T> clazz);
 
 	/**
 	 * Get mediator service to handle aggregated activities.
-	 * @param clazz Subtype of {@link BaseActivity} representing the activity type to handle.
-	 * @param <T>
+	 *
+	 * @param clazz Subtype of {@link io.getstream.client.model.activities.BaseActivity} representing the activity type to handle.
 	 * @return
 	 */
-    <T extends BaseActivity> FlatActivityService<T> newFlatActivityService(Class<T> clazz);
+	<T extends BaseActivity> AggregatedActivityService<T> newAggregatedActivityService(Class<T> clazz);
 
 	/**
 	 * Get mediator service to handle aggregated activities.

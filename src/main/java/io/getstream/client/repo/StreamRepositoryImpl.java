@@ -1,8 +1,10 @@
 package io.getstream.client.repo;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import io.getstream.client.AggregatedActivity;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.handlers.StreamExceptionHandler;
@@ -95,11 +97,23 @@ public class StreamRepositoryImpl implements StreamRepository {
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
 				.queryParam(API_KEY, apiKey)).build());
 		LOG.debug("Invoking url: '{}'", request.getURI());
+		return fetchActivities(addAuthentication(feed, request), OBJECT_MAPPER.getTypeFactory().constructParametricType(StreamResponse.class, type));
+	}
 
-		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
+	@Override
+	public <T extends BaseActivity> List<AggregatedActivity<T>> getAggregatedActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
+		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
+				.queryParam(API_KEY, apiKey)).build());
+		LOG.debug("Invoking url: '{}'", request.getURI());
+		return fetchActivities(addAuthentication(feed, request), OBJECT_MAPPER.getTypeFactory().constructParametricType(StreamResponse.class,
+				AggregatedActivity.class, type));
+	}
+
+	public <T> List<T> fetchActivities(HttpRequestBase request, JavaType javaType) throws IOException, StreamClientException {
+		try (CloseableHttpResponse response = httpClient.execute(request, HttpClientContext.create())) {
 			handleResponseCode(response);
-			StreamResponse<T> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
-					OBJECT_MAPPER.getTypeFactory().constructParametricType(StreamResponse.class, type));
+			StreamResponse<T> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(), javaType);
 			return streamResponse.getResults();
 		}
 	}
