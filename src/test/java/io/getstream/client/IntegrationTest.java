@@ -159,12 +159,10 @@ public class IntegrationTest {
 		StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
 
-        Feed feed = streamClient.newFeed("user", "2");
+        Feed feed = streamClient.newFeed("notification", "2");
         NotificationActivityService<SimpleActivity> notificationActivityService =
                 feed.newNotificationActivityService(SimpleActivity.class);
-        notificationActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(),
-                                  null,
-                                  new MarkedActivity.Builder().withActivityId("user:1").withActivityId("user:2").build());
+        notificationActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(), true, true);
 		streamClient.shutdown();
 	}
 
@@ -173,10 +171,10 @@ public class IntegrationTest {
 		StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
 
-		Feed feed = streamClient.newFeed("user", "2");
+		Feed feed = streamClient.newFeed("aggregated", "2");
 		AggregatedActivityService<SimpleActivity> aggregatedActivityService =
 				feed.newAggregatedActivityService(SimpleActivity.class);
-		aggregatedActivityService.getActivities();
+		aggregatedActivityService.getAggregatedActivities();
 		streamClient.shutdown();
 	}
 

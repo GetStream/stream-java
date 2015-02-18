@@ -1,6 +1,6 @@
 package io.getstream.client.service;
 
-import io.getstream.client.AggregatedActivity;
+import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.feeds.BaseFeed;
@@ -20,7 +20,7 @@ public class AggregatedActivityService<T extends BaseActivity> extends AbstractA
 		super(feed, type, streamRepository);
     }
 
-    public List<AggregatedActivity<T>> getActivities(final boolean markAsRead) throws IOException, StreamClientException {
+    public List<AggregatedActivity<T>> getAggregatedActivities() throws IOException, StreamClientException {
         return streamRepository.getAggregatedActivities(this.feed, this.type, new FeedFilter.Builder().build());
     }
 }

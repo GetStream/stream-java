@@ -1,6 +1,6 @@
 package io.getstream.client.repo;
 
-import io.getstream.client.AggregatedActivity;
+import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.feeds.BaseFeed;

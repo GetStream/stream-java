@@ -1,4 +1,4 @@
-package io.getstream.client;
+package io.getstream.client.model.activities;
 
 import io.getstream.client.model.activities.BaseActivity;
 

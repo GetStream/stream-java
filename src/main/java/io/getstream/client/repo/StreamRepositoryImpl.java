@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import io.getstream.client.AggregatedActivity;
+import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.handlers.StreamExceptionHandler;
@@ -103,11 +103,11 @@ public class StreamRepositoryImpl implements StreamRepository {
 	@Override
 	public <T extends BaseActivity> List<AggregatedActivity<T>> getAggregatedActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
 		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
-				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
-				.queryParam(API_KEY, apiKey)).build());
+                                                           .path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
+                                                           .queryParam(API_KEY, apiKey)).build());
 		LOG.debug("Invoking url: '{}'", request.getURI());
 		return fetchActivities(addAuthentication(feed, request), OBJECT_MAPPER.getTypeFactory().constructParametricType(StreamResponse.class,
-				AggregatedActivity.class, type));
+				OBJECT_MAPPER.getTypeFactory().constructParametricType(AggregatedActivity.class, type)));
 	}
 
 	public <T> List<T> fetchActivities(HttpRequestBase request, JavaType javaType) throws IOException, StreamClientException {
