@@ -1,5 +1,6 @@
 package io.getstream.client.model.beans;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
@@ -19,6 +20,17 @@ public class MarkedActivity {
     public List<String> getActivities() {
         return this.activityIds;
     }
+
+	public boolean hasActivities() {
+		if (activityIds == null) {
+			return false;
+		}
+		return activityIds.isEmpty();
+	}
+
+	public String joinActivities() {
+		return Joiner.on(",").join(this.getActivities());
+	}
 
 	/**
 	 * Provide an easy way to build an immutable list of activity ids.

@@ -136,6 +136,9 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	@Override
 	public <T extends BaseActivity> List<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, MarkedActivity markAsRead, MarkedActivity markAsSeen) throws IOException, StreamClientException {
+		if (null != markAsRead && markAsRead.hasActivities()) {
+			
+		}
 		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
 				.queryParam(API_KEY, apiKey)).build());
@@ -165,7 +168,6 @@ public class StreamRepositoryImpl implements StreamRepository {
         HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
                                               .path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")
                                               .queryParam(API_KEY, apiKey).build());
-
         request.setEntity(new UrlEncodedFormEntity(
 				Collections.singletonList(new BasicNameValuePair("target", targetFeedId))));
 		fireAndForget(addAuthentication(feed, request));
