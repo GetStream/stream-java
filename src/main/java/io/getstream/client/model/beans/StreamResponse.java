@@ -14,6 +14,10 @@ public class StreamResponse<T> {
 
 	private String next;
 
+	private long unread;
+
+	private long unseen;
+
     public List<T> getResults() {
         return results;
     }
@@ -24,5 +28,13 @@ public class StreamResponse<T> {
 
 	public String getNext() {
 		return next;
+	}
+
+	public long getUnread() {
+		return unread;
+	}
+
+	public long getUnseen() {
+		return unseen;
 	}
 }

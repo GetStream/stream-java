@@ -7,7 +7,6 @@ import io.getstream.client.exception.InvalidOrMissingInputException;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.FeedFollow;
-import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.service.AggregatedActivityService;
@@ -162,7 +161,7 @@ public class IntegrationTest {
         Feed feed = streamClient.newFeed("notification", "2");
         NotificationActivityService<SimpleActivity> notificationActivityService =
                 feed.newNotificationActivityService(SimpleActivity.class);
-        notificationActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(), true, true);
+        notificationActivityService.getNotificationActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(), true, true);
 		streamClient.shutdown();
 	}
 

@@ -23,4 +23,8 @@ public class AggregatedActivityService<T extends BaseActivity> extends AbstractA
     public List<AggregatedActivity<T>> getAggregatedActivities() throws IOException, StreamClientException {
         return streamRepository.getAggregatedActivities(this.feed, this.type, new FeedFilter.Builder().build());
     }
+
+	public List<AggregatedActivity<T>> getAggregatedActivities(final FeedFilter filter) throws IOException, StreamClientException {
+		return streamRepository.getAggregatedActivities(this.feed, this.type, filter);
+	}
 }

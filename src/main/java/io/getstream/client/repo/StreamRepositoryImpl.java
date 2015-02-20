@@ -126,7 +126,9 @@ public class StreamRepositoryImpl implements StreamRepository {
 	public <T extends BaseActivity> List<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, boolean markAsRead, boolean markAsSeen) throws IOException, StreamClientException {
 		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
-				.queryParam(API_KEY, apiKey)).build());
+				.queryParam(API_KEY, apiKey)
+				.queryParam("mark_read", Boolean.toString(markAsRead))
+				.queryParam("mark_seen", Boolean.toString(markAsSeen))).build());
 		LOG.debug("Invoking url: '{}'", request.getURI());
 		return fetchActivities(addAuthentication(feed, request), OBJECT_MAPPER.getTypeFactory().constructParametricType(StreamResponse.class,
 				OBJECT_MAPPER.getTypeFactory().constructParametricType(NotificationActivity.class, type)));
