@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.handlers.StreamExceptionHandler;
+import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
+import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.beans.FeedFollow;
+import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
@@ -110,7 +112,37 @@ public class StreamRepositoryImpl implements StreamRepository {
 				OBJECT_MAPPER.getTypeFactory().constructParametricType(AggregatedActivity.class, type)));
 	}
 
-	public <T> List<T> fetchActivities(HttpRequestBase request, JavaType javaType) throws IOException, StreamClientException {
+	@Override
+	public <T extends BaseActivity> List<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
+		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
+				.queryParam(API_KEY, apiKey)).build());
+		LOG.debug("Invoking url: '{}'", request.getURI());
+		return fetchActivities(addAuthentication(feed, request), OBJECT_MAPPER.getTypeFactory().constructParametricType(StreamResponse.class,
+				OBJECT_MAPPER.getTypeFactory().constructParametricType(NotificationActivity.class, type)));
+	}
+
+	@Override
+	public <T extends BaseActivity> List<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, boolean markAsRead, boolean markAsSeen) throws IOException, StreamClientException {
+		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
+				.queryParam(API_KEY, apiKey)).build());
+		LOG.debug("Invoking url: '{}'", request.getURI());
+		return fetchActivities(addAuthentication(feed, request), OBJECT_MAPPER.getTypeFactory().constructParametricType(StreamResponse.class,
+				OBJECT_MAPPER.getTypeFactory().constructParametricType(NotificationActivity.class, type)));
+	}
+
+	@Override
+	public <T extends BaseActivity> List<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, MarkedActivity markAsRead, MarkedActivity markAsSeen) throws IOException, StreamClientException {
+		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
+				.queryParam(API_KEY, apiKey)).build());
+		LOG.debug("Invoking url: '{}'", request.getURI());
+		return fetchActivities(addAuthentication(feed, request), OBJECT_MAPPER.getTypeFactory().constructParametricType(StreamResponse.class,
+				OBJECT_MAPPER.getTypeFactory().constructParametricType(NotificationActivity.class, type)));
+	}
+
+	private <T> List<T> fetchActivities(HttpRequestBase request, JavaType javaType) throws IOException, StreamClientException {
 		try (CloseableHttpResponse response = httpClient.execute(request, HttpClientContext.create())) {
 			handleResponseCode(response);
 			StreamResponse<T> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(), javaType);

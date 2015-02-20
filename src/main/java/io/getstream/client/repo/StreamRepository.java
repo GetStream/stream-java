@@ -3,6 +3,8 @@ package io.getstream.client.repo;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
+import io.getstream.client.model.activities.NotificationActivity;
+import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.model.beans.FeedFollow;
@@ -96,4 +98,42 @@ public interface StreamRepository {
 	 * @throws StreamClientException
 	 */
 	<T extends BaseActivity> List<AggregatedActivity<T>> getAggregatedActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
+
+	/**
+	 * List notification activities.
+	 * @param feed
+	 * @param type
+	 * @param filter Filter out the activities.
+	 * @param <T>
+	 * @return
+	 * @throws IOException
+	 * @throws StreamClientException
+	 */
+	<T extends BaseActivity> List<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
+
+	/**
+	 * List notifications marking the activities as read and/or as seen.
+	 * @param feed
+	 * @param type
+	 * @param filter Filter the activities.
+	 * @param markAsRead Mark all the activities as read.
+	 * @param markAsSeen Mark all the activities as seen.
+	 * @param <T>
+	 * @return
+	 */
+	<T extends BaseActivity> List<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, boolean markAsRead, boolean markAsSeen) throws IOException, StreamClientException;
+
+	/**
+	 * List notifications marking some of them as read and/or as seen.
+	 * An immutable list of activities to be marked as read and/or as seen can be
+	 * built using the {@link MarkedActivity} builder.
+	 * @param feed
+	 * @param type
+	 * @param filter Filter the activities.
+	 * @param markAsRead List of activities to be marked as read.
+	 * @param markAsSeen List of activities to be marked as seen.
+	 * @param <T>
+	 * @return
+	 */
+	<T extends BaseActivity> List<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, MarkedActivity markAsRead, MarkedActivity markAsSeen) throws IOException, StreamClientException;
 }
