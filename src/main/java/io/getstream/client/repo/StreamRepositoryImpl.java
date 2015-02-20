@@ -136,13 +136,17 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	@Override
 	public <T extends BaseActivity> List<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, MarkedActivity markAsRead, MarkedActivity markAsSeen) throws IOException, StreamClientException {
-		if (null != markAsRead && markAsRead.hasActivities()) {
-			
-		}
-		HttpGet request = new HttpGet(filter.apply(UriBuilder.fromEndpoint(baseEndpoint)
-				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
-				.queryParam(API_KEY, apiKey)).build());
-		LOG.debug("Invoking url: '{}'", request.getURI());
+		UriBuilder baseUri = UriBuilder.fromEndpoint(baseEndpoint)
+                                        .path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
+                                        .queryParam(API_KEY, apiKey);
+        if (null != markAsRead && markAsRead.hasActivities()) {
+            baseUri.queryParam("mark_read", markAsRead.joinActivities());
+        }
+        if (null != markAsSeen && markAsSeen.hasActivities()) {
+            baseUri.queryParam("mark_seen", markAsSeen.joinActivities());
+        }
+        HttpGet request = new HttpGet(filter.apply(baseUri).build());
+        LOG.debug("Invoking url: '{}'", request.getURI());
 		return fetchActivities(addAuthentication(feed, request), OBJECT_MAPPER.getTypeFactory().constructParametricType(StreamResponse.class,
 				OBJECT_MAPPER.getTypeFactory().constructParametricType(NotificationActivity.class, type)));
 	}
