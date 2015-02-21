@@ -5,13 +5,15 @@ import io.getstream.client.config.StreamRegion;
 import io.getstream.client.exception.AuthenticationFailedException;
 import io.getstream.client.exception.InvalidOrMissingInputException;
 import io.getstream.client.exception.StreamClientException;
+import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.FeedFollow;
+import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
-import io.getstream.client.service.AggregatedActivityService;
-import io.getstream.client.service.FlatActivityService;
-import io.getstream.client.service.NotificationActivityService;
+import io.getstream.client.service.AggregatedActivityServiceImpl;
+import io.getstream.client.service.FlatActivityServiceImpl;
+import io.getstream.client.service.NotificationActivityServiceImpl;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -97,8 +99,8 @@ public class IntegrationTest {
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
 
         Feed feed = streamClient.newFeed("user", "2");
-        FlatActivityService<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
-		for (SimpleActivity activity : flatActivityService.getActivities()) {
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+		for (SimpleActivity activity : flatActivityService.getActivities().getResults()) {
 			assertThat(activity.getId(), containsString("11e4-8080"));
 		}
 		streamClient.shutdown();
@@ -110,7 +112,7 @@ public class IntegrationTest {
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
 
         Feed feed = streamClient.newFeed("user", "2");
-        FlatActivityService<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
 		SimpleActivity activity = new SimpleActivity();
 		activity.setActor("actor");
 		activity.setObject("object");
@@ -127,7 +129,7 @@ public class IntegrationTest {
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
 
         Feed feed = streamClient.newFeed("user", "2");
-        FlatActivityService<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
         flatActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
 		streamClient.shutdown();
 	}
@@ -138,7 +140,7 @@ public class IntegrationTest {
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
 
         Feed feed = streamClient.newFeed("foo", "2");
-        FlatActivityService<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
         flatActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
 		streamClient.shutdown();
 	}
@@ -159,10 +161,11 @@ public class IntegrationTest {
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
 
         Feed feed = streamClient.newFeed("notification", "2");
-        NotificationActivityService<SimpleActivity> notificationActivityService =
+        NotificationActivityServiceImpl<SimpleActivity> notificationActivityService =
                 feed.newNotificationActivityService(SimpleActivity.class);
-        notificationActivityService.getNotificationActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(), true, true);
-		streamClient.shutdown();
+        StreamResponse<NotificationActivity<SimpleActivity>> response =
+                notificationActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(), true, true);
+        streamClient.shutdown();
 	}
 
 	@Test
@@ -171,9 +174,9 @@ public class IntegrationTest {
 				"245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
 
 		Feed feed = streamClient.newFeed("aggregated", "2");
-		AggregatedActivityService<SimpleActivity> aggregatedActivityService =
+		AggregatedActivityServiceImpl<SimpleActivity> aggregatedActivityService =
 				feed.newAggregatedActivityService(SimpleActivity.class);
-		aggregatedActivityService.getAggregatedActivities();
+		aggregatedActivityService.getActivities();
 		streamClient.shutdown();
 	}
 

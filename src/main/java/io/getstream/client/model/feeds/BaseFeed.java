@@ -5,10 +5,10 @@ import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.repo.StreamRepository;
-import io.getstream.client.service.AggregatedActivityService;
-import io.getstream.client.service.FlatActivityService;
-import io.getstream.client.service.NotificationActivityService;
-import io.getstream.client.service.UserActivityService;
+import io.getstream.client.service.AggregatedActivityServiceImpl;
+import io.getstream.client.service.FlatActivityServiceImpl;
+import io.getstream.client.service.NotificationActivityServiceImpl;
+import io.getstream.client.service.UserActivityServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
@@ -94,23 +94,23 @@ public class BaseFeed implements Feed {
 	}
 
 	@Override
-	public <T extends BaseActivity> AggregatedActivityService<T> newAggregatedActivityService(Class<T> clazz) {
-        return new AggregatedActivityService<>(this, clazz, streamRepository);
+	public <T extends BaseActivity> AggregatedActivityServiceImpl<T> newAggregatedActivityService(Class<T> clazz) {
+        return new AggregatedActivityServiceImpl<>(this, clazz, streamRepository);
     }
 
 	@Override
-    public <T extends BaseActivity> FlatActivityService<T> newFlatActivityService(Class<T> clazz) {
-        return new FlatActivityService<>(this, clazz, streamRepository);
+    public <T extends BaseActivity> FlatActivityServiceImpl<T> newFlatActivityService(Class<T> clazz) {
+        return new FlatActivityServiceImpl<>(this, clazz, streamRepository);
     }
 
 	@Override
-    public <T extends BaseActivity> UserActivityService<T> newUserActivityService(Class<T> clazz) {
-        return new UserActivityService<>(this, clazz, streamRepository);
+    public <T extends BaseActivity> UserActivityServiceImpl<T> newUserActivityService(Class<T> clazz) {
+        return new UserActivityServiceImpl<>(this, clazz, streamRepository);
     }
 
 	@Override
-    public <T extends BaseActivity> NotificationActivityService<T> newNotificationActivityService(Class<T> clazz) {
-        return new NotificationActivityService<>(this, clazz, streamRepository);
+    public <T extends BaseActivity> NotificationActivityServiceImpl<T> newNotificationActivityService(Class<T> clazz) {
+        return new NotificationActivityServiceImpl<>(this, clazz, streamRepository);
     }
 
     public String getFeedSlug() {

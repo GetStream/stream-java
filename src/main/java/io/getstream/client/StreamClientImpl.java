@@ -5,65 +5,32 @@ import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.model.feeds.BaseFeedFactory;
 import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.feeds.FeedFactory;
+import io.getstream.client.repo.StreamRepoFactoryImpl;
 import io.getstream.client.repo.StreamRepository;
-import io.getstream.client.repo.StreamRepositoryImpl;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class StreamClientImpl implements StreamClient {
 
-    private final AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
-
+    private FeedFactory feedFactory;
     private final StreamRepository streamRepository;
 
-	private final CloseableHttpClient httpClient;
-
-    private FeedFactory feedFactory;
-
-	public StreamClientImpl(final ClientConfiguration clientConfiguration, final String key, final String secretKey) {
+    public StreamClientImpl(final ClientConfiguration clientConfiguration, final String key, final String secretKey) {
         checkNotNull(clientConfiguration, "Client configuration cannot be null.");
-        this.authenticationHandlerConfiguration = new AuthenticationHandlerConfiguration();
-        this.authenticationHandlerConfiguration.setApiKey(checkNotNull(key, "API key cannot be null."));
-        this.authenticationHandlerConfiguration.setSecretKey(checkNotNull(secretKey, "API secret key cannot be null."));
+        AuthenticationHandlerConfiguration authenticationHandlerConfiguration = new AuthenticationHandlerConfiguration();
+        authenticationHandlerConfiguration.setApiKey(checkNotNull(key, "API key cannot be null."));
+        authenticationHandlerConfiguration.setSecretKey(checkNotNull(secretKey, "API secret key cannot be null."));
         clientConfiguration.setAuthenticationHandlerConfiguration(authenticationHandlerConfiguration);
-		this.httpClient = initClient(clientConfiguration);
-		this.streamRepository = new StreamRepositoryImpl(clientConfiguration, httpClient);
-        this.feedFactory = new BaseFeedFactory(streamRepository);
+		this.streamRepository = new StreamRepoFactoryImpl().newInstance(clientConfiguration, authenticationHandlerConfiguration);
+        this.feedFactory = new BaseFeedFactory(this.streamRepository);
     }
-
-	private CloseableHttpClient initClient(final ClientConfiguration config) {
-		PoolingHttpClientConnectionManager connectionManager = new PoolingHttpClientConnectionManager(
-				config.getTimeToLive(), TimeUnit.MILLISECONDS);
-		connectionManager.setDefaultMaxPerRoute(config.getMaxConnectionsPerRoute());
-		connectionManager.setMaxTotal(config.getMaxConnections());
-		return HttpClients.custom()
-				.setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
-				.setUserAgent("Apache-HttpClient/io.getstream java client")
-				.setDefaultRequestConfig(RequestConfig.custom()
-						.setConnectTimeout(config.getConnectionTimeout())
-						.setSocketTimeout(config.getTimeout()).build())
-				.setMaxConnPerRoute(config.getMaxConnectionsPerRoute())
-				.setMaxConnTotal(config.getMaxConnections())
-				.setConnectionManager(connectionManager).build();
-	}
 
     @Override
 	public Feed newFeed(final String feedSlug, final String id) {
         return this.feedFactory.createFeed(feedSlug, id);
     }
-
-	@Override
-	public void shutdown() throws IOException {
-		this.httpClient.close();
-	}
 
     protected FeedFactory getFeedFactory() {
         return feedFactory;
@@ -71,5 +38,10 @@ public class StreamClientImpl implements StreamClient {
 
     protected void setFeedFactory(FeedFactory feedFactory) {
         this.feedFactory = feedFactory;
+    }
+
+    @Override
+    public void shutdown() throws IOException {
+        this.streamRepository.shutdown();
     }
 }

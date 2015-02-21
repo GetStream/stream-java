@@ -1,13 +1,14 @@
 package io.getstream.client.repo;
 
-import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.exception.StreamClientException;
+import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
+import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.MarkedActivity;
+import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
-import io.getstream.client.model.beans.FeedFollow;
 
 import java.io.IOException;
 import java.util.List;
@@ -74,7 +75,7 @@ public interface StreamRepository {
 	 * @throws IOException
 	 * @throws StreamClientException
 	 */
-	<T extends BaseActivity> List<T> getActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
+	<T extends BaseActivity> StreamResponse<T> getActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
 
 	/**
 	 * Add a new activity to the given feed.
@@ -97,7 +98,7 @@ public interface StreamRepository {
 	 * @throws IOException
 	 * @throws StreamClientException
 	 */
-	<T extends BaseActivity> List<AggregatedActivity<T>> getAggregatedActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
+	<T extends BaseActivity> StreamResponse<AggregatedActivity<T>> getAggregatedActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
 
 	/**
 	 * List notification activities.
@@ -109,7 +110,7 @@ public interface StreamRepository {
 	 * @throws IOException
 	 * @throws StreamClientException
 	 */
-	<T extends BaseActivity> List<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
+	<T extends BaseActivity> StreamResponse<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
 
 	/**
 	 * List notifications marking the activities as read and/or as seen.
@@ -121,7 +122,7 @@ public interface StreamRepository {
 	 * @param <T>
 	 * @return
 	 */
-	<T extends BaseActivity> List<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, boolean markAsRead, boolean markAsSeen) throws IOException, StreamClientException;
+	<T extends BaseActivity> StreamResponse<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, boolean markAsRead, boolean markAsSeen) throws IOException, StreamClientException;
 
 	/**
 	 * List notifications marking some of them as read and/or as seen.
@@ -135,5 +136,11 @@ public interface StreamRepository {
 	 * @param <T>
 	 * @return
 	 */
-	<T extends BaseActivity> List<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, MarkedActivity markAsRead, MarkedActivity markAsSeen) throws IOException, StreamClientException;
+	<T extends BaseActivity> StreamResponse<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, MarkedActivity markAsRead, MarkedActivity markAsSeen) throws IOException, StreamClientException;
+
+    /**
+     * Send the shutdown signal to the client.
+     * @throws IOException
+     */
+    void shutdown() throws IOException;
 }

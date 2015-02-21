@@ -4,10 +4,10 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.filters.FeedFilter;
-import io.getstream.client.service.AggregatedActivityService;
-import io.getstream.client.service.FlatActivityService;
-import io.getstream.client.service.NotificationActivityService;
-import io.getstream.client.service.UserActivityService;
+import io.getstream.client.service.AggregatedActivityServiceImpl;
+import io.getstream.client.service.FlatActivityServiceImpl;
+import io.getstream.client.service.NotificationActivityServiceImpl;
+import io.getstream.client.service.UserActivityServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
@@ -106,7 +106,7 @@ public interface Feed {
 	 * @param <T>
 	 * @return
 	 */
-    <T extends BaseActivity> FlatActivityService<T> newFlatActivityService(Class<T> clazz);
+    <T extends BaseActivity> FlatActivityServiceImpl<T> newFlatActivityService(Class<T> clazz);
 
 	/**
 	 * Get mediator service to handle aggregated activities.
@@ -114,7 +114,7 @@ public interface Feed {
 	 * @param clazz Subtype of {@link io.getstream.client.model.activities.BaseActivity} representing the activity type to handle.
 	 * @return
 	 */
-	<T extends BaseActivity> AggregatedActivityService<T> newAggregatedActivityService(Class<T> clazz);
+	<T extends BaseActivity> AggregatedActivityServiceImpl<T> newAggregatedActivityService(Class<T> clazz);
 
 	/**
 	 * Get mediator service to handle aggregated activities.
@@ -122,7 +122,7 @@ public interface Feed {
 	 * @param <T>
 	 * @return
 	 */
-    <T extends BaseActivity> UserActivityService<T> newUserActivityService(Class<T> clazz);
+    <T extends BaseActivity> UserActivityServiceImpl<T> newUserActivityService(Class<T> clazz);
 
 	/**
 	 * Get mediator service to handle aggregated activities.
@@ -130,5 +130,5 @@ public interface Feed {
 	 * @param <T>
 	 * @return
 	 */
-    <T extends BaseActivity> NotificationActivityService<T> newNotificationActivityService(Class<T> clazz);
+    <T extends BaseActivity> NotificationActivityServiceImpl<T> newNotificationActivityService(Class<T> clazz);
 }

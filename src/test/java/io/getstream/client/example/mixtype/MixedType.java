@@ -8,7 +8,7 @@ import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.feeds.Feed;
-import io.getstream.client.service.FlatActivityService;
+import io.getstream.client.service.FlatActivityServiceImpl;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -37,7 +37,7 @@ public class MixedType {
 		 */
 		Feed feed = streamClient.newFeed("user", "9");
 
-		FlatActivityService<Match> matchActivityService = feed.newFlatActivityService(Match.class);
+		FlatActivityServiceImpl<Match> matchActivityService = feed.newFlatActivityService(Match.class);
 
 		VolleyballMatch volley = new VolleyballMatch();
 		volley.setActor("Me");
@@ -64,7 +64,7 @@ public class MixedType {
 		/**
 		 * Try to retrieve a mixed type of activities.
 		 */
-		for (Match match : matchActivityService.getActivities()) {
+		for (Match match : matchActivityService.getActivities().getResults()) {
 			System.out.println(match);
 			feed.deleteActivity(match.getId());
 		}

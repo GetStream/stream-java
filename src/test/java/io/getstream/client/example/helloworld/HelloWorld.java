@@ -6,7 +6,7 @@ import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.feeds.Feed;
-import io.getstream.client.service.FlatActivityService;
+import io.getstream.client.service.FlatActivityServiceImpl;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -42,7 +42,7 @@ public class HelloWorld {
 		/**
 		 * Create a service to get/add HelloWorldActivities over a FlatFeed.
 		 */
-		FlatActivityService<HelloWorldActivity> flatActivityService = feed.newFlatActivityService(HelloWorldActivity.class);
+		FlatActivityServiceImpl<HelloWorldActivity> flatActivityService = feed.newFlatActivityService(HelloWorldActivity.class);
 		flatActivityService.addActivity(helloWorld);
 
 		/**
