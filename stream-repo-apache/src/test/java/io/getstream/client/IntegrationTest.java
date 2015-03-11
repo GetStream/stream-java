@@ -29,6 +29,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IntegrationTest {
 
+    public static final String API_KEY = "nfq26m3qgfyp";
+    public static final String API_SECRET = "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2";
+
     @BeforeClass
     public static void setLog() {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
@@ -36,31 +39,25 @@ public class IntegrationTest {
         System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "DEBUG");
     }
 
-    @Test
-    public void shouldGetFollowers() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
-        Feed feed = streamClient.newFeed("user", "2");
-        MatcherAssert.assertThat(feed.getFollowers().size(), is(2));
-        streamClient.shutdown();
+    public String getTestUserId(String userId) {
+        long millis = System.currentTimeMillis();
+        return String.format("%s_%d", userId, millis);
     }
 
-    @Ignore
-    public void shouldGetFollowersFromDifferentRegion() throws IOException, StreamClientException {
-        ClientConfiguration clientConfiguration = new ClientConfiguration();
-        clientConfiguration.setRegion(StreamRegion.US_WEST);
-        StreamClient streamClient = new StreamClientImpl(clientConfiguration, "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
-
-        Feed feed = streamClient.newFeed("user", "2");
+    @Test
+    public void shouldGetFollowers() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+        String userId = this.getTestUserId("2");
+        Feed feed = streamClient.newFeed("user", userId);
         MatcherAssert.assertThat(feed.getFollowers().size(), is(2));
         streamClient.shutdown();
     }
 
     @Test
     public void shouldGetFollowing() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
 
         Feed feed = streamClient.newFeed("user", "2");
         List<FeedFollow> following = feed.getFollowing();
@@ -70,8 +67,8 @@ public class IntegrationTest {
 
     @Test
     public void shouldFollow() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
         Feed feed = streamClient.newFeed("user", "2");
         feed.follow("user:4");
         streamClient.shutdown();
@@ -79,8 +76,8 @@ public class IntegrationTest {
 
     @Test
     public void shouldUnfollow() throws IOException, StreamClientException, InterruptedException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
 
         Feed feed = streamClient.newFeed("user", "2");
 
@@ -96,8 +93,8 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetActivities() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
 
         Feed feed = streamClient.newFeed("user", "2");
         FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
@@ -109,8 +106,8 @@ public class IntegrationTest {
 
     @Test
     public void shouldAddActivity() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
 
         Feed feed = streamClient.newFeed("user", "2");
         FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
@@ -126,8 +123,8 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetActivitiesWithFilter() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
 
         Feed feed = streamClient.newFeed("user", "2");
         FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
@@ -137,8 +134,8 @@ public class IntegrationTest {
 
     @Test(expected = InvalidOrMissingInputException.class)
     public void shouldGetInvalidOrMissingInputException() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
 
         Feed feed = streamClient.newFeed("foo", "2");
         FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
@@ -148,7 +145,7 @@ public class IntegrationTest {
 
     @Test(expected = AuthenticationFailedException.class)
     public void shouldGetAuthenticationFailed() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                                                                 "foo");
 
         Feed feed = streamClient.newFeed("user", "2");
@@ -158,8 +155,8 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetActivitiesFromNotificationFeed() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
 
         Feed feed = streamClient.newFeed("notification", "2");
         NotificationActivityServiceImpl<SimpleActivity> notificationActivityService =
@@ -171,8 +168,8 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetActivitiesFromAggregatedFeed() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
 
         Feed feed = streamClient.newFeed("aggregated", "2");
         AggregatedActivityServiceImpl<SimpleActivity> aggregatedActivityService =
@@ -183,8 +180,8 @@ public class IntegrationTest {
 
     @Test
     public void shouldDeleteActivity() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
 
         Feed feed = streamClient.newFeed("user", "9");
         feed.deleteActivities(Arrays.asList("6d95a136-b2af-11e4-8080-80003ad855af",
