@@ -31,34 +31,45 @@
 package client.repo.utils;
 
 import io.getstream.client.exception.UriBuilderException;
-import org.apache.http.client.utils.URIBuilder;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * {@link URIBuilder} wrapper class. It helps to compose paths with
+ * It helps to compose paths with
  * and/or without attributes using a fluid pattern.
- * This class has a limited implementation and it has been built to meet
+ * This class has a limited implementation of UriBuilder and it has been built to meet
  * the current needs.
  */
 public class UriBuilder {
 
     private static final String PATH_SEPARATOR = "/";
 
-    private final URIBuilder uri;
+	private URI uri;
+
+	private StringBuilder uriPath = new StringBuilder();
+
+	private StringBuilder uriParams = new StringBuilder();
 
     private UriBuilder(URI baseEndpoint) {
-        this.uri = new URIBuilder(baseEndpoint);
+        this.uri = baseEndpoint;
+		if (uri.getPath() != null) {
+			uriPath.append(uri.getPath());
+		}
+		if (uri.getQuery() != null) {
+			uriParams.append(uri.getQuery());
+		}
     }
 
-    private UriBuilder(String baseEndpoint) {
-        try {
-            this.uri = new URIBuilder(baseEndpoint);
-        } catch (URISyntaxException e) {
-            throw new UriBuilderException("Cannot build valid URI", e);
-        }
-    }
+	private UriBuilder(String baseEndpoint) {
+		this.uri = URI.create(baseEndpoint);
+		if (uri.getPath() != null) {
+			uriPath.append(uri.getPath());
+		}
+		if (uri.getQuery() != null) {
+			uriParams.append(uri.getQuery());
+		}
+	}
 
     /**
      * Create {@link UriBuilder} starting from a given string.
@@ -89,11 +100,10 @@ public class UriBuilder {
      * @return
      */
     public UriBuilder path(String path) {
-        String uriPath = uri.getPath();
-        if (null != uriPath && uriPath.endsWith(PATH_SEPARATOR)) {
-            this.uri.setPath(uriPath.concat(path));
+        if (uriPath.toString().endsWith(PATH_SEPARATOR)) {
+			uriPath.append(path);
         } else {
-            this.uri.setPath(uriPath.concat(PATH_SEPARATOR).concat(path));
+			uriPath.append(PATH_SEPARATOR).append(path);
         }
         return this;
     }
@@ -106,7 +116,10 @@ public class UriBuilder {
      * @return
      */
     public UriBuilder queryParam(String name, String value) {
-        this.uri.addParameter(name, value);
+		if (uriParams.length() > 0) {
+			uriParams.append('&');
+		}
+        uriParams.append(name).append('=').append(value);
         return this;
     }
 
@@ -118,8 +131,11 @@ public class UriBuilder {
      * @return
      */
     public UriBuilder queryParam(String name, Integer value) {
-        this.uri.addParameter(name, value.toString());
-        return this;
+		if (uriParams.length() > 0) {
+			uriParams.append('&');
+		}
+		uriParams.append(name).append('=').append(String.valueOf(value));
+		return this;
     }
 
     /**
@@ -130,8 +146,11 @@ public class UriBuilder {
      * @return
      */
     public UriBuilder queryParam(String name, Long value) {
-        this.uri.addParameter(name, value.toString());
-        return this;
+		if (uriParams.length() > 0) {
+			uriParams.append('&');
+		}
+		uriParams.append(name).append('=').append(String.valueOf(value));
+		return this;
     }
 
     /**
@@ -140,10 +159,21 @@ public class UriBuilder {
      * @return
      */
     public URI build() throws UriBuilderException {
-        try {
-            return uri.build();
-        } catch (URISyntaxException e) {
-            throw new UriBuilderException("Cannot build valid URI", e);
-        }
-    }
+		String finalUriPath = null;
+		if (uriPath.length() > 0) {
+			finalUriPath = uriPath.toString();
+		}
+
+		String finalUriParams = null;
+		if (uriParams.length() > 0) {
+			finalUriParams = uriParams.toString();
+		}
+
+		try {
+			return new URI(uri.getScheme(), null, uri.getHost(),
+					uri.getPort(), finalUriPath, finalUriParams, null);
+		} catch (URISyntaxException e) {
+			throw new UriBuilderException("Cannot build valid URI", e);
+		}
+	}
 }
