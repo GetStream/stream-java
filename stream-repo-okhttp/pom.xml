@@ -13,6 +13,7 @@
 
 	<properties>
 		<okhttp.version>2.2.0</okhttp.version>
+		<httpclient.version>4.3.6</httpclient.version>
 	</properties>
 
 	<dependencies>
@@ -53,6 +54,11 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${httpclient.version}</version>
 		</dependency>
 
 		<!-- test dependencies -->

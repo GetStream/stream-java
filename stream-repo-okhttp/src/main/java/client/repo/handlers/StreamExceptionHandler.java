@@ -83,8 +83,7 @@ public class StreamExceptionHandler {
 
     private StreamClientException buildException(StreamClientException exception,
                                                  Response response) throws IOException {
-        String responseMessage = response.message();
-        StreamErrorResponse error = objectMapper.readValue(responseMessage, StreamErrorResponse.class);
+        StreamErrorResponse error = objectMapper.readValue(response.body().byteStream(), StreamErrorResponse.class);
         exception.setCode(error.getCode());
         exception.setHttpStatusCode(error.getStatusCode());
         exception.setDetail(error.getDetail());

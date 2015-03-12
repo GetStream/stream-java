@@ -106,9 +106,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 		requestBuilder.post(new FormEncodingBuilder().add("target", targetFeedId).build());
 
 		Request request = addAuthentication(feed, requestBuilder).build();
-		LOG.debug("Invoking url: '{}'", request.urlString());
-
-        fireAndForget(addAuthentication(feed, requestBuilder).build());
+        fireAndForget(request);
     }
 
     @Override
