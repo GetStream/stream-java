@@ -1,7 +1,6 @@
 package io.getstream.client;
 
 import io.getstream.client.config.ClientConfiguration;
-import io.getstream.client.config.StreamRegion;
 import io.getstream.client.exception.AuthenticationFailedException;
 import io.getstream.client.exception.InvalidOrMissingInputException;
 import io.getstream.client.exception.StreamClientException;
@@ -44,7 +43,7 @@ public class IntegrationTest {
         return String.format("%s_%d", userId, millis);
     }
 
-    @Test
+    @Ignore
     public void shouldGetFollowers() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
@@ -54,7 +53,7 @@ public class IntegrationTest {
         streamClient.shutdown();
     }
 
-    @Test
+    @Ignore
     public void shouldGetFollowing() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
@@ -69,8 +68,10 @@ public class IntegrationTest {
     public void shouldFollow() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
-        Feed feed = streamClient.newFeed("user", "2");
-        feed.follow("user:4");
+        String userId = this.getTestUserId("shouldFollow1");
+        Feed feed = streamClient.newFeed("user", userId);
+        String followedId = this.getTestUserId("shouldFollow2");
+        feed.follow("user", followedId);
         streamClient.shutdown();
     }
 
@@ -79,12 +80,19 @@ public class IntegrationTest {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
 
-        Feed feed = streamClient.newFeed("user", "2");
+        String followerId = this.getTestUserId("follower");
+        Feed feed = streamClient.newFeed("user", followerId);
 
         List<FeedFollow> following = feed.getFollowing();
-        assertThat(following.size(), is(3));
+        assertThat(following.size(), is(0));
 
-        feed.unfollow("user:4");
+        feed.follow("user", "1");
+        feed.follow("user", "2");
+        feed.follow("user", "3");
+
+        List<FeedFollow> followingAfter = feed.getFollowing();
+        assertThat(followingAfter.size(), is(3));
+        feed.unfollow("user", "2");
 
         List<FeedFollow> followingAgain = feed.getFollowing();
         assertThat(followingAgain.size(), is(2));
@@ -149,7 +157,7 @@ public class IntegrationTest {
                                                                 "foo");
 
         Feed feed = streamClient.newFeed("user", "2");
-        feed.follow("user:4");
+        feed.follow("user", "4");
         streamClient.shutdown();
     }
 
@@ -171,7 +179,8 @@ public class IntegrationTest {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
 
-        Feed feed = streamClient.newFeed("aggregated", "2");
+        String userId = this.getTestUserId("2");
+        Feed feed = streamClient.newFeed("aggregated", userId);
         AggregatedActivityServiceImpl<SimpleActivity> aggregatedActivityService =
                 feed.newAggregatedActivityService(SimpleActivity.class);
         aggregatedActivityService.getActivities();

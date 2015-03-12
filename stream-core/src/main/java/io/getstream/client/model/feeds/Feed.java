@@ -50,38 +50,22 @@ public interface Feed {
     /**
      * Follows the given target feed.
      *
-     * @param targetFeedId the slug of the target feed.
+     * @param feedSlug the slug of the target feed.
+     * @param userId
      * @throws IOException
      * @throws StreamClientException
      */
-    void follow(String targetFeedId) throws IOException, StreamClientException;
-
-    /**
-     * Follow the given target feeds.
-     *
-     * @param targetFeedIds a list of target feeds to follow.
-     * @throws IOException
-     * @throws StreamClientException
-     */
-    void follow(List<String> targetFeedIds) throws IOException, StreamClientException;
+    void follow(String feedSlug, String userId) throws IOException, StreamClientException;
 
     /**
      * Unfollow the given target feed.
      *
-     * @param targetFeedId the slug of the target feed.
+     * @param feedSlug the slug of the target feed.
+     * @param userId
      * @throws IOException
      * @throws StreamClientException
      */
-    void unfollow(String targetFeedId) throws IOException, StreamClientException;
-
-    /**
-     * Unfollow the given target feeds.
-     *
-     * @param targetFeedIds a list of target feeds to unfollow.
-     * @throws IOException
-     * @throws StreamClientException
-     */
-    void unfollow(List<String> targetFeedIds) throws IOException, StreamClientException;
+    void unfollow(String feedSlug, String userId) throws IOException, StreamClientException;
 
     /**
      * Lists the followers of the feed.
