@@ -30,9 +30,9 @@ public class Follow {
         /**
          * Start following some feeds.
          */
-        feed.follow("user:3");
-        feed.follow("user:4");
-        feed.follow("user:5");
+        feed.follow("user", "3");
+        feed.follow("user", "4");
+        feed.follow("user", "5");
 
         /**
          * Print out the list of following.

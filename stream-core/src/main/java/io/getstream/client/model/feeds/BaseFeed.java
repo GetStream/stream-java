@@ -69,27 +69,15 @@ public class BaseFeed implements Feed {
     }
 
     @Override
-    public void follow(String targetFeedId) throws IOException, StreamClientException {
-        streamRepository.follow(this, targetFeedId);
+    public void follow(String feedSlug, String userId) throws IOException, StreamClientException {
+        String feedId = String.format("%s:%s", feedSlug, userId);
+        streamRepository.follow(this, feedId);
     }
 
     @Override
-    public void follow(List<String> targetFeedIds) throws IOException, StreamClientException {
-        for (String targetFeedId : targetFeedIds) {
-            streamRepository.follow(this, targetFeedId);
-        }
-    }
-
-    @Override
-    public void unfollow(String targetFeedId) throws IOException, StreamClientException {
-        streamRepository.unfollow(this, targetFeedId);
-    }
-
-    @Override
-    public void unfollow(List<String> targetFeedIds) throws IOException, StreamClientException {
-        for (String targetFeedId : targetFeedIds) {
-            streamRepository.unfollow(this, targetFeedId);
-        }
+    public void unfollow(String feedSlug, String userId) throws IOException, StreamClientException {
+        String feedId = String.format("%s:%s", feedSlug, userId);
+        streamRepository.unfollow(this, feedId);
     }
 
     @Override
