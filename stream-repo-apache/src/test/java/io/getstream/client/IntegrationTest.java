@@ -215,7 +215,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldReturnActivityId() throws IOException, StreamClientException {
+    public void shouldReturnActivityIdAfterInsert() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
         String userId = this.getTestUserId("shouldReturnActivityId");
@@ -233,6 +233,28 @@ public class IntegrationTest {
         assertThat(response.getId(), not(""));
         Assert.assertNotNull(response.getId());
         Assert.assertTrue(response.getId().matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"));
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldActivityShouldHaveId() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+        String userId = this.getTestUserId("shouldActivityShouldHaveId");
+
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        List<SimpleActivity> firstRequest = flatActivityService.getActivities().getResults();
+        assertThat(firstRequest.size(), is(0));
+        flatActivityService.addActivity(activity);
+        List<SimpleActivity> secondRequest = flatActivityService.getActivities().getResults();
+        assertThat(secondRequest.size(), is(1));
+        Assert.assertTrue(secondRequest.get(0).getId().matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"));
         streamClient.shutdown();
     }
 
@@ -255,6 +277,13 @@ public class IntegrationTest {
         List<SimpleActivity> secondRequest = flatActivityService.getActivities().getResults();
         assertThat(secondRequest.size(), is(1));
 
+        List<SimpleActivity> thirdRequest = flatActivityService.getActivities().getResults();
+        String aid = thirdRequest.get(0).getId();
+
+        feed.deleteActivity(aid);
+        List<SimpleActivity> forthRequest = flatActivityService.getActivities().getResults();
+        assertThat(forthRequest.size(), is(0));
+
         streamClient.shutdown();
     }
 
@@ -262,7 +291,7 @@ public class IntegrationTest {
     public void shouldRemoveActivityByForeignId() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
-        String userId = this.getTestUserId("shouldRemoveActivityByForeignId");
+        String userId = this.getTestUserId("shouldRemoveActivity");
 
         Feed feed = streamClient.newFeed("user", userId);
         FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
@@ -271,15 +300,22 @@ public class IntegrationTest {
         activity.setObject("object");
         activity.setTarget("target");
         activity.setVerb("verb");
+        activity.setForeignId("i2");
         List<SimpleActivity> firstRequest = flatActivityService.getActivities().getResults();
         assertThat(firstRequest.size(), is(0));
-        flatActivityService.addActivity(activity);
+        SimpleActivity response = flatActivityService.addActivity(activity);
         List<SimpleActivity> secondRequest = flatActivityService.getActivities().getResults();
         assertThat(secondRequest.size(), is(1));
 
+        List<SimpleActivity> thirdRequest = flatActivityService.getActivities().getResults();
+        String aid = thirdRequest.get(0).getId();
+
+        feed.deleteActivityByForeignId("i2");
+        List<SimpleActivity> forthRequest = flatActivityService.getActivities().getResults();
+        assertThat(forthRequest.size(), is(0));
+
         streamClient.shutdown();
     }
-
     @Test
     public void shouldGetActivitiesWithFilter() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,

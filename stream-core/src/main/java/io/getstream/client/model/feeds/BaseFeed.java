@@ -106,6 +106,11 @@ public class BaseFeed implements Feed {
     }
 
     @Override
+    public void deleteActivityByForeignId(String foreignId) throws IOException, StreamClientException {
+        streamRepository.deleteActivityByForeignId(this, foreignId);
+    }
+
+    @Override
     public void deleteActivities(List<String> activityIds) throws IOException, StreamClientException {
         for (String activityId : activityIds) {
             streamRepository.deleteActivityById(this, activityId);

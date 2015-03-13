@@ -114,6 +114,16 @@ public interface Feed {
      */
     void deleteActivity(String activityId) throws IOException, StreamClientException;
 
+
+    /**
+     * Removes an activity from the feed.
+     *
+     * @param foreignId the activity id to remove from this feed.
+     * @throws IOException
+     * @throws StreamClientException
+     */
+    void deleteActivityByForeignId(String foreignId) throws IOException, StreamClientException;
+
     /**
      * Removes a list of activities from the feed.
      * It is not executed in batch fashion.
