@@ -59,6 +59,16 @@ public interface StreamRepository {
     void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException;
 
     /**
+     * Delete activity by foreign id.
+     *
+     * @param feed       Feed that contains the activity to be deleted.
+     * @param foreignId foreignId to be deleted.
+     * @throws IOException
+     * @throws StreamClientException
+     */
+    void deleteActivityByForeignId(BaseFeed feed, String foreignId) throws IOException, StreamClientException;
+
+    /**
      * Follow a feed.
      *
      * @param feed         Feed that wants to follow a target feed.

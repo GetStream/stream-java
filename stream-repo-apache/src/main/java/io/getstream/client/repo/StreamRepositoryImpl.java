@@ -157,6 +157,11 @@ public class StreamRepositoryImpl implements StreamRepository {
     }
 
     @Override
+    public void deleteActivityByForeignId(BaseFeed feed, String foreignId) throws IOException, StreamClientException {
+        streamActivityRepository.deleteActivityByForeignId(feed, foreignId);
+    }
+
+    @Override
     public <T extends BaseActivity> StreamResponse<T> getActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
         return streamActivityRepository.getActivities(feed, type, filter);
     }

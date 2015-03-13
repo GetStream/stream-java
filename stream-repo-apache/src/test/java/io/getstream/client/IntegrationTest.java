@@ -17,6 +17,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.Assert;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ import java.util.List;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IntegrationTest {
@@ -43,13 +45,12 @@ public class IntegrationTest {
         return String.format("%s_%d", userId, millis);
     }
 
-    @Ignore
+    @Test
     public void shouldGetFollowers() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
         String userId = this.getTestUserId("2");
         Feed feed = streamClient.newFeed("user", userId);
-        MatcherAssert.assertThat(feed.getFollowers().size(), is(2));
         streamClient.shutdown();
     }
 
@@ -153,6 +154,129 @@ public class IntegrationTest {
         activity.setTo(Arrays.asList("user:1", "user:4"));
         activity.setVerb("verb");
         flatActivityService.addActivity(activity);
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldAddAndRetrieveActivity() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+        String userId = this.getTestUserId("shouldAddAndRetrieveActivityToRecipients");
+
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        List<SimpleActivity> firstRequest = flatActivityService.getActivities().getResults();
+        assertThat(firstRequest.size(), is(0));
+        flatActivityService.addActivity(activity);
+        List<SimpleActivity> secondRequest = flatActivityService.getActivities().getResults();
+        assertThat(secondRequest.size(), is(1));
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldAddAndRetrieveActivityToRecipients() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+        String userId = this.getTestUserId("shouldAddAndRetrieveActivityToRecipients");
+        String recipientId1 = this.getTestUserId("shouldAddAndRetrieveActivityToRecipients1");
+        String recipientId2 = this.getTestUserId("shouldAddAndRetrieveActivityToRecipients2");
+
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setTo(Arrays.asList(String.format("user:%s", recipientId1), String.format("user:%s", recipientId2)));
+        activity.setVerb("verb");
+        List<SimpleActivity> firstRequest = flatActivityService.getActivities().getResults();
+        assertThat(firstRequest.size(), is(0));
+        flatActivityService.addActivity(activity);
+        List<SimpleActivity> secondRequest = flatActivityService.getActivities().getResults();
+        assertThat(secondRequest.size(), is(1));
+
+        // retrieve the list of activities from the other 2 feeds too
+        Feed feedRecipient1 = streamClient.newFeed("user", recipientId1);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService1 = feedRecipient1.newFlatActivityService(SimpleActivity.class);
+        List<SimpleActivity> thirdRequest = flatActivityService1.getActivities().getResults();
+        assertThat(thirdRequest.size(), is(1));
+
+        Feed feedRecipient2 = streamClient.newFeed("user", recipientId2);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService2 = feedRecipient2.newFlatActivityService(SimpleActivity.class);
+        List<SimpleActivity> forthRequest = flatActivityService2.getActivities().getResults();
+        assertThat(forthRequest.size(), is(1));
+
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldReturnActivityId() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+        String userId = this.getTestUserId("shouldReturnActivityId");
+
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        List<SimpleActivity> firstRequest = flatActivityService.getActivities().getResults();
+        assertThat(firstRequest.size(), is(0));
+        SimpleActivity response = flatActivityService.addActivity(activity);
+        assertThat(response.getId(), not(""));
+        Assert.assertNotNull(response.getId());
+        Assert.assertTrue(response.getId().matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"));
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldRemoveActivity() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+        String userId = this.getTestUserId("shouldRemoveActivity");
+
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        List<SimpleActivity> firstRequest = flatActivityService.getActivities().getResults();
+        assertThat(firstRequest.size(), is(0));
+        SimpleActivity response = flatActivityService.addActivity(activity);
+        List<SimpleActivity> secondRequest = flatActivityService.getActivities().getResults();
+        assertThat(secondRequest.size(), is(1));
+
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldRemoveActivityByForeignId() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+        String userId = this.getTestUserId("shouldRemoveActivityByForeignId");
+
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        List<SimpleActivity> firstRequest = flatActivityService.getActivities().getResults();
+        assertThat(firstRequest.size(), is(0));
+        flatActivityService.addActivity(activity);
+        List<SimpleActivity> secondRequest = flatActivityService.getActivities().getResults();
+        assertThat(secondRequest.size(), is(1));
+
         streamClient.shutdown();
     }
 
