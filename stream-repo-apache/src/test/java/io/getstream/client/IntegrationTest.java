@@ -33,9 +33,9 @@ public class IntegrationTest {
 
     @BeforeClass
     public static void setLog() {
-        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
-        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
-        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "DEBUG");
+//        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+//        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+//        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "DEBUG");
     }
 
     public String getTestUserId(String userId) {
@@ -68,10 +68,20 @@ public class IntegrationTest {
     public void shouldFollow() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
-        String userId = this.getTestUserId("shouldFollow1");
-        Feed feed = streamClient.newFeed("user", userId);
-        String followedId = this.getTestUserId("shouldFollow2");
-        feed.follow("user", followedId);
+
+        String followerId = this.getTestUserId("follower");
+        Feed feed = streamClient.newFeed("user", followerId);
+
+        List<FeedFollow> following = feed.getFollowing();
+        assertThat(following.size(), is(0));
+
+        feed.follow("user", "1");
+        feed.follow("user", "2");
+        feed.follow("user", "3");
+
+        List<FeedFollow> followingAfter = feed.getFollowing();
+        assertThat(followingAfter.size(), is(3));
+
         streamClient.shutdown();
     }
 
@@ -104,7 +114,8 @@ public class IntegrationTest {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
 
-        Feed feed = streamClient.newFeed("user", "2");
+        String userId = this.getTestUserId("shouldGetActivities");
+        Feed feed = streamClient.newFeed("user", userId);
         FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
         for (SimpleActivity activity : flatActivityService.getActivities().getResults()) {
             MatcherAssert.assertThat(activity.getId(), containsString("11e4-8080"));
@@ -114,6 +125,22 @@ public class IntegrationTest {
 
     @Test
     public void shouldAddActivity() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        Feed feed = streamClient.newFeed("user", "2");
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        flatActivityService.addActivity(activity);
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldAddActivityToRecipients() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
 
@@ -133,8 +160,8 @@ public class IntegrationTest {
     public void shouldGetActivitiesWithFilter() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
-
-        Feed feed = streamClient.newFeed("user", "2");
+        String userId = this.getTestUserId("shouldGetActivitiesWithFilter");
+        Feed feed = streamClient.newFeed("user", userId);
         FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
         flatActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
         streamClient.shutdown();

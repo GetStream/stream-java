@@ -63,18 +63,17 @@ public final class SignatureUtils {
      * @param activity  Activity to sign.
      */
     public static void addSignatureToRecipients(final String secretKey, final BaseActivity activity) throws StreamClientException {
-        if (activity.getTo() == null || activity.getTo().isEmpty()) {
-            throw new InvalidOrMissingInputException("Field 'to' cannot be empty.");
-        }
-        ImmutableList.Builder<String> recipients = ImmutableList.builder();
-        for (String recipient : activity.getTo()) {
-            try {
-                recipients.add(String.format("%s %s", recipient, SignatureUtils.calculateHMAC(secretKey, recipient.replace(":", ""))));
-            } catch (SignatureException | NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException e) {
-                throw new RuntimeException("Fatal error: cannot create authentication token.");
+        if (activity.getTo() != null && !activity.getTo().isEmpty()) {
+            ImmutableList.Builder<String> recipients = ImmutableList.builder();
+            for (String recipient : activity.getTo()) {
+                try {
+                    recipients.add(String.format("%s %s", recipient, SignatureUtils.calculateHMAC(secretKey, recipient.replace(":", ""))));
+                } catch (SignatureException | NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException e) {
+                    throw new RuntimeException("Fatal error: cannot create authentication token.");
+                }
             }
+            activity.setTo(recipients.build());
         }
-        activity.setTo(recipients.build());
     }
 
     /**
