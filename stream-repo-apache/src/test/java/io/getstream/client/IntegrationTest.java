@@ -327,6 +327,45 @@ public class IntegrationTest {
         streamClient.shutdown();
     }
 
+    @Test
+    public void shouldGetActivitiesWithIdFilter() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+        String userId = this.getTestUserId("shouldGetActivitiesWithIdFilter");
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        for(int i = 0; i < 5; i++ ) {
+            flatActivityService.addActivity(activity);
+        }
+        List<SimpleActivity> activities = flatActivityService.getActivities().getResults();
+        String aid = activities.get(2).getId();
+
+        //lt
+        List<SimpleActivity> lastTwoActivities = flatActivityService.getActivities(new FeedFilter.Builder().withIdLowerThan(aid).build()).getResults();
+        assertThat(lastTwoActivities.size(), is(2));
+        //lte
+        List<SimpleActivity> lastThreeActivities = flatActivityService.getActivities(new FeedFilter.Builder().withIdLowerThanEquals(aid).build()).getResults();
+        assertThat(lastThreeActivities.size(), is(3));
+        //gt
+        List<SimpleActivity> firstThreeActivities = flatActivityService.getActivities(new FeedFilter.Builder().withIdGreaterThanEquals(aid).build()).getResults();
+        assertThat(firstThreeActivities.size(), is(3));
+        //gte
+        List<SimpleActivity> firstTwoActivities = flatActivityService.getActivities(new FeedFilter.Builder().withIdLowerThan(aid).build()).getResults();
+        assertThat(firstTwoActivities.size(), is(2));
+        //closed interval
+        List<SimpleActivity> activity3 = flatActivityService.getActivities(new FeedFilter.Builder().withIdLowerThanEquals(aid).withIdGreaterThanEquals(aid).build()).getResults();
+        assertThat(activity3.size(), is(1));
+        //closed interval empty
+        List<SimpleActivity> activityNo = flatActivityService.getActivities(new FeedFilter.Builder().withIdLowerThan(aid).withIdGreaterThan(aid).build()).getResults();
+        assertThat(activityNo.size(), is(0));
+        streamClient.shutdown();
+    }
+
     @Test(expected = InvalidOrMissingInputException.class)
     public void shouldGetInvalidOrMissingInputException() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
