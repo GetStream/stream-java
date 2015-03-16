@@ -22,6 +22,7 @@ import org.junit.Assert;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
@@ -83,6 +84,35 @@ public class IntegrationTest {
         List<FeedFollow> followingAfter = feed.getFollowing();
         assertThat(followingAfter.size(), is(3));
 
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldHaveOriginField() throws IOException, StreamClientException, InterruptedException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        String producerId = this.getTestUserId("shouldHaveOriginField1");
+        Feed feedP = streamClient.newFeed("user", producerId);
+
+        String consumerId = this.getTestUserId("shouldHaveOriginField2");
+        Feed feedC = streamClient.newFeed("flat", consumerId);
+
+
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feedP.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        flatActivityService.addActivity(activity);
+
+        feedC.follow("user", producerId);
+        TimeUnit.SECONDS.sleep(2);
+
+        FlatActivityServiceImpl<SimpleActivity> flatActivityServiceC = feedC.newFlatActivityService(SimpleActivity.class);
+        List<SimpleActivity> activities = flatActivityServiceC.getActivities().getResults();
+        assertThat(activities.get(0).getOrigin(), is(feedP.getId()));
         streamClient.shutdown();
     }
 

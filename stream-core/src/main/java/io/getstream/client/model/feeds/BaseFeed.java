@@ -145,6 +145,7 @@ public class BaseFeed implements Feed {
         return userId;
     }
 
+    @Override
     public String getId() {
         return id;
     }

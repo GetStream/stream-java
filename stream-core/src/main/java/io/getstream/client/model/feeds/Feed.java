@@ -47,6 +47,8 @@ import java.util.List;
  */
 public interface Feed {
 
+    public String getId();
+
     /**
      * Follows the given target feed.
      *
