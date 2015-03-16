@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>stream-java</groupId>
+    <groupId>io.getstream.client</groupId>
     <artifactId>stream-java</artifactId>
     <packaging>pom</packaging>
     <version>0.1-SNAPSHOT</version>
@@ -12,6 +12,7 @@
     <modules>
         <module>stream-core</module>
         <module>stream-repo-apache</module>
+		<module>stream-repo-okhttp</module>
     </modules>
 
     <properties>
