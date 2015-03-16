@@ -41,7 +41,10 @@ import java.net.URISyntaxException;
 public enum StreamRegion {
 
     US_EAST("https://us-east-api.getstream.io/api"),
-    US_WEST("https://us-west-api.getstream.io/api");
+    EU_WEST("https://eu-west-api.getstream.io/api"),
+    AP_NORTH_EAST("https://ap-northeast-api.getstream.io/api"),
+    AP_SOUTH_EAST("https://ap-southeast-api.getstream.io/api"),
+    LOCAL("http://localhost:8000/api");
 
     private final static String VERSION = "v1.0";
 
