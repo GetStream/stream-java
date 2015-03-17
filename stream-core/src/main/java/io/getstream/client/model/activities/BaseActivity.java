@@ -32,6 +32,7 @@ package io.getstream.client.model.activities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
 
 import java.util.Arrays;
@@ -60,22 +61,24 @@ public abstract class BaseActivity {
 
     protected String origin;
     protected String duration;
-
-    @JsonProperty("foreign_id")
     protected String foreignId;
 
+    @JsonIgnore
     public String getId() {
         return id;
     }
 
+    @JsonProperty("id")
     public void setId(String id) {
         this.id = id;
     }
 
+    @JsonIgnore
     public String getOrigin() {
         return origin;
     }
 
+    @JsonProperty("origin")
     public void setOrigin(String origin) {
         this.origin = origin;
     }
@@ -136,10 +139,12 @@ public abstract class BaseActivity {
         this.foreignId = foreignId;
     }
 
+    @JsonIgnore
     public String getDuration() {
         return duration;
     }
 
+    @JsonProperty("duration")
     public void setDuration(String duration) {
         this.duration = duration;
     }
