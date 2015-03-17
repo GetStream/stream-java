@@ -126,15 +126,6 @@ public interface Feed {
      */
     void deleteActivityByForeignId(String foreignId) throws IOException, StreamClientException;
 
-    /**
-     * Removes a list of activities from the feed.
-     * It is not executed in batch fashion.
-     *
-     * @param activityIds
-     * @throws IOException
-     * @throws StreamClientException
-     */
-    void deleteActivities(List<String> activityIds) throws IOException, StreamClientException;
 
     /**
      * Get mediator service to handle aggregated activities.

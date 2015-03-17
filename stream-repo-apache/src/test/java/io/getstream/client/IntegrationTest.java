@@ -4,6 +4,7 @@ import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.AuthenticationFailedException;
 import io.getstream.client.exception.InvalidOrMissingInputException;
 import io.getstream.client.exception.StreamClientException;
+import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.FeedFollow;
@@ -147,9 +148,15 @@ public class IntegrationTest {
 
         String userId = this.getTestUserId("shouldGetActivities");
         Feed feed = streamClient.newFeed("user", userId);
+        SimpleActivity activity = new SimpleActivity();
         FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
-        for (SimpleActivity activity : flatActivityService.getActivities().getResults()) {
-            MatcherAssert.assertThat(activity.getId(), containsString("11e4-8080"));
+        activity.setActor("alessandro");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        flatActivityService.addActivity(activity);
+        for (SimpleActivity _activity : flatActivityService.getActivities().getResults()) {
+            MatcherAssert.assertThat(_activity.getActor(), is("alessandro"));
         }
         streamClient.shutdown();
     }
@@ -159,7 +166,8 @@ public class IntegrationTest {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
 
-        Feed feed = streamClient.newFeed("user", "2");
+        String userId = this.getTestUserId("shouldAddActivity");
+        Feed feed = streamClient.newFeed("user", userId);
         FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
         SimpleActivity activity = new SimpleActivity();
         activity.setActor("actor");
@@ -431,7 +439,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldGetActivitiesFromAggregatedFeed() throws IOException, StreamClientException {
+    public void shouldGetActivitiesFromEmptyAggregatedFeed() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
 
@@ -439,18 +447,46 @@ public class IntegrationTest {
         Feed feed = streamClient.newFeed("aggregated", userId);
         AggregatedActivityServiceImpl<SimpleActivity> aggregatedActivityService =
                 feed.newAggregatedActivityService(SimpleActivity.class);
-        aggregatedActivityService.getActivities();
+        List<AggregatedActivity<SimpleActivity>> noActivities = aggregatedActivityService.getActivities().getResults();
+        assertThat(noActivities.size(), is(0));
         streamClient.shutdown();
     }
 
     @Test
-    public void shouldDeleteActivity() throws IOException, StreamClientException {
+    public void shouldGetActivitiesFromAggregatedFeed() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
 
-        Feed feed = streamClient.newFeed("user", "9");
-        feed.deleteActivities(Arrays.asList("6d95a136-b2af-11e4-8080-80003ad855af",
-                                                   "6d79af6c-b2af-11e4-8080-80003ad855af"));
+        String userId = this.getTestUserId("shouldGetActivitiesFromAggregatedFeed");
+        Feed feed = streamClient.newFeed("aggregated", userId);
+        AggregatedActivityServiceImpl<SimpleActivity> aggregatedActivityService =
+                feed.newAggregatedActivityService(SimpleActivity.class);
+        List<AggregatedActivity<SimpleActivity>> noActivities = aggregatedActivityService.getActivities().getResults();
+        assertThat(noActivities.size(), is(0));
+
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("like");
+
+        aggregatedActivityService.addActivity(activity);
+        List<AggregatedActivity<SimpleActivity>> oneActivity = aggregatedActivityService.getActivities().getResults();
+        assertThat(oneActivity.size(), is(1));
+        assertThat((int)oneActivity.get(0).getActivityCount(), is(1));
+
+        aggregatedActivityService.addActivity(activity);
+        List<AggregatedActivity<SimpleActivity>> oneActivityB = aggregatedActivityService.getActivities().getResults();
+        assertThat(oneActivityB.size(), is(1));
+        assertThat((int)oneActivityB.get(0).getActivityCount(), is(2));
+
+        activity.setVerb("pin");
+        aggregatedActivityService.addActivity(activity);
+        List<AggregatedActivity<SimpleActivity>> twoActivities = aggregatedActivityService.getActivities().getResults();
+        assertThat(twoActivities.size(), is(2));
+        assertThat((int)twoActivities.get(0).getActivityCount(), is(1));
+        assertThat((int)twoActivities.get(1).getActivityCount(), is(2));
         streamClient.shutdown();
     }
+
 }

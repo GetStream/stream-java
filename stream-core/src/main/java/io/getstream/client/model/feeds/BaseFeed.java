@@ -111,13 +111,6 @@ public class BaseFeed implements Feed {
     }
 
     @Override
-    public void deleteActivities(List<String> activityIds) throws IOException, StreamClientException {
-        for (String activityId : activityIds) {
-            streamRepository.deleteActivityById(this, activityId);
-        }
-    }
-
-    @Override
     public <T extends BaseActivity> AggregatedActivityServiceImpl<T> newAggregatedActivityService(Class<T> clazz) {
         return new AggregatedActivityServiceImpl<>(this, clazz, streamRepository);
     }
