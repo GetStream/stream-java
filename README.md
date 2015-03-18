@@ -7,9 +7,23 @@ stream-java is a Java client for [Stream](https://getstream.io/).
 
 ### Installation
 
-```bash
-// TODO: add install instructions here
+Download the latest JAR or grab via Maven:
+
+```xml
+<dependency>
+  <groupId></groupId>
+  <artifactId></artifactId>
+  <version></version>
+</dependency>
 ```
+
+or Gradle:
+
+```
+compile 'groupId:artifactId:version'
+```
+
+Snapshots of the development version are available in Sonatype's snapshots repository.
 
 ### Usage
 
