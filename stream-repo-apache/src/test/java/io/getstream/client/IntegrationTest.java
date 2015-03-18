@@ -32,11 +32,11 @@ public class IntegrationTest {
     public static final String API_KEY = "nfq26m3qgfyp";
     public static final String API_SECRET = "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2";
 
-    @BeforeClass
+//    @BeforeClass
     public static void setLog() {
-//        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
-//        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
-//        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "DEBUG");
+        System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
+        System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
+        System.setProperty("org.apache.commons.logging.simplelog.log.org.apache.http", "DEBUG");
     }
 
     public String getTestUserId(String userId) {
