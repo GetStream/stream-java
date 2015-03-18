@@ -3,5 +3,9 @@ jdk:
   - openjdk7
   - oraclejdk7
   - oraclejdk8
+env:
+  - POM=stream-core
+  - POM=stream-repo-apache
+  - POM=stream-repo-okhttp
 script:
-  - mvn clean install -q
+  - mvn clean install -q -f $POM/pom.xml
