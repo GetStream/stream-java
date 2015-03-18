@@ -178,9 +178,9 @@ public class StreamActivityRepository {
 	}
 
     public void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException {
-        Request.Builder requestBuilder = new Request.Builder().url(UriBuilder.fromEndpoint(baseEndpoint)
-                                                    .path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path(activityId + "/")
-                                                    .queryParam(StreamRepositoryImpl.API_KEY, apiKey).build().toURL());
+        Request.Builder requestBuilder = new Request.Builder().delete().url(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path(activityId + "/")
+				.queryParam(StreamRepositoryImpl.API_KEY, apiKey).build().toURL());
 
 		Request request = addAuthentication(feed, requestBuilder).build();
         LOG.debug("Invoking url: '{}", request.urlString());
@@ -188,6 +188,19 @@ public class StreamActivityRepository {
 		Response response = httpClient.newCall(request).execute();
         handleResponseCode(response);
     }
+
+	public void deleteActivityByForeignId(BaseFeed feed, String activityId) throws IOException, StreamClientException {
+		Request.Builder requestBuilder = new Request.Builder().delete().url(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path(activityId + "/")
+				.queryParam("foreign_id", Boolean.toString(true))
+				.queryParam(StreamRepositoryImpl.API_KEY, apiKey).build().toURL());
+
+		Request request = addAuthentication(feed, requestBuilder).build();
+		LOG.debug("Invoking url: '{}", request.urlString());
+
+		Response response = httpClient.newCall(request).execute();
+		handleResponseCode(response);
+	}
 
 	private void handleResponseCode(Response response) throws StreamClientException, IOException {
 		exceptionHandler.handleResponseCode(response);

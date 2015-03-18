@@ -258,8 +258,6 @@ public class IntegrationTest {
         List<SimpleActivity> firstRequest = flatActivityService.getActivities().getResults();
         assertThat(firstRequest.size(), is(0));
         SimpleActivity response = flatActivityService.addActivity(activity);
-        assertThat(response.getId(), not(""));
-        assertThat(response.getId(), not(null));
         assertThat(response.getId().matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"), is(true));
         streamClient.shutdown();
     }
