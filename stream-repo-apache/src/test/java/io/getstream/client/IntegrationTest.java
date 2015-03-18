@@ -18,7 +18,6 @@ import org.hamcrest.MatcherAssert;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.Assert;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -260,8 +259,8 @@ public class IntegrationTest {
         assertThat(firstRequest.size(), is(0));
         SimpleActivity response = flatActivityService.addActivity(activity);
         assertThat(response.getId(), not(""));
-        Assert.assertNotNull(response.getId());
-        Assert.assertTrue(response.getId().matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"));
+        assertThat(response.getId(), not(null));
+        assertThat(response.getId().matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"), is(true));
         streamClient.shutdown();
     }
 
@@ -283,7 +282,7 @@ public class IntegrationTest {
         flatActivityService.addActivity(activity);
         List<SimpleActivity> secondRequest = flatActivityService.getActivities().getResults();
         assertThat(secondRequest.size(), is(1));
-        Assert.assertTrue(secondRequest.get(0).getId().matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"));
+        assertThat(secondRequest.get(0).getId().matches("[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"), is(true));
         streamClient.shutdown();
     }
 
