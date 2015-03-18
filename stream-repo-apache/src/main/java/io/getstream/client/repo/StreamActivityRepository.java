@@ -177,6 +177,18 @@ public class StreamActivityRepository {
         }
     }
 
+    public void deleteActivityByForeignId(BaseFeed feed, String activityId) throws IOException, StreamClientException {
+        HttpDelete request = new HttpDelete(UriBuilder.fromEndpoint(baseEndpoint)
+                .path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path(activityId + "/")
+                .queryParam(StreamRepositoryImpl.API_KEY, apiKey)
+                .queryParam("foreign_id", Boolean.toString(true))
+                .build());
+        LOG.debug("Invoking url: '{}", request.getURI());
+        try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
+            handleResponseCode(response);
+        }
+    }
+
     private HttpRequestBase addAuthentication(BaseFeed feed, HttpRequestBase request) {
         return StreamRepoUtils.addAuthentication(feed, secretKey, request);
     }

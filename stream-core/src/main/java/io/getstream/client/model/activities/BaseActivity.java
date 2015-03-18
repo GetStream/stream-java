@@ -32,8 +32,10 @@ package io.getstream.client.model.activities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -50,27 +52,33 @@ public abstract class BaseActivity {
     protected String target;
     protected Date time;
 
+    public BaseActivity() {
+        to = Arrays.asList();
+    }
+
     @JsonDeserialize(contentUsing = ActivitySignedRecipientDeserializer.class)
     protected List<String> to;
 
     protected String origin;
     protected String duration;
-
-    @JsonProperty("foreign_id")
     protected String foreignId;
 
+    @JsonIgnore
     public String getId() {
         return id;
     }
 
+    @JsonProperty("id")
     public void setId(String id) {
         this.id = id;
     }
 
+    @JsonIgnore
     public String getOrigin() {
         return origin;
     }
 
+    @JsonProperty("origin")
     public void setOrigin(String origin) {
         this.origin = origin;
     }
@@ -131,10 +139,12 @@ public abstract class BaseActivity {
         this.foreignId = foreignId;
     }
 
+    @JsonIgnore
     public String getDuration() {
         return duration;
     }
 
+    @JsonProperty("duration")
     public void setDuration(String duration) {
         this.duration = duration;
     }
@@ -142,14 +152,14 @@ public abstract class BaseActivity {
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                       .add("id", this.id)
-                       .add("actor", this.actor)
-                       .add("verb", this.verb)
-                       .add("object", this.object)
-                       .add("target", this.target)
-                       .add("time", this.time)
-                       .add("to", this.to.toString())
-                       .add("origin", this.origin)
-                       .add("duration", this.duration).toString();
+                .add("id", this.id)
+                .add("actor", this.actor)
+                .add("verb", this.verb)
+                .add("object", this.object)
+                .add("target", this.target)
+                .add("time", this.time)
+                .add("to", this.to.toString())
+                .add("origin", this.origin)
+                .add("duration", this.duration).toString();
     }
 }

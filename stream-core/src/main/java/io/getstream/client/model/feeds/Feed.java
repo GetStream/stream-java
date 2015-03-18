@@ -47,6 +47,9 @@ import java.util.List;
  */
 public interface Feed {
 
+    public String getId();
+    public String getToken();
+
     /**
      * Follows the given target feed.
      *
@@ -114,15 +117,16 @@ public interface Feed {
      */
     void deleteActivity(String activityId) throws IOException, StreamClientException;
 
+
     /**
-     * Removes a list of activities from the feed.
-     * It is not executed in batch fashion.
+     * Removes an activity from the feed.
      *
-     * @param activityIds
+     * @param foreignId the activity id to remove from this feed.
      * @throws IOException
      * @throws StreamClientException
      */
-    void deleteActivities(List<String> activityIds) throws IOException, StreamClientException;
+    void deleteActivityByForeignId(String foreignId) throws IOException, StreamClientException;
+
 
     /**
      * Get mediator service to handle aggregated activities.

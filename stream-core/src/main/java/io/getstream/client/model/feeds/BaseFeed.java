@@ -106,10 +106,8 @@ public class BaseFeed implements Feed {
     }
 
     @Override
-    public void deleteActivities(List<String> activityIds) throws IOException, StreamClientException {
-        for (String activityId : activityIds) {
-            streamRepository.deleteActivityById(this, activityId);
-        }
+    public void deleteActivityByForeignId(String foreignId) throws IOException, StreamClientException {
+        streamRepository.deleteActivityByForeignId(this, foreignId);
     }
 
     @Override
@@ -140,7 +138,13 @@ public class BaseFeed implements Feed {
         return userId;
     }
 
+    @Override
     public String getId() {
         return id;
+    }
+
+    @Override
+    public String getToken() {
+        return null;
     }
 }

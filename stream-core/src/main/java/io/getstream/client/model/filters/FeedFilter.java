@@ -49,10 +49,10 @@ public class FeedFilter {
 
     private Integer limit = DEFAULT_LIMIT;
     private Integer offset = null;
-    private Integer idGreaterThan = null;
-    private Integer idGreaterThanEquals = null;
-    private Integer idLowerThanEquals = null;
-    private Integer idLowerThan = null;
+    private String idGreaterThan = null;
+    private String idGreaterThanEquals = null;
+    private String idLowerThanEquals = null;
+    private String idLowerThan = null;
     private List<String> feedIds = null;
 
     protected FeedFilter() {
@@ -66,19 +66,19 @@ public class FeedFilter {
         return offset;
     }
 
-    public Integer getIdGreaterThan() {
+    public String getIdGreaterThan() {
         return idGreaterThan;
     }
 
-    public Integer getIdGreaterThanEquals() {
+    public String getIdGreaterThanEquals() {
         return idGreaterThanEquals;
     }
 
-    public Integer getIdLowerThanEquals() {
+    public String getIdLowerThanEquals() {
         return idLowerThanEquals;
     }
 
-    public Integer getIdLowerThan() {
+    public String getIdLowerThan() {
         return idLowerThan;
     }
 
@@ -115,22 +115,22 @@ public class FeedFilter {
             return this;
         }
 
-        public Builder withIdGreaterThan(int idGreaterThan) {
+        public Builder withIdGreaterThan(String idGreaterThan) {
             feedFilter.idGreaterThan = idGreaterThan;
             return this;
         }
 
-        public Builder withIdGreaterThanEquals(int idGreaterThanEquals) {
+        public Builder withIdGreaterThanEquals(String idGreaterThanEquals) {
             feedFilter.idGreaterThanEquals = idGreaterThanEquals;
             return this;
         }
 
-        public Builder withIdLowerThanEquals(int idLowerThanEquals) {
+        public Builder withIdLowerThanEquals(String idLowerThanEquals) {
             feedFilter.idLowerThanEquals = idLowerThanEquals;
             return this;
         }
 
-        public Builder withIdLowerThan(int idLowerThan) {
+        public Builder withIdLowerThan(String idLowerThan) {
             feedFilter.idLowerThan = idLowerThan;
             return this;
         }
