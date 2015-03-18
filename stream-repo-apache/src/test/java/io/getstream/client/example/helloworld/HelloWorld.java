@@ -51,15 +51,15 @@ public class HelloWorld {
         streamClient.shutdown();
     }
 
-    /**
-     * A custom activity must extends BaseActivity.
-     * Feel free to add as many fields as you want.
-     */
-    static class HelloWorldActivity extends BaseActivity {
-        protected String message;
+		/**
+		 * A custom activity must extends BaseActivity.
+		 * Feel free to add as many fields as you want.
+		 */
+		static class HelloWorldActivity extends BaseActivity {
+			protected String message;
 
-        public void setMessage(String message) {
-            this.message = message;
-        }
-    }
+			public void setMessage(String message) {
+				this.message = message;
+			}
+		}
 }

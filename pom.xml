@@ -4,14 +4,49 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>stream-java</groupId>
+    <groupId>io.getstream.client</groupId>
     <artifactId>stream-java</artifactId>
     <packaging>pom</packaging>
     <version>0.1-SNAPSHOT</version>
 
-    <modules>
+	<name>stream-java</name>
+	<description>stream-java is a Java client for http://getstream.io.</description>
+	<url>https://github.com/GetStream/stream-java</url>
+
+	<licenses>
+		<license>
+			<name>The New BSD License</name>
+			<url>http://www.opensource.org/licenses/bsd-license.html</url>
+		</license>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>sirio7g</id>
+			<name>Alessandro Pieri</name>
+			<url>https://github.com/sirio7g</url>
+		</developer>
+		<developer>
+			<id>tbarbugli</id>
+			<name>Tommaso Barbugli</name>
+			<url>https://github.com/tbarbugli</url>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git@github.com:GetStream/stream-java.git</connection>
+		<developerConnection>scm:git:git@github.com:GetStream/stream-java.git</developerConnection>
+		<url>git@github.com:GetStream/stream-java.git</url>
+	</scm>
+
+	<modules>
         <module>stream-core</module>
         <module>stream-repo-apache</module>
+		<module>stream-repo-okhttp</module>
     </modules>
 
     <properties>

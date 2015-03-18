@@ -57,6 +57,11 @@ public class ClientConfiguration {
      */
     private long timeToLive = 3600;
 
+	/**
+	 * Keep alive in ms.
+	 */
+	private long keepAlive = 3000;
+
     /**
      * Max concurrent connection the pool should handle.
      */
@@ -142,4 +147,12 @@ public class ClientConfiguration {
     public void setAuthenticationHandlerConfiguration(AuthenticationHandlerConfiguration authenticationHandlerConfiguration) {
         this.authenticationHandlerConfiguration = authenticationHandlerConfiguration;
     }
+
+	public long getKeepAlive() {
+		return keepAlive;
+	}
+
+	public void setKeepAlive(long keepAlive) {
+		this.keepAlive = keepAlive;
+	}
 }

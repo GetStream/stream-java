@@ -1,5 +1,6 @@
-package io.getstream.client;
+package client;
 
+import io.getstream.client.StreamClient;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.AuthenticationFailedException;
 import io.getstream.client.exception.InvalidOrMissingInputException;
@@ -24,15 +25,18 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+
 
 public class IntegrationTest {
 
     public static final String API_KEY = "nfq26m3qgfyp";
     public static final String API_SECRET = "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2";
 
-//    @BeforeClass
+    //    @BeforeClass
     public static void setLog() {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
         System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
@@ -406,7 +410,7 @@ public class IntegrationTest {
     @Test(expected = AuthenticationFailedException.class)
     public void shouldGetAuthenticationFailed() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
-                                                                "foo");
+                "foo");
 
         Feed feed = streamClient.newFeed("user", "2");
         feed.follow("user", "4");

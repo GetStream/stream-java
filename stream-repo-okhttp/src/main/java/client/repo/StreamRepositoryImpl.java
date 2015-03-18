@@ -28,11 +28,18 @@
  either expressed or implied, of the FreeBSD Project.
 
  */
-package io.getstream.client.repo;
+package client.repo;
 
+import client.repo.handlers.StreamExceptionHandler;
+import client.repo.utils.StreamRepoUtils;
+import client.repo.utils.UriBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
@@ -43,27 +50,15 @@ import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
-import io.getstream.client.repo.handlers.StreamExceptionHandler;
-import io.getstream.client.repo.utils.StreamRepoUtils;
-import io.getstream.client.repo.utils.UriBuilder;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpRequestBase;
-import org.apache.http.client.protocol.HttpClientContext;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import io.getstream.client.repo.StreamRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 
-import static io.getstream.client.repo.utils.FeedFilterUtils.apply;
+import static client.repo.utils.FeedFilterUtils.apply;
 
 /**
  * Actual implementation of the Stream's REST API calls.
@@ -74,26 +69,26 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	static final String API_KEY = "api_key";
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setPropertyNamingStrategy(
-                                                                                                          /* will convert camelStyle to lower_case_style */
-                                                                                                          PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setPropertyNamingStrategy(
+			/* will convert camelStyle to lower_case_style */
+			PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
 
 	private final URI baseEndpoint;
 	private final String apiKey;
 	private final String secretKey;
 	private final StreamExceptionHandler exceptionHandler;
-	private final CloseableHttpClient httpClient;
+	private final OkHttpClient httpClient;
 
 	private final StreamActivityRepository streamActivityRepository;
 
 	/**
-	 * Create a new {@link StreamRepository} using the given configuration {@link ClientConfiguration} and
-	 * a pre-instantiated HttpClient {@link CloseableHttpClient}.
+	 * Create a new {@link io.getstream.client.repo.StreamRepository} using the given configuration {@link io.getstream.client.config.ClientConfiguration} and
+	 * a pre-instantiated HttpClient {@link OkHttpClient}.
 	 *
 	 * @param streamClient
 	 * @param closeableHttpClient
 	 */
-	public StreamRepositoryImpl(ClientConfiguration streamClient, CloseableHttpClient closeableHttpClient) {
+	public StreamRepositoryImpl(ClientConfiguration streamClient, OkHttpClient closeableHttpClient) {
 		this.baseEndpoint = streamClient.getRegion().getEndpoint();
 		this.apiKey = streamClient.getAuthenticationHandlerConfiguration().getApiKey();
 		this.secretKey = streamClient.getAuthenticationHandlerConfiguration().getSecretKey();
@@ -105,61 +100,64 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	@Override
 	public void follow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
-		HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
+		Request.Builder requestBuilder = new Request.Builder().url(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")
-				.queryParam(API_KEY, apiKey).build());
-		request.setEntity(new UrlEncodedFormEntity(
-				Collections.singletonList(new BasicNameValuePair("target", targetFeedId))));
-		fireAndForget(addAuthentication(feed, request));
+				.queryParam(API_KEY, apiKey).build().toURL());
+		requestBuilder.post(new FormEncodingBuilder().add("target", targetFeedId).build());
+
+		Request request = addAuthentication(feed, requestBuilder).build();
+		fireAndForget(request);
 	}
 
 	@Override
 	public void unfollow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
-		HttpDelete request = new HttpDelete(UriBuilder.fromEndpoint(baseEndpoint)
+		Request.Builder requestBuilder = new Request.Builder().url(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following").path(targetFeedId + "/")
-				.queryParam(API_KEY, apiKey).build());
-		fireAndForget(addAuthentication(feed, request));
+				.queryParam(API_KEY, apiKey).build().toURL()).delete();
+		fireAndForget(addAuthentication(feed, requestBuilder).build());
 	}
 
 	@Override
 	public List<FeedFollow> getFollowing(BaseFeed feed, FeedFilter filter) throws StreamClientException, IOException {
-		HttpGet request = new HttpGet(apply(UriBuilder.fromEndpoint(baseEndpoint)
+		Request.Builder requestBuilder = new Request.Builder().url(apply(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")
-				.queryParam(API_KEY, apiKey), filter).build());
-		LOG.debug("Invoking url: '{}'", request.getURI());
-		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
-			handleResponseCode(response);
-			StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
-					new TypeReference<StreamResponse<FeedFollow>>() {
-					});
-			return streamResponse.getResults();
-		}
+				.queryParam(API_KEY, apiKey), filter).build().toURL()).get();
+
+		Request request = addAuthentication(feed, requestBuilder).build();
+		LOG.debug("Invoking url: '{}'", request.urlString());
+
+		Response response = httpClient.newCall(request).execute();
+		handleResponseCode(response);
+		StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(response.body().byteStream(),
+				new TypeReference<StreamResponse<FeedFollow>>() {});
+		return streamResponse.getResults();
 	}
 
 	@Override
 	public List<FeedFollow> getFollowers(BaseFeed feed, FeedFilter filter) throws StreamClientException, IOException {
-		HttpGet request = new HttpGet(apply(UriBuilder.fromEndpoint(baseEndpoint)
+		Request.Builder requestBuilder = new Request.Builder().url(apply(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("followers/")
-				.queryParam(API_KEY, apiKey), filter).build());
-		LOG.debug("Invoking url: '{}'", request.getURI());
-		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
-			handleResponseCode(response);
-			StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
-					new TypeReference<StreamResponse<FeedFollow>>() {
-					});
-			return streamResponse.getResults();
-		}
+				.queryParam(API_KEY, apiKey), filter).build().toURL()).get();
+
+		Request request = addAuthentication(feed, requestBuilder).build();
+		LOG.debug("Invoking url: '{}'", request.urlString());
+
+		Response response = httpClient.newCall(request).execute();
+		handleResponseCode(response);
+		StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(response.body().byteStream(),
+				new TypeReference<StreamResponse<FeedFollow>>() {});
+		return streamResponse.getResults();
 	}
 
-    @Override
-    public void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException {
-        streamActivityRepository.deleteActivityById(feed, activityId);
-    }
+	@Override
+	public void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException {
+		streamActivityRepository.deleteActivityById(feed, activityId);
+	}
 
-    @Override
-    public void deleteActivityByForeignId(BaseFeed feed, String foreignId) throws IOException, StreamClientException {
-        streamActivityRepository.deleteActivityByForeignId(feed, foreignId);
-    }
+	@Override
+	public void deleteActivityByForeignId(BaseFeed feed, String activityId) throws IOException, StreamClientException {
+		streamActivityRepository.deleteActivityByForeignId(feed, activityId);
+	}
 
 	@Override
 	public <T extends BaseActivity> StreamResponse<T> getActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
@@ -193,21 +191,19 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	@Override
 	public void shutdown() throws IOException {
-		this.httpClient.close();
+		//do nothing
 	}
 
-	private void fireAndForget(final HttpRequestBase request) throws IOException, StreamClientException {
-		LOG.debug("Invoking url: '{}", request.getURI());
-		try (CloseableHttpResponse response = httpClient.execute(request, HttpClientContext.create())) {
-			handleResponseCode(response);
-		}
+	private void fireAndForget(final Request request) throws IOException, StreamClientException {
+		LOG.debug("Invoking url: '{}", request.urlString());
+		handleResponseCode(httpClient.newCall(request).execute());
 	}
 
-	private void handleResponseCode(CloseableHttpResponse response) throws StreamClientException, IOException {
+	private void handleResponseCode(Response response) throws StreamClientException, IOException {
 		exceptionHandler.handleResponseCode(response);
 	}
 
-	private HttpRequestBase addAuthentication(BaseFeed feed, HttpRequestBase httpRequest) {
+	private Request.Builder addAuthentication(BaseFeed feed, Request.Builder httpRequest) {
 		return StreamRepoUtils.addAuthentication(feed, secretKey, httpRequest);
 	}
 
