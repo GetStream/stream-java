@@ -142,4 +142,9 @@ public class BaseFeed implements Feed {
     public String getId() {
         return id;
     }
+
+    @Override
+    public String getToken() {
+        return null;
+    }
 }

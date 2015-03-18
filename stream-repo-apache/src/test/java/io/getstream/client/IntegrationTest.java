@@ -25,9 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IntegrationTest {
@@ -56,17 +54,6 @@ public class IntegrationTest {
         streamClient.shutdown();
     }
 
-    @Ignore
-    public void shouldGetFollowing() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
-                API_SECRET);
-
-        Feed feed = streamClient.newFeed("user", "2");
-        List<FeedFollow> following = feed.getFollowing();
-        assertThat(following.size(), is(3));
-        streamClient.shutdown();
-    }
-
     @Test
     public void shouldFollow() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
@@ -84,6 +71,10 @@ public class IntegrationTest {
 
         List<FeedFollow> followingAfter = feed.getFollowing();
         assertThat(followingAfter.size(), is(3));
+
+        FeedFilter filter = new FeedFilter.Builder().withLimit(1).withOffset(1).build();
+        List<FeedFollow> followingPaged = feed.getFollowing(filter);
+        assertThat(followingPaged.size(), is(1));
 
         streamClient.shutdown();
     }
@@ -489,4 +480,13 @@ public class IntegrationTest {
         streamClient.shutdown();
     }
 
+    @Test
+    public void shouldHaveToken() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+        Feed feed = streamClient.newFeed("aggregated", "whatever");
+        // TODO: test feed has getToken method
+        String token = feed.getToken();
+        assertThat(token, notNullValue());
+    }
 }
