@@ -189,6 +189,8 @@ public interface StreamRepository {
      */
     <T extends BaseActivity> StreamResponse<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, MarkedActivity markAsRead, MarkedActivity markAsSeen) throws IOException, StreamClientException;
 
+    public String getToken(BaseFeed feed);
+
     /**
      * Send the shutdown signal to the client.
      *

@@ -65,6 +65,11 @@ import static client.repo.utils.FeedFilterUtils.apply;
  */
 public class StreamRepositoryImpl implements StreamRepository {
 
+	@Override
+	public String getToken(BaseFeed feed) {
+		return StreamRepoUtils.createFeedToken(feed, secretKey);
+	}
+
 	private static final Logger LOG = LoggerFactory.getLogger(StreamRepositoryImpl.class);
 
 	static final String API_KEY = "api_key";

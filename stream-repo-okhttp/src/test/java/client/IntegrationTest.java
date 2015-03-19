@@ -486,7 +486,6 @@ public class IntegrationTest {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
         Feed feed = streamClient.newFeed("aggregated", "whatever");
-        // TODO: test feed has getToken method
         String token = feed.getToken();
         assertThat(token, notNullValue());
     }

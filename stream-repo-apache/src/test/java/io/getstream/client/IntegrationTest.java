@@ -15,8 +15,7 @@ import io.getstream.client.service.AggregatedActivityServiceImpl;
 import io.getstream.client.service.FlatActivityServiceImpl;
 import io.getstream.client.service.NotificationActivityServiceImpl;
 import org.hamcrest.MatcherAssert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
+//import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -482,7 +481,6 @@ public class IntegrationTest {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
         Feed feed = streamClient.newFeed("aggregated", "whatever");
-        // TODO: test feed has getToken method
         String token = feed.getToken();
         assertThat(token, notNullValue());
     }

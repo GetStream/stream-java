@@ -56,13 +56,34 @@ public class StreamRepoUtils {
      * @return Request with the Authorization header.
      */
     public static HttpRequestBase addAuthentication(BaseFeed feed, String secretKey, HttpRequestBase httpRequest) {
-        String tokenId = feed.getFeedSlug().concat(feed.getUserId());
-        try {
-            httpRequest.addHeader("Authorization", String.format("%s %s", tokenId, SignatureUtils.calculateHMAC(secretKey, tokenId)));
-        } catch (SignatureException | NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException e) {
-            throw new RuntimeException("Fatal error: cannot create authentication token.");
-        }
+        httpRequest.addHeader("Authorization", createFeedSignature(feed, secretKey));
         return httpRequest;
     }
 
+    /**
+     * Generate the token for a feed.
+     *
+     * @param feed
+     * @param secretKey
+     * @return String feed token.
+     */
+    public static String createFeedToken(BaseFeed feed, String secretKey){
+        try {
+            return SignatureUtils.calculateHMAC(secretKey, feed.getFeedId());
+        } catch (SignatureException | NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException e) {
+            throw new RuntimeException("Fatal error: cannot create authentication token.");
+        }
+    }
+
+    /**
+     * Generate the signature for a feed.
+     *
+     * @param feed
+     * @param secretKey
+     * @return String feed token.
+     */
+    public static String createFeedSignature(BaseFeed feed, String secretKey){
+        String token = createFeedToken(feed, secretKey);
+        return String.format("%s %s", feed.getFeedId(), token);
+    }
 }

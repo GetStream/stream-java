@@ -192,6 +192,11 @@ public class StreamRepositoryImpl implements StreamRepository {
 	}
 
 	@Override
+	public String getToken(BaseFeed feed) {
+		return StreamRepoUtils.createFeedToken(feed, secretKey);
+	}
+
+	@Override
 	public void shutdown() throws IOException {
 		this.httpClient.close();
 	}

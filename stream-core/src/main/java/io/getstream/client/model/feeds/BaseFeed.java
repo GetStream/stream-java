@@ -134,6 +134,10 @@ public class BaseFeed implements Feed {
         return feedSlug;
     }
 
+    public String getFeedId() {
+        return getFeedSlug().concat(getUserId());
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -145,6 +149,6 @@ public class BaseFeed implements Feed {
 
     @Override
     public String getToken() {
-        return null;
+        return streamRepository.getToken(this);
     }
 }
