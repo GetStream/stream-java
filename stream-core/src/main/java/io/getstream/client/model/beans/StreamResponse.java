@@ -49,6 +49,11 @@ public class StreamResponse<T> {
 
     private long unseen;
 
+    private List<T> activities;
+
+    public List<T> activities() {
+        return activities;
+    }
     public List<T> getResults() {
         return results;
     }

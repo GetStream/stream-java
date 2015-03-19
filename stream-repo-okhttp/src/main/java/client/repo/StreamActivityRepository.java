@@ -53,6 +53,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static client.repo.utils.FeedFilterUtils.apply;
 
@@ -94,6 +97,26 @@ public class StreamActivityRepository {
 		handleResponseCode(response);
 		return objectMapper.readValue(response.body().byteStream(),
 				objectMapper.getTypeFactory().constructType(activity.getClass()));
+	}
+
+	public <T extends BaseActivity> StreamResponse<T> addActivities(BaseFeed feed, Class<T> type, List<T> activities) throws StreamClientException, IOException {
+		Request.Builder requestBuilder = new Request.Builder().url(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
+				.queryParam(StreamRepositoryImpl.API_KEY, apiKey).build().toURL());
+
+//		SignatureUtils.addSignatureToRecipients(secretKey, activity);
+		Map<String, List<T>> map = new HashMap<String, List<T>>();
+		map.put("activities", activities);
+
+		requestBuilder.post(RequestBody.create(MediaType.parse(APPLICATION_JSON), objectMapper.writeValueAsString(map)));
+
+		Request request = addAuthentication(feed, requestBuilder).build();
+		LOG.debug("Invoking url: '{}", request.urlString());
+
+		Response response = httpClient.newCall(request).execute();
+		handleResponseCode(response);
+		return objectMapper.readValue(response.body().byteStream(),
+				objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, type));
 	}
 
 	public <T extends BaseActivity> StreamResponse<T> getActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {

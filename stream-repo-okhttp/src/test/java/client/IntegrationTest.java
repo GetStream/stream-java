@@ -21,6 +21,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -169,6 +170,27 @@ public class IntegrationTest {
         activity.setTarget("target");
         activity.setVerb("verb");
         flatActivityService.addActivity(activity);
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldAddActivities() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        String userId = this.getTestUserId("shouldAddActivities");
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        List<SimpleActivity> activities = new ArrayList<SimpleActivity>();
+        for(int i = 0; i < 5; i++ ) {
+            SimpleActivity activity = new SimpleActivity();
+            activity.setActor("actor");
+            activity.setObject("object");
+            activity.setTarget("target");
+            activity.setVerb("verb");
+            activities.add(i, activity);
+        }
+        flatActivityService.addActivities(activities);
         streamClient.shutdown();
     }
 

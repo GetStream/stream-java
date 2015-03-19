@@ -136,6 +136,18 @@ public interface StreamRepository {
     <T extends BaseActivity> T addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException;
 
     /**
+     * Add a new activity to the given feed.
+     *
+     * @param <T>
+     * @param feed     Feed which the activities belong to
+     * @param activities List<Activity> to add.
+     * @return
+     * @throws StreamClientException
+     * @throws IOException
+     */
+    <T extends BaseActivity> StreamResponse<T> addActivities(BaseFeed feed, Class<T> type, List<T> activities) throws StreamClientException, IOException;
+
+    /**
      * List aggregated activities.
      *
      * @param feed   Feed which the activities belong to
