@@ -5,9 +5,20 @@
     <parent>
         <artifactId>stream-java</artifactId>
         <groupId>io.getstream.client</groupId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1-RC1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
+
+    <licenses>
+        <license>
+            <name>The New BSD License</name>
+            <url>http://www.opensource.org/licenses/bsd-license.html</url>
+        </license>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
 
     <artifactId>stream-core</artifactId>
 
