@@ -61,6 +61,8 @@ public abstract class BaseActivity {
 
     protected String origin;
     protected String duration;
+
+    @JsonProperty("foreign_id")
     protected String foreignId;
 
     @JsonIgnore
