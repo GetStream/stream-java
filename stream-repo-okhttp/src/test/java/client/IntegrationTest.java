@@ -433,12 +433,37 @@ public class IntegrationTest {
     public void shouldGetActivitiesFromNotificationFeed() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
-
-        Feed feed = streamClient.newFeed("notification", "2");
+        String userId = getTestUserId("shouldGetActivitiesFromNotificationFeed");
+        Feed feed = streamClient.newFeed("notification", userId);
         NotificationActivityServiceImpl<SimpleActivity> notificationActivityService =
                 feed.newNotificationActivityService(SimpleActivity.class);
         StreamResponse<NotificationActivity<SimpleActivity>> response =
                 notificationActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(), true, true);
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldGetActivitiesFromNotificationFeedAndMarkThem() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+        String userId = getTestUserId("shouldGetActivitiesFromNotificationFeedAndMarkThem");
+        Feed feed = streamClient.newFeed("notification", userId);
+        NotificationActivityServiceImpl<SimpleActivity> notificationActivityService =
+                feed.newNotificationActivityService(SimpleActivity.class);
+        StreamResponse<NotificationActivity<SimpleActivity>> response =
+                notificationActivityService.getActivities();
+        assertThat((int)response.getUnread(), is(0));
+        assertThat((int) response.getUnseen(), is(0));
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("like");
+        notificationActivityService.addActivity(activity);
+        StreamResponse<NotificationActivity<SimpleActivity>> responseAfter =
+                notificationActivityService.getActivities();
+        assertThat((int)responseAfter.getUnread(), is(1));
+        assertThat((int) responseAfter.getUnseen(), is(1));
         streamClient.shutdown();
     }
 
