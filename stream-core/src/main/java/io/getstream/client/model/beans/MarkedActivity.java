@@ -55,7 +55,7 @@ public class MarkedActivity {
         if (activityIds == null) {
             return false;
         }
-        return activityIds.isEmpty();
+        return !activityIds.isEmpty();
     }
 
     public String joinActivities() {
