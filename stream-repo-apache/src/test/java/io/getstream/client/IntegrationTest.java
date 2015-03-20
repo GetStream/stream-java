@@ -465,7 +465,6 @@ public class IntegrationTest {
                 notificationActivityService.getActivities(new FeedFilter.Builder().build(), true, false);
         assertThat((int)responseAfterMark.getUnread(), is(0));
         assertThat((int) responseAfterMark.getUnseen(), is(1));
-        streamClient.shutdown();
 
         StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark2 =
                 notificationActivityService.getActivities(new FeedFilter.Builder().build(), false, true);
