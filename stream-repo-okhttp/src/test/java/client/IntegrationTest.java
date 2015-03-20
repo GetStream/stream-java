@@ -52,8 +52,20 @@ public class IntegrationTest {
     public void shouldGetFollowers() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
-        String userId = this.getTestUserId("2");
-        Feed feed = streamClient.newFeed("user", userId);
+        String followerId = this.getTestUserId("shouldGetFollowers");
+        String followedId = this.getTestUserId("shouldGetFollowersFollowed");
+        Feed feed = streamClient.newFeed("user", followerId);
+        Feed followedFeed = streamClient.newFeed("user", followedId);
+
+        List<FeedFollow> followers = followedFeed.getFollowers();
+        assertThat(followers.size(), is(0));
+
+        feed.follow("user", followedId);
+
+        List<FeedFollow> followersAfter = followedFeed.getFollowers();
+        assertThat(followersAfter.size(), is(1));
+
+        streamClient.shutdown();
         streamClient.shutdown();
     }
 
