@@ -11,16 +11,10 @@ Download the latest JAR or grab via Maven:
 
 ```xml
 <dependency>
-  <groupId></groupId>
-  <artifactId></artifactId>
-  <version></version>
+    <groupId>io.getstream.client</groupId>
+    <artifactId>stream-repo-okhttp</artifactId>
+    <version>0.1-RC2</version>
 </dependency>
-```
-
-or Gradle:
-
-```
-compile 'groupId:artifactId:version'
 ```
 
 Snapshots of the development version are available in Sonatype's snapshots repository.
