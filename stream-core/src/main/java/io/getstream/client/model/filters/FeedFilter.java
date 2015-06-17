@@ -135,9 +135,5 @@ public class FeedFilter {
             return this;
         }
 
-        public Builder withFeedIds(List<String> feedIds) {
-            feedFilter.feedIds = feedIds;
-            return this;
-        }
     }
 }
