@@ -74,9 +74,9 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	static final String API_KEY = "api_key";
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setPropertyNamingStrategy(
-                                                                                                          /* will convert camelStyle to lower_case_style */
-                                                                                                          PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+	/* will convert camelStyle to lower_case_style */
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setPropertyNamingStrategy(
+			PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
 
 	private final URI baseEndpoint;
 	private final String apiKey;
@@ -151,15 +151,15 @@ public class StreamRepositoryImpl implements StreamRepository {
 		}
 	}
 
-    @Override
-    public void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException {
-        streamActivityRepository.deleteActivityById(feed, activityId);
-    }
+	@Override
+	public void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException {
+		streamActivityRepository.deleteActivityById(feed, activityId);
+	}
 
-    @Override
-    public void deleteActivityByForeignId(BaseFeed feed, String foreignId) throws IOException, StreamClientException {
-        streamActivityRepository.deleteActivityByForeignId(feed, foreignId);
-    }
+	@Override
+	public void deleteActivityByForeignId(BaseFeed feed, String foreignId) throws IOException, StreamClientException {
+		streamActivityRepository.deleteActivityByForeignId(feed, foreignId);
+	}
 
 	@Override
 	public <T extends BaseActivity> StreamResponse<T> getActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
