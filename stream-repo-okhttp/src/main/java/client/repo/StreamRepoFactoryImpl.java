@@ -31,19 +31,33 @@
 package client.repo;
 
 import com.squareup.okhttp.ConnectionPool;
+import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Response;
 import io.getstream.client.config.AuthenticationHandlerConfiguration;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.repo.StreamRepoFactory;
 import io.getstream.client.repo.StreamRepository;
+import io.getstream.client.util.InfoUtil;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Create a new StreamRepository using the ApacheHttpClient.
  */
 public class StreamRepoFactoryImpl implements StreamRepoFactory {
-    @Override
+
+	private static final String USER_AGENT_PREFIX = "okhttp stream-java %s v%s";
+
+	private final String userAgent;
+
+	public StreamRepoFactoryImpl() {
+		this.userAgent = String.format(USER_AGENT_PREFIX, System.getProperty("os.name"),
+				InfoUtil.getProperties().getProperty(InfoUtil.VERSION));
+	}
+
+	@Override
     public StreamRepository newInstance(ClientConfiguration clientConfiguration,
                                         AuthenticationHandlerConfiguration authenticationHandlerConfiguration) {
         return new StreamRepositoryImpl(clientConfiguration, initClient(clientConfiguration));
@@ -55,7 +69,18 @@ public class StreamRepoFactoryImpl implements StreamRepoFactory {
 		client.setReadTimeout(config.getTimeout(), TimeUnit.MILLISECONDS);
 		client.setWriteTimeout(config.getTimeout(), TimeUnit.MILLISECONDS);
 		client.setRetryOnConnectionFailure(true);
+		client.interceptors().add(new UserAgentInterceptor());
 		client.setConnectionPool(new ConnectionPool(config.getMaxConnections(), config.getKeepAlive()));
 		return client;
     }
+
+	/**
+	 * Add custom user-agent to the request.
+	 */
+	class UserAgentInterceptor implements Interceptor {
+		@Override
+		public Response intercept(Chain chain) throws IOException {
+			return chain.proceed(chain.request().newBuilder().header("User-Agent", userAgent).build());
+		}
+	}
 }
