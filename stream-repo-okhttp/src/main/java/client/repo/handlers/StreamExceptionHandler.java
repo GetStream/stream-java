@@ -63,8 +63,8 @@ public class StreamExceptionHandler {
      * Translate http status code to Java Exception.
      *
      * @param response Response
-     * @throws java.io.IOException
-     * @throws io.getstream.client.exception.StreamClientException
+     * @throws IOException
+     * @throws StreamClientException
      */
     public void handleResponseCode(final Response response) throws IOException, StreamClientException {
         switch (response.code()) {
@@ -87,7 +87,9 @@ public class StreamExceptionHandler {
         exception.setCode(error.getCode());
         exception.setHttpStatusCode(error.getStatusCode());
         exception.setDetail(error.getDetail());
-        exception.setExceptionField(error.getException());
+        exception.setExceptionFields(error.getExceptionFields());
+        exception.setDuration(error.getDuration());
+        exception.setException(error.getException());
         return exception;
     }
 }
