@@ -89,7 +89,9 @@ public class StreamExceptionHandler {
         exception.setCode(error.getCode());
         exception.setHttpStatusCode(error.getStatusCode());
         exception.setDetail(error.getDetail());
-        exception.setExceptionField(error.getException());
+        exception.setExceptionFields(error.getExceptionFields());
+        exception.setDuration(error.getDuration());
+        exception.setException(error.getException());
         return exception;
     }
 }
