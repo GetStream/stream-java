@@ -52,7 +52,7 @@ public abstract class BaseActivity {
     protected String object;
     protected String target;
 
-    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.0000")
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.S")
     protected Date time;
 
     public BaseActivity() {
