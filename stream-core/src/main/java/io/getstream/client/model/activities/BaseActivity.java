@@ -30,6 +30,7 @@
  */
 package io.getstream.client.model.activities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -50,6 +51,8 @@ public abstract class BaseActivity {
     protected String verb;
     protected String object;
     protected String target;
+
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.0000")
     protected Date time;
 
     public BaseActivity() {

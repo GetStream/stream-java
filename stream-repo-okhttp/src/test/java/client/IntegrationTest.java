@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -165,6 +166,24 @@ public class IntegrationTest {
         for (SimpleActivity _activity : flatActivityService.getActivities().getResults()) {
             MatcherAssert.assertThat(_activity.getActor(), is("alessandro"));
         }
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldAddActivityWithTime() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        String userId = this.getTestUserId("shouldAddActivity");
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setTime(new Date());
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        flatActivityService.addActivity(activity);
         streamClient.shutdown();
     }
 
