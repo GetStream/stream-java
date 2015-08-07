@@ -32,6 +32,9 @@ package io.getstream.client.exception;
 
 import com.google.common.base.MoreObjects;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * This is a genera exception thrown by the StreamClient.
  */
@@ -39,8 +42,10 @@ public abstract class StreamClientException extends Exception {
 
     private int httpStatusCode;
     private int code;
-    private String exceptionField;
+    private HashMap<String,ArrayList<HashMap<String,ArrayList<String>>>> exceptionFields;
     private String detail;
+    private String duration;
+    private String exception;
 
     public StreamClientException() {
         super();
@@ -78,12 +83,12 @@ public abstract class StreamClientException extends Exception {
         this.code = code;
     }
 
-    public String getExceptionField() {
-        return exceptionField;
+    public HashMap<String,ArrayList<HashMap<String,ArrayList<String>>>> getExceptionFields() {
+        return exceptionFields;
     }
 
-    public void setExceptionField(String exceptionField) {
-        this.exceptionField = exceptionField;
+    public void setExceptionFields(HashMap<String,ArrayList<HashMap<String,ArrayList<String>>>> exceptionFields) {
+        this.exceptionFields = exceptionFields;
     }
 
     public String getDetail() {
@@ -94,12 +99,22 @@ public abstract class StreamClientException extends Exception {
         this.detail = detail;
     }
 
+    public String getDuration() { return duration; }
+
+    public void setDuration(String duration) { this.duration = duration; }
+
+    public String getException() {return exception;}
+
+    public void setException(String exception) { this.exception = exception; }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                       .add("statusCode", this.httpStatusCode)
+                       .add("status_code", this.httpStatusCode)
                        .add("code", this.code)
-                       .add("exception", this.exceptionField)
-                       .add("detail", this.detail).toString();
+                       .add("exception", this.exception)
+                       .add("detail", this.detail)
+                       .add("exception_fields",this.exceptionFields)
+                       .add("duration",this.duration).toString();
     }
 }

@@ -32,6 +32,9 @@ package io.getstream.client.model.beans;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Map the response message coming from GetStream.io server.
  */
@@ -41,6 +44,9 @@ public class StreamErrorResponse {
     private String detail;
     private String duration;
     private String exception;
+    @JsonProperty("exception_fields")
+    private HashMap<String,ArrayList<HashMap<String,ArrayList<String>>>> exceptionFields;
+
 
     @JsonProperty("status_code")
     private int statusCode;
@@ -63,5 +69,13 @@ public class StreamErrorResponse {
 
     public int getStatusCode() {
         return statusCode;
+    }
+
+    public HashMap<String,ArrayList<HashMap<String,ArrayList<String>>>> getExceptionFields() {
+        return exceptionFields;
+    }
+
+    public void setExceptionFields(HashMap<String,ArrayList<HashMap<String,ArrayList<String>>>> exceptionFields) {
+        this.exceptionFields = exceptionFields;
     }
 }

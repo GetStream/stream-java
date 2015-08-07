@@ -9,7 +9,6 @@ import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.FeedFollow;
-import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
@@ -22,6 +21,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -54,20 +54,8 @@ public class IntegrationTest {
     public void shouldGetFollowers() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
-        String followerId = this.getTestUserId("shouldGetFollowers");
-        String followedId = this.getTestUserId("shouldGetFollowersFollowed");
-        Feed feed = streamClient.newFeed("user", followerId);
-        Feed followedFeed = streamClient.newFeed("user", followedId);
-
-        List<FeedFollow> followers = followedFeed.getFollowers();
-        assertThat(followers.size(), is(0));
-
-        feed.follow("user", followedId);
-
-        List<FeedFollow> followersAfter = followedFeed.getFollowers();
-        assertThat(followersAfter.size(), is(1));
-
-        streamClient.shutdown();
+        String userId = this.getTestUserId("2");
+        Feed feed = streamClient.newFeed("user", userId);
         streamClient.shutdown();
     }
 
@@ -436,6 +424,25 @@ public class IntegrationTest {
         Feed feed = streamClient.newFeed("foo", "2");
         FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
         flatActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build());
+
+        //When adding activity with invalid fields
+        Feed newFeed = streamClient.newFeed("aggregated", "whatever");
+        AggregatedActivityServiceImpl<SimpleActivity> aggregatedActivityService =
+                feed.newAggregatedActivityService(SimpleActivity.class);
+
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("like");
+        ArrayList<String> toList=new ArrayList<>();
+        toList.add("2");//Should be "aggregated:2"
+        activity.setTo(toList);
+        try {
+            aggregatedActivityService.addActivity(activity);
+        }catch (IOException|StreamClientException ex){
+            assertThat(ex.getStackTrace().getClass().toString(), is(InvalidOrMissingInputException.class.toString()));
+        }
         streamClient.shutdown();
     }
 
@@ -453,87 +460,12 @@ public class IntegrationTest {
     public void shouldGetActivitiesFromNotificationFeed() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
-        String userId = getTestUserId("shouldGetActivitiesFromNotificationFeed");
-        Feed feed = streamClient.newFeed("notification", userId);
+
+        Feed feed = streamClient.newFeed("notification", "2");
         NotificationActivityServiceImpl<SimpleActivity> notificationActivityService =
                 feed.newNotificationActivityService(SimpleActivity.class);
         StreamResponse<NotificationActivity<SimpleActivity>> response =
                 notificationActivityService.getActivities(new FeedFilter.Builder().withLimit(50).withOffset(2).build(), true, true);
-        streamClient.shutdown();
-    }
-
-    @Test
-    public void shouldGetActivitiesFromNotificationFeedAndMarkThem() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
-                API_SECRET);
-        String userId = getTestUserId("shouldGetActivitiesFromNotificationFeedAndMarkThem");
-        Feed feed = streamClient.newFeed("notification", userId);
-        NotificationActivityServiceImpl<SimpleActivity> notificationActivityService =
-                feed.newNotificationActivityService(SimpleActivity.class);
-        StreamResponse<NotificationActivity<SimpleActivity>> response =
-                notificationActivityService.getActivities();
-        assertThat((int)response.getUnread(), is(0));
-        assertThat((int) response.getUnseen(), is(0));
-        SimpleActivity activity = new SimpleActivity();
-        activity.setActor("actor");
-        activity.setObject("object");
-        activity.setTarget("target");
-        activity.setVerb("like");
-        notificationActivityService.addActivity(activity);
-        StreamResponse<NotificationActivity<SimpleActivity>> responseAfter =
-                notificationActivityService.getActivities();
-        assertThat((int)responseAfter.getUnread(), is(1));
-        assertThat((int) responseAfter.getUnseen(), is(1));
-
-        StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark =
-                notificationActivityService.getActivities(new FeedFilter.Builder().build(), true, false);
-        assertThat((int)responseAfterMark.getUnread(), is(0));
-        assertThat((int) responseAfterMark.getUnseen(), is(1));
-
-        StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark2 =
-                notificationActivityService.getActivities(new FeedFilter.Builder().build(), false, true);
-        assertThat((int)responseAfterMark2.getUnread(), is(0));
-        assertThat((int) responseAfterMark2.getUnseen(), is(0));
-        streamClient.shutdown();
-    }
-
-    @Test
-    public void shouldGetActivitiesFromNotificationFeedAndMarkThemById() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
-                API_SECRET);
-        String userId = getTestUserId("shouldGetActivitiesFromNotificationFeedAndMarkThemById");
-        Feed feed = streamClient.newFeed("notification", userId);
-        NotificationActivityServiceImpl<SimpleActivity> notificationActivityService =
-                feed.newNotificationActivityService(SimpleActivity.class);
-        StreamResponse<NotificationActivity<SimpleActivity>> response =
-                notificationActivityService.getActivities();
-        assertThat((int)response.getUnread(), is(0));
-        assertThat((int) response.getUnseen(), is(0));
-        SimpleActivity activity = new SimpleActivity();
-        activity.setActor("actor");
-        activity.setObject("object");
-        activity.setTarget("target");
-        activity.setVerb("like");
-        notificationActivityService.addActivity(activity);
-        activity.setVerb("dislike");
-        notificationActivityService.addActivity(activity);
-        StreamResponse<NotificationActivity<SimpleActivity>> responseAfter =
-                notificationActivityService.getActivities();
-        assertThat((int)responseAfter.getUnread(), is(2));
-        assertThat((int) responseAfter.getUnseen(), is(2));
-
-        String aid = responseAfter.getResults().get(0).getId();
-        MarkedActivity marker = new MarkedActivity.Builder().withActivityId(aid).build();
-        StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark =
-                notificationActivityService.getActivities(new FeedFilter.Builder().build(), marker, new MarkedActivity.Builder().build());
-        assertThat((int)responseAfterMark.getUnread(), is(1));
-        assertThat((int)responseAfterMark.getUnseen(), is(2));
-
-        StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark2 =
-                notificationActivityService.getActivities(new FeedFilter.Builder().build(), new MarkedActivity.Builder().build(), marker);
-        assertThat((int)responseAfterMark2.getUnread(), is(1));
-        assertThat((int)responseAfterMark2.getUnseen(), is(1));
-
         streamClient.shutdown();
     }
 
@@ -593,6 +525,7 @@ public class IntegrationTest {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
         Feed feed = streamClient.newFeed("aggregated", "whatever");
+        // TODO: test feed has getToken method
         String token = feed.getToken();
         assertThat(token, notNullValue());
     }
