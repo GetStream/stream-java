@@ -31,13 +31,13 @@
 package io.getstream.client.repo;
 
 import io.getstream.client.exception.StreamClientException;
-import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
-import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.beans.FeedFollow;
+import io.getstream.client.model.feeds.BaseFeed;
+import io.getstream.client.model.activities.AggregatedActivity;
+import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamResponse;
-import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 
 import java.io.IOException;
