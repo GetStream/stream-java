@@ -32,11 +32,12 @@ package io.getstream.client.model.beans;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+import io.getstream.client.model.activities.BaseActivity;
 
 import java.util.List;
 
 /**
- * Allow a list of {@link io.getstream.client.model.activities.BaseActivity} to be marked.
+ * Allow a list of {@link BaseActivity} to be marked.
  * The purpose of the mark is given by the context in which it used for.
  */
 public class MarkedActivity {

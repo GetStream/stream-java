@@ -31,6 +31,8 @@
 package io.getstream.client.model.beans;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Map the response message coming from GetStream.io server.
@@ -44,6 +46,9 @@ public class StreamErrorResponse {
 
     @JsonProperty("status_code")
     private int statusCode;
+
+    @JsonProperty("exception_fields")
+    private JsonNode exceptionFields;
 
     public int getCode() {
         return code;
@@ -63,5 +68,14 @@ public class StreamErrorResponse {
 
     public int getStatusCode() {
         return statusCode;
+    }
+
+    @JsonRawValue
+    public String getExceptionFields() {
+        return exceptionFields == null ? null : exceptionFields.toString();
+    }
+
+    public void setExceptionFields(JsonNode exceptionFields) {
+        this.exceptionFields = exceptionFields;
     }
 }

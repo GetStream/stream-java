@@ -31,8 +31,8 @@
 package io.getstream.client.service;
 
 import io.getstream.client.exception.StreamClientException;
-import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
+import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.filters.FeedFilter;
 

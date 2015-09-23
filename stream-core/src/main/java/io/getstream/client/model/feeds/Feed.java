@@ -140,7 +140,7 @@ public interface Feed {
     /**
      * Get mediator service to handle aggregated activities.
      *
-     * @param clazz Subtype of {@link io.getstream.client.model.activities.BaseActivity} representing the activity type to handle.
+     * @param clazz Subtype of {@link BaseActivity} representing the activity type to handle.
      * @return
      */
     <T extends BaseActivity> AggregatedActivityServiceImpl<T> newAggregatedActivityService(Class<T> clazz);

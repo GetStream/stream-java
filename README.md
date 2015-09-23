@@ -22,9 +22,6 @@ Snapshots of the development version are available in Sonatype's snapshots repos
 ### Usage
 
 ```java
-import io.getstream.client.config.ClientConfiguration;
-import io.getstream.client.model.feeds.Feed;
-
 // Instantiate a new client to connect to us east API endpoint
 // Find your API keys here https://getstream.io/dashboard/
 
