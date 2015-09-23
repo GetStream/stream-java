@@ -34,9 +34,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRawValue;
 import com.fasterxml.jackson.databind.JsonNode;
 
-import java.beans.Transient;
-import java.util.LinkedHashMap;
-
 /**
  * Map the response message coming from GetStream.io server.
  */

@@ -90,7 +90,6 @@ public class StreamActivityRepository {
 		LOG.debug("Invoking url: '{}", request.urlString());
 
 		Response response = httpClient.newCall(request).execute();
-		//System.out.println(response.body().string());
 		handleResponseCode(response);
 		return objectMapper.readValue(response.body().byteStream(),
 				objectMapper.getTypeFactory().constructType(activity.getClass()));
