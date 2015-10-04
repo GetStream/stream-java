@@ -91,8 +91,8 @@ public class StreamRepositoryImpl implements StreamRepository {
 	 * Create a new {@link StreamRepository} using the given configuration {@link ClientConfiguration} and
 	 * a pre-instantiated HttpClient {@link CloseableHttpClient}.
 	 *
-	 * @param streamClient
-	 * @param closeableHttpClient
+	 * @param streamClient Client configuration
+	 * @param closeableHttpClient Actual instance of Apache client
 	 */
 	public StreamRepositoryImpl(ClientConfiguration streamClient, CloseableHttpClient closeableHttpClient) {
 		this.baseEndpoint = streamClient.getRegion().getEndpoint();

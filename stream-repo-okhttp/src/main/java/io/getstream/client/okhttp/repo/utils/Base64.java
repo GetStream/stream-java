@@ -105,6 +105,7 @@ public class Base64 {
 	 * @param flags  controls certain features of the decoded output.
 	 *               Pass {@code DEFAULT} to decode standard Base64.
 	 *
+	 * @return byte array
 	 * @throws IllegalArgumentException if the input contains
 	 * incorrect padding
 	 */
@@ -123,6 +124,7 @@ public class Base64 {
 	 * @param flags  controls certain features of the decoded output.
 	 *               Pass {@code DEFAULT} to decode standard Base64.
 	 *
+	 * @return byte array
 	 * @throws IllegalArgumentException if the input contains
 	 * incorrect padding
 	 */
@@ -143,6 +145,7 @@ public class Base64 {
 	 * @param flags  controls certain features of the decoded output.
 	 *               Pass {@code DEFAULT} to decode standard Base64.
 	 *
+	 * @return byte array
 	 * @throws IllegalArgumentException if the input contains
 	 * incorrect padding
 	 */
@@ -444,6 +447,7 @@ public class Base64 {
 	 * @param flags  controls certain features of the encoded output.
 	 *               Passing {@code DEFAULT} results in output that
 	 *               adheres to RFC 2045.
+	 * @return string representation
 	 */
 	public static String encodeToString(byte[] input, int flags) {
 		try {
@@ -465,6 +469,7 @@ public class Base64 {
 	 * @param flags  controls certain features of the encoded output.
 	 *               Passing {@code DEFAULT} results in output that
 	 *               adheres to RFC 2045.
+	 * @return string representation
 	 */
 	public static String encodeToString(byte[] input, int offset, int len, int flags) {
 		try {
@@ -483,6 +488,7 @@ public class Base64 {
 	 * @param flags  controls certain features of the encoded output.
 	 *               Passing {@code DEFAULT} results in output that
 	 *               adheres to RFC 2045.
+	 * @return byte array
 	 */
 	public static byte[] encode(byte[] input, int flags) {
 		return encode(input, 0, input.length, flags);
@@ -499,6 +505,7 @@ public class Base64 {
 	 * @param flags  controls certain features of the encoded output.
 	 *               Passing {@code DEFAULT} results in output that
 	 *               adheres to RFC 2045.
+	 * @return byte array
 	 */
 	public static byte[] encode(byte[] input, int offset, int len, int flags) {
 		Encoder encoder = new Encoder(flags, null);

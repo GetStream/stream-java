@@ -50,9 +50,9 @@ public class StreamRepoUtils {
     /**
      * Generate the authentication header.
      *
-     * @param feed
-     * @param secretKey
-     * @param httpRequest
+     * @param feed Source feed
+     * @param secretKey Secret key
+     * @param httpRequest incoming HTTP request
      * @return Request with the Authorization header.
      */
     public static HttpRequestBase addAuthentication(BaseFeed feed, String secretKey, HttpRequestBase httpRequest) {
@@ -63,8 +63,8 @@ public class StreamRepoUtils {
     /**
      * Generate the token for a feed.
      *
-     * @param feed
-     * @param secretKey
+     * @param feed Source feed
+     * @param secretKey Secret key
      * @return String feed token.
      */
     public static String createFeedToken(BaseFeed feed, String secretKey){
@@ -78,8 +78,8 @@ public class StreamRepoUtils {
     /**
      * Generate the signature for a feed.
      *
-     * @param feed
-     * @param secretKey
+     * @param feed Source feed
+     * @param secretKey Secret key
      * @return String feed token.
      */
     public static String createFeedSignature(BaseFeed feed, String secretKey){

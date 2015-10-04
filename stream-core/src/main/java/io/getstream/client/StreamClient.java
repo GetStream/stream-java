@@ -42,16 +42,16 @@ public interface StreamClient {
     /**
      * Get a new instance of the Feed.
      *
-     * @param feedSlug
-     * @param id
-     * @return
+     * @param feedSlug Feed slug
+     * @param id Feed id
+     * @return A new feed
      */
     Feed newFeed(String feedSlug, String id);
 
     /**
      * Send the shutdown signal to the client.
      *
-     * @throws IOException
+     * @throws IOException in case of network/socket exceptions
      */
     void shutdown() throws IOException;
 }

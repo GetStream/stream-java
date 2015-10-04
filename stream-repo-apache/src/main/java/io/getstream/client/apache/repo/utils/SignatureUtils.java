@@ -60,6 +60,7 @@ public final class SignatureUtils {
      *
      * @param secretKey Secret key
      * @param activity  Activity to sign.
+     * @throws StreamClientException in case of functional or server-side exceptions
      */
     public static void addSignatureToRecipients(final String secretKey, final BaseActivity activity) throws StreamClientException {
         if (activity.getTo() != null && !activity.getTo().isEmpty()) {
@@ -81,13 +82,13 @@ public final class SignatureUtils {
      * @param secretKey Secret key
      * @param feedId    Feed Id
      * @return Hash key
-     * @throws java.security.SignatureException
-     *
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
+     * @throws SignatureException In case of HMAC key generation process exception
+     * @throws NoSuchAlgorithmException In case of HMAC key generation process exception
+     * @throws InvalidKeyException In case of HMAC key generation process exception
+     * @throws UnsupportedEncodingException In case of HMAC key generation process exception
      */
     public static String calculateHMAC(final String secretKey, final String feedId)
-            throws java.security.SignatureException, NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
+            throws SignatureException, NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
         SecretKeySpec signingKey = new SecretKeySpec(toSHA1(secretKey), HMAC_SHA1);
         Mac mac = Mac.getInstance(HMAC_SHA1);
         mac.init(signingKey);

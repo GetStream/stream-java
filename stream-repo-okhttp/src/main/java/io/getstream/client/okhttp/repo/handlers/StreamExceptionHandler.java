@@ -53,7 +53,7 @@ public class StreamExceptionHandler {
      * Create the object using the ObjectMapper to deserialize the json response coming from
      * remote side.
      *
-     * @param objectMapper
+     * @param objectMapper Jackson's objectMapper
      */
     public StreamExceptionHandler(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -62,9 +62,9 @@ public class StreamExceptionHandler {
     /**
      * Translate http status code to Java Exception.
      *
-     * @param response Response
-     * @throws java.io.IOException
-     * @throws StreamClientException
+     * @param response HTTP Response
+     * @throws IOException in case of network/socket exceptions.
+     * @throws StreamClientException in case of functional or server-side exception
      */
     public void handleResponseCode(final Response response) throws IOException, StreamClientException {
         switch (response.code()) {

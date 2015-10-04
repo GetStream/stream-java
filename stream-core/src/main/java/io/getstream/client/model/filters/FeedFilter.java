@@ -99,7 +99,7 @@ public class FeedFilter {
         /**
          * Create a {@link FeedFilter}.
          *
-         * @return
+         * @return A new filter
          */
         public FeedFilter build() {
             return feedFilter;

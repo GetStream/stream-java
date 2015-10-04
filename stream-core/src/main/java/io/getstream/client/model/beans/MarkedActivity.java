@@ -82,7 +82,7 @@ public class MarkedActivity {
         /**
          * Build an immutable list of marked activities.
          *
-         * @return
+         * @return A marked activity
          */
         public MarkedActivity build() {
             return new MarkedActivity(markedActivity.build());

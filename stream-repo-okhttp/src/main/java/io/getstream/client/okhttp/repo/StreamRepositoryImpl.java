@@ -89,8 +89,8 @@ public class StreamRepositoryImpl implements StreamRepository {
 	 * Create a new {@link StreamRepository} using the given configuration {@link ClientConfiguration} and
 	 * a pre-instantiated HttpClient {@link OkHttpClient}.
 	 *
-	 * @param streamClient
-	 * @param closeableHttpClient
+	 * @param streamClient Client configuration
+	 * @param closeableHttpClient Actual instance of OkHTTP client
 	 */
 	public StreamRepositoryImpl(ClientConfiguration streamClient, OkHttpClient closeableHttpClient) {
 		this.baseEndpoint = streamClient.getRegion().getEndpoint();

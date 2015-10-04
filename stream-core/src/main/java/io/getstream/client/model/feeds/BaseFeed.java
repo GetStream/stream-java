@@ -58,8 +58,8 @@ public class BaseFeed implements Feed {
      *
      * @param streamRepository Provide data repository to perform actual operation on a given feed.
      *                         It must implement {@link StreamRepository}.
-     * @param feedSlug
-     * @param userId
+     * @param feedSlug Feed slug
+     * @param userId User ID
      */
     public BaseFeed(StreamRepository streamRepository, String feedSlug, String userId) {
         this.streamRepository = streamRepository;

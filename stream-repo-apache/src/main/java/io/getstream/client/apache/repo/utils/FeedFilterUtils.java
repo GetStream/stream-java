@@ -13,7 +13,8 @@ public class FeedFilterUtils {
      * Apply the filter on the given URI.
      *
      * @param uriBuilder Add attributes to the given {@link UriBuilder}.
-     * @return
+     * @param filter Instance of a filter
+     * @return A {@link UriBuilder}
      */
     public static UriBuilder apply(final UriBuilder uriBuilder, final FeedFilter filter) {
         if (null != filter.getLimit()) {

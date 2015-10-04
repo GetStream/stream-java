@@ -44,7 +44,7 @@ public interface StreamRepoFactory {
      * @param clientConfiguration Client configuration holder
      * @param authenticationHandlerConfiguration
      *                            Authentication handler (contains API key and secret key).
-     * @return
+     * @return A new instance of a {@link StreamRepository}
      */
     StreamRepository newInstance(final ClientConfiguration clientConfiguration,
                                  final AuthenticationHandlerConfiguration authenticationHandlerConfiguration);
