@@ -39,8 +39,8 @@ public interface FeedFactory {
      * Create new feed.
      *
      * @param feedSlug feed slug.
-     * @param id       feed id.
-     * @return
+     * @param id feed id.
+     * @return A new feed
      */
     Feed createFeed(String feedSlug, String id);
 }

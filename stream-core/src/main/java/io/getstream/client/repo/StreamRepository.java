@@ -53,8 +53,8 @@ public interface StreamRepository {
      *
      * @param feed       Feed that contains the activity to be deleted.
      * @param activityId Activity-id to be deleted.
-     * @throws IOException
-     * @throws StreamClientException
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException;
 
@@ -63,8 +63,8 @@ public interface StreamRepository {
      *
      * @param feed       Feed that contains the activity to be deleted.
      * @param foreignId foreignId to be deleted.
-     * @throws IOException
-     * @throws StreamClientException
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exceptions
      */
     void deleteActivityByForeignId(BaseFeed feed, String foreignId) throws IOException, StreamClientException;
 
@@ -73,40 +73,40 @@ public interface StreamRepository {
      *
      * @param feed         Feed that wants to follow a target feed.
      * @param targetFeedId Feed to follow.
-     * @throws StreamClientException
-     * @throws IOException
+     * @throws StreamClientException in case of functional or server-side exception
+     * @throws IOException in case of network/socket exceptions
      */
     void follow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException;
 
     /**
      * Unfollow a feed.
      *
-     * @param feed
+     * @param feed Source feed
      * @param targetFeedId Feed to unfollow.
-     * @throws StreamClientException
-     * @throws IOException
+     * @throws StreamClientException in case of functional or server-side exception
+     * @throws IOException in case of network/socket exceptions
      */
     void unfollow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException;
 
     /**
      * List the feeds which the given feed is following.
      *
-     * @param feed
+     * @param feed Source feed
      * @param filter Filter out the following list. Limited to 25 items by default.
-     * @return
-     * @throws StreamClientException
-     * @throws IOException
+     * @return List of following
+     * @throws StreamClientException in case of functional or server-side exception
+     * @throws IOException in case of network/socket exceptions
      */
     List<FeedFollow> getFollowing(BaseFeed feed, FeedFilter filter) throws StreamClientException, IOException;
 
     /**
      * Lists the followers for the given feed.
      *
-     * @param feed
+     * @param feed Source feed
      * @param filter Filter out the followers list. Limited to 25 items by default.
-     * @return
-     * @throws StreamClientException
-     * @throws IOException
+     * @return List of followers
+     * @throws StreamClientException in case of functional or server-side exception
+     * @throws IOException in case of network/socket exceptions
      */
     List<FeedFollow> getFollowers(BaseFeed feed, FeedFilter filter) throws StreamClientException, IOException;
 
@@ -116,10 +116,10 @@ public interface StreamRepository {
      * @param feed   Feed which the activities belong to
      * @param type   Type of the activity. Must be a subtype of {@link BaseActivity}
      * @param filter Filter out the activities. Limited to 25 items by default.
-     * @param <T>
-     * @return
-     * @throws IOException
-     * @throws StreamClientException
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @return List of activities
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     <T extends BaseActivity> StreamResponse<T> getActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
 
@@ -128,10 +128,10 @@ public interface StreamRepository {
      *
      * @param feed     Feed which the activities belong to
      * @param activity Activity to add.
-     * @param <T>
-     * @return
-     * @throws StreamClientException
-     * @throws IOException
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @return Activity as returned by the Stream server
+     * @throws StreamClientException in case of functional or server-side exception
+     * @throws IOException in case of network/socket exceptions
      */
     <T extends BaseActivity> T addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException;
 
@@ -141,36 +141,38 @@ public interface StreamRepository {
      * @param feed   Feed which the activities belong to
      * @param type   Type of the activity. Must be a subtype of {@link BaseActivity}
      * @param filter Filter out the activities. Limited to 25 items by default.
-     * @param <T>
-     * @return
-     * @throws IOException
-     * @throws StreamClientException
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @return List of aggregated activities
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     <T extends BaseActivity> StreamResponse<AggregatedActivity<T>> getAggregatedActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
 
     /**
      * List notification activities.
      *
-     * @param feed
-     * @param type
+     * @param feed   Feed which the activities belong to
+     * @param type   Type of the activity. Must be a subtype of {@link BaseActivity}
      * @param filter Filter out the activities.
-     * @param <T>
-     * @return
-     * @throws IOException
-     * @throws StreamClientException
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @return List of notification activities
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     <T extends BaseActivity> StreamResponse<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException;
 
     /**
      * List notifications marking the activities as read and/or as seen.
      *
-     * @param feed
-     * @param type
+     * @param feed   Feed which the activities belong to
+     * @param type   Type of the activity. Must be a subtype of {@link BaseActivity}
      * @param filter     Filter the activities.
      * @param markAsRead Mark all the activities as read.
      * @param markAsSeen Mark all the activities as seen.
-     * @param <T>
-     * @return
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @return List of notification activities
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     <T extends BaseActivity> StreamResponse<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, boolean markAsRead, boolean markAsSeen) throws IOException, StreamClientException;
 
@@ -179,13 +181,15 @@ public interface StreamRepository {
      * An immutable list of activities to be marked as read and/or as seen can be
      * built using the {@link MarkedActivity} builder.
      *
-     * @param feed
-     * @param type
+     * @param feed   Feed which the activities belong to
+     * @param type   Type of the activity. Must be a subtype of {@link BaseActivity}
      * @param filter     Filter the activities.
      * @param markAsRead List of activities to be marked as read.
      * @param markAsSeen List of activities to be marked as seen.
-     * @param <T>
-     * @return
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @return List of notification activities
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     <T extends BaseActivity> StreamResponse<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, MarkedActivity markAsRead, MarkedActivity markAsSeen) throws IOException, StreamClientException;
 
@@ -194,7 +198,7 @@ public interface StreamRepository {
     /**
      * Send the shutdown signal to the client.
      *
-     * @throws IOException
+     * @throws IOException in case of network/socket exceptions
      */
     void shutdown() throws IOException;
 }

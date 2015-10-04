@@ -44,7 +44,7 @@ import java.io.IOException;
 /**
  * Provide methods to interact with Notification activities of subtype of {@link BaseActivity}.
  *
- * @param <T>
+ * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
  */
 public class NotificationActivityServiceImpl<T extends BaseActivity> extends AbstractActivityService<T>
         implements NotificationActivityService<T> {

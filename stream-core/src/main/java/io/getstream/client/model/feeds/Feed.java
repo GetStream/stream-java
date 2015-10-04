@@ -47,16 +47,27 @@ import java.util.List;
  */
 public interface Feed {
 
-    public String getId();
-    public String getToken();
+    /**
+     * Get the feed ID.
+     *
+     * @return Feed ID
+     */
+    String getId();
+
+    /**
+     * Get the feed token.
+     *
+     * @return Token
+     */
+    String getToken();
 
     /**
      * Follows the given target feed.
      *
      * @param feedSlug the slug of the target feed.
-     * @param userId
-     * @throws IOException
-     * @throws StreamClientException
+     * @param userId user id
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     void follow(String feedSlug, String userId) throws IOException, StreamClientException;
 
@@ -64,18 +75,18 @@ public interface Feed {
      * Unfollow the given target feed.
      *
      * @param feedSlug the slug of the target feed.
-     * @param userId
-     * @throws IOException
-     * @throws StreamClientException
+     * @param userId user id
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     void unfollow(String feedSlug, String userId) throws IOException, StreamClientException;
 
     /**
      * Lists the followers of the feed.
      *
-     * @return
-     * @throws IOException
-     * @throws StreamClientException
+     * @return List of followers
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     List<FeedFollow> getFollowers() throws IOException, StreamClientException;
 
@@ -83,18 +94,18 @@ public interface Feed {
      * Lists the followers of the feed using the given filter.
      *
      * @param filter Filter out the followers.
-     * @return
-     * @throws IOException
-     * @throws StreamClientException
+     * @return List of followers
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     List<FeedFollow> getFollowers(FeedFilter filter) throws IOException, StreamClientException;
 
     /**
      * List the feeds which this feed is following.
      *
-     * @return
-     * @throws IOException
-     * @throws StreamClientException
+     * @return List of following
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     List<FeedFollow> getFollowing() throws IOException, StreamClientException;
 
@@ -102,9 +113,9 @@ public interface Feed {
      * List the feeds which this feed is following using the give filter.
      *
      * @param filter Filter out the list of following feeds.
-     * @return
-     * @throws IOException
-     * @throws StreamClientException
+     * @return List of following
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     List<FeedFollow> getFollowing(FeedFilter filter) throws IOException, StreamClientException;
 
@@ -112,8 +123,8 @@ public interface Feed {
      * Removes an activity from the feed.
      *
      * @param activityId the activity id to remove from this feed.
-     * @throws IOException
-     * @throws StreamClientException
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     void deleteActivity(String activityId) throws IOException, StreamClientException;
 
@@ -122,8 +133,8 @@ public interface Feed {
      * Removes an activity from the feed.
      *
      * @param foreignId the activity id to remove from this feed.
-     * @throws IOException
-     * @throws StreamClientException
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     void deleteActivityByForeignId(String foreignId) throws IOException, StreamClientException;
 
@@ -132,8 +143,8 @@ public interface Feed {
      * Get mediator service to handle aggregated activities.
      *
      * @param clazz Subtype of {@link BaseActivity} representing the activity type to handle.
-     * @param <T>
-     * @return
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @return New activity service
      */
     <T extends BaseActivity> FlatActivityServiceImpl<T> newFlatActivityService(Class<T> clazz);
 
@@ -141,7 +152,8 @@ public interface Feed {
      * Get mediator service to handle aggregated activities.
      *
      * @param clazz Subtype of {@link BaseActivity} representing the activity type to handle.
-     * @return
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @return New aggregated activity service
      */
     <T extends BaseActivity> AggregatedActivityServiceImpl<T> newAggregatedActivityService(Class<T> clazz);
 
@@ -149,8 +161,8 @@ public interface Feed {
      * Get mediator service to handle aggregated activities.
      *
      * @param clazz Subtype of {@link BaseActivity} representing the activity type to handle.
-     * @param <T>
-     * @return
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @return New user activity service
      */
     <T extends BaseActivity> UserActivityServiceImpl<T> newUserActivityService(Class<T> clazz);
 
@@ -158,8 +170,8 @@ public interface Feed {
      * Get mediator service to handle aggregated activities.
      *
      * @param clazz Subtype of {@link BaseActivity} representing the activity type to handle.
-     * @param <T>
-     * @return
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @return New notification activity service
      */
     <T extends BaseActivity> NotificationActivityServiceImpl<T> newNotificationActivityService(Class<T> clazz);
 }

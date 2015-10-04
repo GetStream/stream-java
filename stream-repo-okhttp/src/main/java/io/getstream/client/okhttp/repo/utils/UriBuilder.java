@@ -75,7 +75,7 @@ public class UriBuilder {
      * Create {@link UriBuilder} starting from a given string.
      *
      * @param endpoint Endpoint in string format.
-     * @return
+     * @return A new UriBuilder
      */
     public static UriBuilder fromEndpoint(final String endpoint) {
         UriBuilder uriBuilder = new UriBuilder(endpoint);
@@ -86,7 +86,7 @@ public class UriBuilder {
      * Create {@link UriBuilder} starting from a given URI.
      *
      * @param endpoint Endpoint in {@link java.net.URI} format.
-     * @return
+     * @return A new UriBuilder
      */
     public static UriBuilder fromEndpoint(final URI endpoint) {
         UriBuilder uriBuilder = new UriBuilder(endpoint);
@@ -97,7 +97,7 @@ public class UriBuilder {
      * Add a path component to the URI.
      *
      * @param path Path component(s) as String.
-     * @return
+     * @return itself
      */
     public UriBuilder path(String path) {
         if (uriPath.toString().endsWith(PATH_SEPARATOR)) {
@@ -113,7 +113,7 @@ public class UriBuilder {
      *
      * @param name  Name of the param.
      * @param value Value of the param.
-     * @return
+     * @return itself
      */
     public UriBuilder queryParam(String name, String value) {
 		if (uriParams.length() > 0) {
@@ -128,7 +128,7 @@ public class UriBuilder {
      *
      * @param name  Name of the param.
      * @param value Value of the numeric param (must be a {@link Integer}.
-     * @return
+     * @return itself
      */
     public UriBuilder queryParam(String name, Integer value) {
 		if (uriParams.length() > 0) {
@@ -143,7 +143,7 @@ public class UriBuilder {
      *
      * @param name  Name of the param.
      * @param value Value of the numeric param (must be a {@link Long}.
-     * @return
+     * @return itself
      */
     public UriBuilder queryParam(String name, Long value) {
 		if (uriParams.length() > 0) {
@@ -156,7 +156,7 @@ public class UriBuilder {
     /**
      * Build the final URI.
      *
-     * @return
+     * @return A {@link URI}
      */
     public URI build() throws UriBuilderException {
 		String finalUriPath = null;

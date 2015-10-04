@@ -40,7 +40,7 @@ import java.io.IOException;
 /**
  * Provides operations to be performed against activities.
  *
- * @param <T>
+ * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
  */
 public abstract class AbstractActivityService<T extends BaseActivity> {
     protected Class<T> type;
@@ -57,11 +57,11 @@ public abstract class AbstractActivityService<T extends BaseActivity> {
      * Add a new activity of type {@link T}.
      *
      * @param activity Activity to add.
-     * @return Response activity of type {@link T} coming from the server.<br/>
+     * @return Response activity of type {@link T} coming from the server.<br>
      *         The returning activity in the 'to' field contains the targetFeedId along
      *         with its signature (e.g: 'user:1 6mQhuzQ79e0rZ17bSq1CCxXoRac')
-     * @throws IOException
-     * @throws StreamClientException
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
      */
     public T addActivity(T activity) throws IOException, StreamClientException {
         return streamRepository.addActivity(this.feed, activity);

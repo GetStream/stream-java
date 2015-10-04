@@ -41,7 +41,7 @@ import java.io.IOException;
 /**
  * Jackson's custom deserializer is designed to handle responses containing signed recipients.
  * As response of adding activities, GetStream.io returns signed recipients contained
- * into a nested array, e.g.:<br/>
+ * into a nested array, e.g.:<br>
  * <pre>
  * "to": [
  *   [
@@ -54,8 +54,8 @@ import java.io.IOException;
  *   ]
  * ]
  * </pre>
- * <br/>
- * This deserializer parses the nested array and returns collapsed entries like those:<br/>
+ * <br>
+ * This deserializer parses the nested array and returns collapsed entries like those:<br>
  * <pre>
  * "to": [
  *   "user:1 6mQhuzQ79e0rZ17bSq1CCxXoRac",

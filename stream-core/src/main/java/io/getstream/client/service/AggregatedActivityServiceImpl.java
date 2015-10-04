@@ -43,7 +43,7 @@ import java.io.IOException;
 /**
  * Provide methods to interact with Aggregated activities of subtype of {@link BaseActivity}.
  *
- * @param <T>
+ * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
  */
 public class AggregatedActivityServiceImpl<T extends BaseActivity> extends AbstractActivityService<T>
         implements AggregatedActivityService<T> {
