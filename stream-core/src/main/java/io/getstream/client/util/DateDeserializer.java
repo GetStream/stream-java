@@ -19,12 +19,9 @@ import java.util.regex.Pattern;
  */
 public class DateDeserializer extends JsonDeserializer<Date> {
 
-    private final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
     private final static Pattern MICROSECONDS_PATTERN = Pattern.compile("^(.*)\\.[0-9]{6}$");
-
-    public DateDeserializer() {
-        DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
-    }
+    private static final String DEFAULT_TIMEZONE = "UTC";
+    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
     @Override
     public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
@@ -38,7 +35,9 @@ public class DateDeserializer extends JsonDeserializer<Date> {
         }
 
         try {
-            return DATE_FORMAT.parse(sourceTimestamp);
+            SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+            dateFormat.setTimeZone(TimeZone.getTimeZone(DEFAULT_TIMEZONE));
+            return dateFormat.parse(sourceTimestamp);
         } catch (ParseException e) {
             throw new JsonParseException("Cannot parse input date " + sourceTimestamp, jsonParser.getCurrentLocation());
         }
