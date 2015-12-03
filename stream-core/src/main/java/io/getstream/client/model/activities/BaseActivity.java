@@ -31,10 +31,11 @@
 package io.getstream.client.model.activities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.MoreObjects;
+import io.getstream.client.util.DateDeserializer;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -52,6 +53,7 @@ public abstract class BaseActivity {
     protected String object;
     protected String target;
 
+    @JsonDeserialize(using = DateDeserializer.class)
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.S")
     protected Date time;
 

@@ -30,6 +30,9 @@
  */
 package io.getstream.client.model.activities;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import io.getstream.client.util.DateDeserializer;
+
 import java.util.Date;
 import java.util.List;
 
@@ -38,9 +41,13 @@ public abstract class WrappedActivity<T extends BaseActivity> {
     private List<T> activities;
     private long activityCount;
     private long actorCount;
+
+    @JsonDeserialize(using = DateDeserializer.class)
     private Date createdAt;
     private String group;
     private String id;
+
+    @JsonDeserialize(using = DateDeserializer.class)
     private Date updatedAt;
     private String verb;
 
