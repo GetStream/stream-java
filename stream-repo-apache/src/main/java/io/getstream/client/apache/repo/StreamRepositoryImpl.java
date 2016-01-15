@@ -31,6 +31,7 @@
 package io.getstream.client.apache.repo;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import io.getstream.client.config.ClientConfiguration;
@@ -76,8 +77,9 @@ public class StreamRepositoryImpl implements StreamRepository {
 	static final String API_KEY = "api_key";
 
 	/* will convert camelStyle to lower_case_style */
-	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setPropertyNamingStrategy(
-			PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+			.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 	private final URI baseEndpoint;
 	private final String apiKey;
