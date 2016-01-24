@@ -30,6 +30,8 @@
  */
 package io.getstream.client.okhttp.repo;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.RequestBody;
 import io.getstream.client.model.beans.FollowMany;
@@ -81,7 +83,10 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setPropertyNamingStrategy(
 			/* will convert camelStyle to lower_case_style */
-			PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+			PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+			.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+
 
 	private final URI baseEndpoint;
 	private final String apiKey;
