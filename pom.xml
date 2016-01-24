@@ -54,6 +54,7 @@
         <logback.version>1.1.2</logback.version>
         <guava.version>18.0</guava.version>
         <jackson.version>2.4.3</jackson.version>
+        <tomitribe-http-signatures.version>1.0</tomitribe-http-signatures.version>
         <junit.version>4.11</junit.version>
     </properties>
 
@@ -93,6 +94,11 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.tomitribe</groupId>
+                <artifactId>tomitribe-http-signatures</artifactId>
+                <version>${tomitribe-http-signatures.version}</version>
             </dependency>
 
             <!-- test dependencies -->

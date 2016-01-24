@@ -28,32 +28,30 @@
  either expressed or implied, of the FreeBSD Project.
 
  */
-package io.getstream.client.model.feeds;
-
-import io.getstream.client.exception.InvalidFeedNameException;
-import io.getstream.client.repo.StreamRepository;
-
-import java.util.regex.Pattern;
+package io.getstream.client.exception;
 
 /**
- * Factory class to build a new instance of a feed.
+ * Exception returned in case the feed slug or the feed id are
+ * not valid.ß
  */
-public final class BaseFeedFactory implements FeedFactory {
+public class InvalidFeedNameException extends StreamClientException {
 
-    private final static Pattern FEED_SLUG_PATTERN = Pattern.compile(FEED_SLUG_ALLOWED_PATTERN);
-    private final static Pattern FEED_ID_PATTERN = Pattern.compile(FEED_ID_ALLOWED_PATTERN);
-
-    private final StreamRepository streamRepository;
-
-    public BaseFeedFactory(final StreamRepository streamRepository) {
-        this.streamRepository = streamRepository;
+    public InvalidFeedNameException() {
     }
 
-    @Override
-    public Feed createFeed(final String feedSlug, final String id) throws InvalidFeedNameException {
-        if (FEED_SLUG_PATTERN.matcher(feedSlug).matches() && FEED_ID_PATTERN.matcher(id).matches()) {
-            return new BaseFeed(streamRepository, feedSlug, id);
-        }
-        throw new InvalidFeedNameException("Either feedSlug or id are not valid. Feed slug only accept words, feed id accepts words and hyphens");
+    public InvalidFeedNameException(String message) {
+        super(message);
+    }
+
+    public InvalidFeedNameException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public InvalidFeedNameException(Throwable cause) {
+        super(cause);
+    }
+
+    public InvalidFeedNameException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

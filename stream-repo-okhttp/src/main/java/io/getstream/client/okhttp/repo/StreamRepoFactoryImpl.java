@@ -41,6 +41,7 @@ import io.getstream.client.repo.StreamRepository;
 import io.getstream.client.util.InfoUtil;
 
 import java.io.IOException;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,28 +49,33 @@ import java.util.concurrent.TimeUnit;
  */
 public class StreamRepoFactoryImpl implements StreamRepoFactory {
 
-	private static final String USER_AGENT_PREFIX = "okhttp stream-java %s v%s";
+	private static final String USER_AGENT_PREFIX = "stream-java-okhttp-%s";
 
 	private final String userAgent;
 
 	public StreamRepoFactoryImpl() {
-		this.userAgent = String.format(USER_AGENT_PREFIX, System.getProperty("os.name"),
-				InfoUtil.getProperties().getProperty(InfoUtil.VERSION));
+		String version = "undefined";
+		Properties properties = InfoUtil.getProperties();
+		if (null != properties) {
+			version = properties.getProperty(InfoUtil.VERSION);
+		}
+		this.userAgent = String.format(USER_AGENT_PREFIX, version);
 	}
 
 	@Override
     public StreamRepository newInstance(ClientConfiguration clientConfiguration,
                                         AuthenticationHandlerConfiguration authenticationHandlerConfiguration) {
-        return new StreamRepositoryImpl(clientConfiguration, initClient(clientConfiguration));
+        return new StreamRepositoryImpl(clientConfiguration, initClient(clientConfiguration, authenticationHandlerConfiguration));
     }
 
-    private OkHttpClient initClient(final ClientConfiguration config) {
+    private OkHttpClient initClient(final ClientConfiguration config, AuthenticationHandlerConfiguration authConfig) {
 		OkHttpClient client = new OkHttpClient();
 		client.setConnectTimeout(config.getConnectionTimeout(), TimeUnit.MILLISECONDS);
 		client.setReadTimeout(config.getTimeout(), TimeUnit.MILLISECONDS);
 		client.setWriteTimeout(config.getTimeout(), TimeUnit.MILLISECONDS);
 		client.setRetryOnConnectionFailure(true);
 		client.interceptors().add(new UserAgentInterceptor());
+		client.interceptors().add(new HttpSignatureinterceptor(authConfig));
 		client.setConnectionPool(new ConnectionPool(config.getMaxConnections(), config.getKeepAlive()));
 		return client;
     }
