@@ -9,6 +9,7 @@ import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.FeedFollow;
+import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.Feed;
@@ -33,7 +34,7 @@ public class IntegrationTest {
     public static final String API_KEY = "nfq26m3qgfyp";
     public static final String API_SECRET = "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2";
 
-//    @BeforeClass
+    //@BeforeClass
     public static void setLog() {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
         System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
@@ -80,6 +81,34 @@ public class IntegrationTest {
         feed.follow("user", "1");
         feed.follow("user", "2");
         feed.follow("user", "3");
+
+        List<FeedFollow> followingAfter = feed.getFollowing();
+        assertThat(followingAfter.size(), is(3));
+
+        FeedFilter filter = new FeedFilter.Builder().withLimit(1).withOffset(1).build();
+        List<FeedFollow> followingPaged = feed.getFollowing(filter);
+        assertThat(followingPaged.size(), is(1));
+
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldFollowMany() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        String followerId = this.getTestUserId("shouldFollowMany");
+        Feed feed = streamClient.newFeed("user", followerId);
+
+        List<FeedFollow> following = feed.getFollowing();
+        assertThat(following.size(), is(0));
+
+        FollowMany followMany = new FollowMany.Builder()
+                .add("user:" + followerId, "user:1")
+                .add("user:" + followerId, "user:2")
+                .add("user:" + followerId, "user:3")
+                .build();
+        feed.followMany(followMany);
 
         List<FeedFollow> followingAfter = feed.getFollowing();
         assertThat(followingAfter.size(), is(3));

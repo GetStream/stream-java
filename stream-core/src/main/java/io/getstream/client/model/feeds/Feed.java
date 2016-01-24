@@ -33,6 +33,7 @@ package io.getstream.client.model.feeds;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.beans.FeedFollow;
+import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.service.AggregatedActivityServiceImpl;
 import io.getstream.client.service.FlatActivityServiceImpl;
@@ -70,6 +71,28 @@ public interface Feed {
      * @throws StreamClientException in case of functional or server-side exception
      */
     void follow(String feedSlug, String userId) throws IOException, StreamClientException;
+
+    /**
+     * Follow many feed in one shot.
+     *
+     * @param follows A {@link FollowMany} object which contains a list of sources and targets
+     * @param activityCopyLimit the maximum number of activities from a
+     *                          source feed that must be copied to a target feed
+     * @throws StreamClientException in case of functional or server-side exception
+     * @throws IOException in case of network/socket exceptions
+     */
+    void followMany(FollowMany follows, int activityCopyLimit) throws IOException, StreamClientException;
+
+    /**
+     * Follow many feed in one shot.
+     * Default activity copy limit is set to 300. Maximum 300 activities from a given source feed
+     * will be copied to the target feed.
+     *
+     * @param follows A {@link FollowMany} object which contains a list of sources and targets
+     * @throws StreamClientException in case of functional or server-side exception
+     * @throws IOException in case of network/socket exceptions
+     */
+    void followMany(FollowMany follows) throws IOException, StreamClientException;
 
     /**
      * Unfollow the given target feed.

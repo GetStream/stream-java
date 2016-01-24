@@ -30,6 +30,9 @@
  */
 package io.getstream.client.okhttp.repo;
 
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.RequestBody;
+import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.okhttp.repo.handlers.StreamExceptionHandler;
 import io.getstream.client.okhttp.repo.utils.StreamRepoUtils;
 import io.getstream.client.okhttp.repo.utils.UriBuilder;
@@ -52,6 +55,7 @@ import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.repo.StreamRepository;
 import io.getstream.client.okhttp.repo.utils.FeedFilterUtils;
+import io.getstream.client.util.HttpSignatureHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +67,8 @@ import java.util.List;
  * Actual implementation of the Stream's REST API calls.
  */
 public class StreamRepositoryImpl implements StreamRepository {
+
+	private static final String APPLICATION_JSON = "application/json; charset=utf-8";
 
 	@Override
 	public String getToken(BaseFeed feed) {
@@ -111,6 +117,18 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 		Request request = addAuthentication(feed, requestBuilder).build();
 		fireAndForget(request);
+	}
+
+	@Override
+	public void followMany(BaseFeed feed, FollowMany followManyInput, int activityCopyLimit) throws StreamClientException,
+			IOException {
+		Request.Builder requestBuilder = new Request.Builder().url(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("follow_many/")
+				.queryParam("activity_copy_limit", activityCopyLimit)
+				.build().toURL());
+		requestBuilder.addHeader(HttpSignatureHandler.X_API_KEY_HEADER, apiKey);
+		requestBuilder.post(RequestBody.create(MediaType.parse(APPLICATION_JSON), OBJECT_MAPPER.writeValueAsString(followManyInput)));
+		fireAndForget(requestBuilder.build());
 	}
 
 	@Override

@@ -30,6 +30,7 @@
  */
 package io.getstream.client.okhttp;
 
+import io.getstream.client.exception.InvalidFeedNameException;
 import io.getstream.client.okhttp.repo.StreamRepoFactoryImpl;
 import com.google.common.base.Preconditions;
 import io.getstream.client.StreamClient;
@@ -60,7 +61,7 @@ public class StreamClientImpl implements StreamClient {
     }
 
     @Override
-    public Feed newFeed(final String feedSlug, final String id) {
+    public Feed newFeed(final String feedSlug, final String id) throws InvalidFeedNameException {
         return this.feedFactory.createFeed(feedSlug, id);
     }
 

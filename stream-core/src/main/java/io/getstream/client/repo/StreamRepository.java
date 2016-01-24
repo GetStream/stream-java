@@ -33,6 +33,7 @@ package io.getstream.client.repo;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.beans.FeedFollow;
+import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.NotificationActivity;
@@ -77,6 +78,17 @@ public interface StreamRepository {
      * @throws IOException in case of network/socket exceptions
      */
     void follow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException;
+
+    /**
+     * Follow many feed in one shot.
+     *
+     * @param feed Feed that wants to follow a target feed.
+     * @param followManyInput A {@link FollowMany} object which contains a list of sources and targets
+     * @param activityCopyLimit Number of activities to copy from a source feed to the destination feed
+     * @throws StreamClientException in case of functional or server-side exception
+     * @throws IOException in case of network/socket exceptions
+     */
+    void followMany(BaseFeed feed, FollowMany followManyInput, int activityCopyLimit) throws StreamClientException, IOException;
 
     /**
      * Unfollow a feed.

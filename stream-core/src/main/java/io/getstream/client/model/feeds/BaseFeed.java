@@ -33,6 +33,7 @@ package io.getstream.client.model.feeds;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.beans.FeedFollow;
+import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.service.FlatActivityServiceImpl;
 import io.getstream.client.service.UserActivityServiceImpl;
 import io.getstream.client.model.filters.FeedFilter;
@@ -48,6 +49,7 @@ import java.util.List;
  */
 public class BaseFeed implements Feed {
 
+    public static final int DEFAULT_ACTIVITY_COPY_LIMIT = 300;
     protected final StreamRepository streamRepository;
     protected final String feedSlug;
     protected final String userId;
@@ -72,6 +74,16 @@ public class BaseFeed implements Feed {
     public void follow(String feedSlug, String userId) throws IOException, StreamClientException {
         String feedId = String.format("%s:%s", feedSlug, userId);
         streamRepository.follow(this, feedId);
+    }
+
+    @Override
+    public void followMany(FollowMany follows, int activityCopyLimit) throws IOException, StreamClientException {
+        streamRepository.followMany(this, follows, activityCopyLimit);
+    }
+
+    @Override
+    public void followMany(FollowMany follows) throws IOException, StreamClientException {
+        streamRepository.followMany(this, follows, DEFAULT_ACTIVITY_COPY_LIMIT);
     }
 
     @Override

@@ -34,6 +34,7 @@ import com.google.common.base.Preconditions;
 import io.getstream.client.StreamClient;
 import io.getstream.client.config.AuthenticationHandlerConfiguration;
 import io.getstream.client.config.ClientConfiguration;
+import io.getstream.client.exception.InvalidFeedNameException;
 import io.getstream.client.model.feeds.BaseFeedFactory;
 import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.feeds.FeedFactory;
@@ -60,7 +61,7 @@ public class StreamClientImpl implements StreamClient {
     }
 
     @Override
-    public Feed newFeed(final String feedSlug, final String id) {
+    public Feed newFeed(final String feedSlug, final String id) throws InvalidFeedNameException {
         return this.feedFactory.createFeed(feedSlug, id);
     }
 

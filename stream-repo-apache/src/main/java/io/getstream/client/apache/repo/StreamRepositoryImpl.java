@@ -40,6 +40,7 @@ import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.beans.FeedFollow;
+import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.apache.repo.handlers.StreamExceptionHandler;
 import io.getstream.client.apache.repo.utils.StreamRepoUtils;
@@ -48,6 +49,7 @@ import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.apache.repo.utils.UriBuilder;
 import io.getstream.client.repo.StreamRepository;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -55,6 +57,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
@@ -66,6 +69,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.getstream.client.apache.repo.utils.FeedFilterUtils.apply;
+import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 
 /**
  * Actual implementation of the Stream's REST API calls.
@@ -114,6 +118,17 @@ public class StreamRepositoryImpl implements StreamRepository {
 		request.setEntity(new UrlEncodedFormEntity(
 				Collections.singletonList(new BasicNameValuePair("target", targetFeedId))));
 		fireAndForget(addAuthentication(feed, request));
+	}
+
+	@Override
+	public void followMany(BaseFeed feed, FollowMany followManyInput, int activityCopyLimit) throws StreamClientException, IOException {
+		HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("follow_many/")
+				.queryParam("activity_copy_limit", activityCopyLimit)
+				.build());
+		request.addHeader(HttpSignatureInterceptor.X_API_KEY_HEADER, apiKey);
+		request.setEntity(new StringEntity(OBJECT_MAPPER.writeValueAsString(followManyInput), APPLICATION_JSON));
+		fireAndForget(request);
 	}
 
 	@Override

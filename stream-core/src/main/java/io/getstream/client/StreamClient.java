@@ -30,6 +30,7 @@
  */
 package io.getstream.client;
 
+import io.getstream.client.exception.InvalidFeedNameException;
 import io.getstream.client.model.feeds.Feed;
 
 import java.io.IOException;
@@ -46,7 +47,7 @@ public interface StreamClient {
      * @param id Feed id
      * @return A new feed
      */
-    Feed newFeed(String feedSlug, String id);
+    Feed newFeed(String feedSlug, String id) throws InvalidFeedNameException;
 
     /**
      * Send the shutdown signal to the client.
