@@ -31,10 +31,12 @@
 package io.getstream.client.apache.repo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableList;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
+import io.getstream.client.model.beans.AddMany;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.apache.repo.handlers.StreamExceptionHandler;
 import io.getstream.client.apache.repo.utils.SignatureUtils;
@@ -43,6 +45,9 @@ import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.apache.repo.utils.StreamRepoUtils;
 import io.getstream.client.apache.repo.utils.UriBuilder;
+import io.getstream.client.util.HttpSignatureHandler;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -51,13 +56,16 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 import static io.getstream.client.apache.repo.utils.FeedFilterUtils.apply;
+import static org.apache.http.entity.ContentType.APPLICATION_FORM_URLENCODED;
 import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 
 public class StreamActivityRepository {
@@ -94,6 +102,26 @@ public class StreamActivityRepository {
             handleResponseCode(response);
             return objectMapper.readValue(response.getEntity().getContent(),
                                                  objectMapper.getTypeFactory().constructType(activity.getClass()));
+        }
+    }
+
+    public <T extends BaseActivity> T addToMany(List<String> targetIds, T activity) throws StreamClientException, IOException {
+        HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
+                .path("feed")
+                .path("add_to_many/")
+                .build());
+        LOG.debug("Invoking url: '{}'", request.getURI());
+
+        request.setEntity(new StringEntity(
+                objectMapper.writeValueAsString(new AddMany<>(targetIds, activity)),
+                APPLICATION_JSON));
+
+        request.addHeader(HttpSignatureHandler.X_API_KEY_HEADER, apiKey);
+
+        try (CloseableHttpResponse response = httpClient.execute(request, HttpClientContext.create())) {
+            handleResponseCode(response);
+            return objectMapper.readValue(response.getEntity().getContent(),
+                    objectMapper.getTypeFactory().constructType(activity.getClass()));
         }
     }
 

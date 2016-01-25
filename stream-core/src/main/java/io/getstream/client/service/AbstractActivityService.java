@@ -36,6 +36,7 @@ import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.repo.StreamRepository;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Provides operations to be performed against activities.
@@ -65,5 +66,18 @@ public abstract class AbstractActivityService<T extends BaseActivity> {
      */
     public T addActivity(T activity) throws IOException, StreamClientException {
         return streamRepository.addActivity(this.feed, activity);
+    }
+
+    /**
+     * Add a new activity of type {@link T} to multiple feeds.
+     *
+     * @param targetIds Destination feeds.<br/> A target id is defined as $feedSlug:$feedId.
+     * @param activity Activity to add.
+     * @return Response activity of type {@link T} coming from the server.
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
+     */
+    public T addActivityToMany(List<String> targetIds, T activity) throws IOException, StreamClientException {
+        return streamRepository.addActivityToMany(targetIds, activity);
     }
 }

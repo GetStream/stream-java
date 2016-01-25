@@ -1,5 +1,6 @@
 package io.getstream.client.apache;
 
+import com.google.common.collect.ImmutableList;
 import io.getstream.client.StreamClient;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.AuthenticationFailedException;
@@ -19,6 +20,7 @@ import io.getstream.client.service.FlatActivityServiceImpl;
 import io.getstream.client.service.NotificationActivityServiceImpl;
 import org.hamcrest.MatcherAssert;
 //import org.junit.BeforeClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -34,7 +36,7 @@ public class IntegrationTest {
     public static final String API_KEY = "nfq26m3qgfyp";
     public static final String API_SECRET = "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2";
 
-    //@BeforeClass
+    @BeforeClass
     public static void setLog() {
         System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.SimpleLog");
         System.setProperty("org.apache.commons.logging.simplelog.showdatetime", "true");
@@ -207,6 +209,23 @@ public class IntegrationTest {
         activity.setTarget("target");
         activity.setVerb("verb");
         flatActivityService.addActivity(activity);
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldAddActivityToMany() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        String userId = this.getTestUserId("shouldAddActivityToMany");
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        flatActivityService.addActivityToMany(ImmutableList.<String>of("user:1", "user:2").asList(), activity);
         streamClient.shutdown();
     }
 

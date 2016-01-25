@@ -148,6 +148,17 @@ public interface StreamRepository {
     <T extends BaseActivity> T addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException;
 
     /**
+     * Add a new activity of type {@link T} to multiple feeds.
+     *
+     * @param targetIds Destination feeds.<br/> A target id is defined as $feedSlug:$feedId.
+     * @param activity Activity to add.
+     * @return Response activity of type {@link T} coming from the server.
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
+     */
+    <T extends BaseActivity> T addActivityToMany(List<String> targetIds, T activity) throws StreamClientException, IOException;
+
+    /**
      * List aggregated activities.
      *
      * @param feed   Feed which the activities belong to
@@ -205,7 +216,12 @@ public interface StreamRepository {
      */
     <T extends BaseActivity> StreamResponse<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, MarkedActivity markAsRead, MarkedActivity markAsSeen) throws IOException, StreamClientException;
 
-    public String getToken(BaseFeed feed);
+    /**
+     * Get the token for the given feed.
+     * @param feed Feed
+     * @return A token string
+     */
+    String getToken(BaseFeed feed);
 
     /**
      * Send the shutdown signal to the client.

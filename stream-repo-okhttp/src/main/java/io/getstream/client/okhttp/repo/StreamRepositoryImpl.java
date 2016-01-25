@@ -197,6 +197,11 @@ public class StreamRepositoryImpl implements StreamRepository {
 	}
 
 	@Override
+	public <T extends BaseActivity> T addActivityToMany(List<String> targetIds, T activity) throws StreamClientException, IOException {
+		return streamActivityRepository.addToMany(targetIds, activity);
+	}
+
+	@Override
 	public <T extends BaseActivity> StreamResponse<AggregatedActivity<T>> getAggregatedActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
 		return streamActivityRepository.getAggregatedActivities(feed, type, filter);
 	}

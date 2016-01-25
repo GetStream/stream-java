@@ -1,5 +1,6 @@
 package io.getstream.client.okhttp;
 
+import com.google.common.collect.ImmutableList;
 import io.getstream.client.StreamClient;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.AuthenticationFailedException;
@@ -227,6 +228,27 @@ public class IntegrationTest {
         activity.setTarget("target");
         activity.setVerb("verb");
         flatActivityService.addActivity(activity);
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldAddActivityToMany() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        String userId = this.getTestUserId("shouldAddActivity");
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+
+        flatActivityService.addActivityToMany(
+                ImmutableList.<String>of("user:1", "user:2").asList(),
+                activity
+        );
         streamClient.shutdown();
     }
 

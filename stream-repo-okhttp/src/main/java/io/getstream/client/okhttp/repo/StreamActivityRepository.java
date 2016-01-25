@@ -30,6 +30,7 @@
  */
 package io.getstream.client.okhttp.repo;
 
+import io.getstream.client.model.beans.AddMany;
 import io.getstream.client.okhttp.repo.handlers.StreamExceptionHandler;
 import io.getstream.client.okhttp.repo.utils.SignatureUtils;
 import io.getstream.client.okhttp.repo.utils.StreamRepoUtils;
@@ -49,11 +50,13 @@ import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.okhttp.repo.utils.FeedFilterUtils;
+import io.getstream.client.util.HttpSignatureHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 
 public class StreamActivityRepository {
 
@@ -87,6 +90,25 @@ public class StreamActivityRepository {
 		requestBuilder.post(RequestBody.create(MediaType.parse(APPLICATION_JSON), objectMapper.writeValueAsString(activity)));
 
 		Request request = addAuthentication(feed, requestBuilder).build();
+		LOG.debug("Invoking url: '{}", request.urlString());
+
+		Response response = httpClient.newCall(request).execute();
+		handleResponseCode(response);
+		return objectMapper.readValue(response.body().byteStream(),
+				objectMapper.getTypeFactory().constructType(activity.getClass()));
+	}
+
+	public <T extends BaseActivity> T addToMany(List<String> targetIds, T activity) throws StreamClientException, IOException {
+		Request.Builder requestBuilder = new Request.Builder().url(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed")
+				.path("add_to_many/")
+				.queryParam(StreamRepositoryImpl.API_KEY, apiKey).build().toURL());
+
+		requestBuilder.addHeader(HttpSignatureHandler.X_API_KEY_HEADER, apiKey);
+		requestBuilder.post(RequestBody.create(MediaType.parse(APPLICATION_JSON),
+				objectMapper.writeValueAsString(new AddMany<>(targetIds, activity))));
+
+		final Request request = requestBuilder.build();
 		LOG.debug("Invoking url: '{}", request.urlString());
 
 		Response response = httpClient.newCall(request).execute();

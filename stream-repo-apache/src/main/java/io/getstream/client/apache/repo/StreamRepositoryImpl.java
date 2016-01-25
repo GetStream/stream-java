@@ -50,7 +50,6 @@ import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.apache.repo.utils.UriBuilder;
 import io.getstream.client.repo.StreamRepository;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -189,6 +188,11 @@ public class StreamRepositoryImpl implements StreamRepository {
 	@Override
 	public <T extends BaseActivity> T addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException {
 		return streamActivityRepository.addActivity(feed, activity);
+	}
+
+	@Override
+	public <T extends BaseActivity> T addActivityToMany(List<String> targetIds, T activity) throws StreamClientException, IOException {
+		return streamActivityRepository.addToMany(targetIds, activity);
 	}
 
 	@Override
