@@ -8,6 +8,9 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
+/**
+ * Helper bean used to create a payload for the follow_many API call.
+ */
 public class FollowMany {
 
     @JsonSerialize(contentAs = FollowMany.Entry.class)

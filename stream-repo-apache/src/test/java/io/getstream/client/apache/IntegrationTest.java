@@ -19,7 +19,6 @@ import io.getstream.client.service.AggregatedActivityServiceImpl;
 import io.getstream.client.service.FlatActivityServiceImpl;
 import io.getstream.client.service.NotificationActivityServiceImpl;
 import org.hamcrest.MatcherAssert;
-//import org.junit.BeforeClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

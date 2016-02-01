@@ -6,7 +6,7 @@ import io.getstream.client.model.activities.BaseActivity;
 import java.util.List;
 
 /**
- * Helper bean to create a payload used for the add_to_many API call.
+ * Helper bean used to create a payload for the add_to_many API call.
  * @param <T> Type of the activity
  */
 public class AddMany<T extends BaseActivity>  {
