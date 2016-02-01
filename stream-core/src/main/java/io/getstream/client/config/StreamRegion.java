@@ -46,7 +46,7 @@ public enum StreamRegion {
     AP_SOUTH_EAST("https://ap-southeast-api.getstream.io/api"),
     LOCAL("http://localhost:8000/api");
 
-    private final static String VERSION = "v1.0";
+    protected final static String VERSION = "v1.0";
 
     private final String endpoint;
 
