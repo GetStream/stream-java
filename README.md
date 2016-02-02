@@ -17,7 +17,7 @@ Download the latest JAR or grab via Maven:
 </dependency>
 ```
 
-Snapshots of the development version are available in Sonatype's snapshots repository.
+Snapshots of the development version are available in [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/io/getstream/client/) snapshots repository.
 
 ### Usage
 
