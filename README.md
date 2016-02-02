@@ -67,11 +67,17 @@ feed.follow(flat", "42");
 // Stop following another feed
 feed.unfollow(flat", "42");
 
-// Batch adding activities
-// This is not supported yet
+// Batch adding activities to many feeds
+flatActivityService.addActivityToMany(ImmutableList.<String>of("user:1", "user:2").asList(), myActivity);
 
 // Batch following many feeds
-// This is not supported yet
+FollowMany followMany = new FollowMany.Builder()
+    .add("user:1", "user:2")
+    .add("user:1", "user:3")
+    .add("user:1", "user:4")
+    .add("user:2", "user:3")
+    .build();
+feed.followMany(followMany);
 
 // Add an activity and push it to other feeds too using the `to` field
 // This is not supported yet
@@ -81,9 +87,6 @@ feed.unfollow(flat", "42");
 
 // Generating tokens for client side usage
 String token = feed.getToken();
-
-// Javascript client side feed initialization
-// user1 = client.feed('user', '1', '{{ token }}');
 
 // Retrieve first 10 followers of a feed
 FeedFilter filter = new FeedFilter.Builder().withLimit(10).build();
@@ -97,5 +100,7 @@ List<FeedFollow> followingPaged = feed.getFollowing(filter);
 // This is not supported yet
 
 ```
+
+For more examples have a look [here](https://github.com/GetStream/stream-java/tree/milestone1/stream-repo-apache/src/test/java/io/getstream/client/apache/example).
 
 Docs are available on [GetStream.io](http://getstream.io/docs/).

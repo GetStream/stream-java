@@ -30,6 +30,11 @@
  */
 package io.getstream.client.okhttp.repo;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.RequestBody;
+import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.okhttp.repo.handlers.StreamExceptionHandler;
 import io.getstream.client.okhttp.repo.utils.StreamRepoUtils;
 import io.getstream.client.okhttp.repo.utils.UriBuilder;
@@ -52,6 +57,7 @@ import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.repo.StreamRepository;
 import io.getstream.client.okhttp.repo.utils.FeedFilterUtils;
+import io.getstream.client.util.HttpSignatureHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +70,8 @@ import java.util.List;
  */
 public class StreamRepositoryImpl implements StreamRepository {
 
+	private static final String APPLICATION_JSON = "application/json; charset=utf-8";
+
 	@Override
 	public String getToken(BaseFeed feed) {
 		return StreamRepoUtils.createFeedToken(feed, secretKey);
@@ -75,7 +83,10 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setPropertyNamingStrategy(
 			/* will convert camelStyle to lower_case_style */
-			PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+			PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+			.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+
 
 	private final URI baseEndpoint;
 	private final String apiKey;
@@ -111,6 +122,18 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 		Request request = addAuthentication(feed, requestBuilder).build();
 		fireAndForget(request);
+	}
+
+	@Override
+	public void followMany(BaseFeed feed, FollowMany followManyInput, int activityCopyLimit) throws StreamClientException,
+			IOException {
+		Request.Builder requestBuilder = new Request.Builder().url(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("follow_many/")
+				.queryParam("activity_copy_limit", activityCopyLimit)
+				.build().toURL());
+		requestBuilder.addHeader(HttpSignatureHandler.X_API_KEY_HEADER, apiKey);
+		requestBuilder.post(RequestBody.create(MediaType.parse(APPLICATION_JSON), OBJECT_MAPPER.writeValueAsString(followManyInput)));
+		fireAndForget(requestBuilder.build());
 	}
 
 	@Override
@@ -171,6 +194,11 @@ public class StreamRepositoryImpl implements StreamRepository {
 	@Override
 	public <T extends BaseActivity> T addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException {
 		return streamActivityRepository.addActivity(feed, activity);
+	}
+
+	@Override
+	public <T extends BaseActivity> T addActivityToMany(List<String> targetIds, T activity) throws StreamClientException, IOException {
+		return streamActivityRepository.addToMany(targetIds, activity);
 	}
 
 	@Override

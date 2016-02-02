@@ -44,9 +44,9 @@ public enum StreamRegion {
     EU_WEST("https://eu-west-api.getstream.io/api"),
     AP_NORTH_EAST("https://ap-northeast-api.getstream.io/api"),
     AP_SOUTH_EAST("https://ap-southeast-api.getstream.io/api"),
-    LOCAL("http://localhost:8000/api");
+    LOCAL_TEST("http://localhost:8089/api"); /* used for testing purpose only */
 
-    private final static String VERSION = "v1.0";
+    protected final static String VERSION = "v1.0";
 
     private final String endpoint;
 

@@ -30,10 +30,24 @@
  */
 package io.getstream.client.model.feeds;
 
+import io.getstream.client.exception.InvalidFeedNameException;
+
+import java.util.regex.Pattern;
+
 /**
  * Factory class to create new feed.
  */
 public interface FeedFactory {
+
+    /**
+     * Validation pattern for feed slug.
+     */
+    String FEED_SLUG_ALLOWED_PATTERN = "\\w+";
+
+    /**
+     * Validation patter for feed id.
+     */
+    String FEED_ID_ALLOWED_PATTERN = "[\\w-]+";
 
     /**
      * Create new feed.
@@ -42,5 +56,5 @@ public interface FeedFactory {
      * @param id feed id.
      * @return A new feed
      */
-    Feed createFeed(String feedSlug, String id);
+    Feed createFeed(String feedSlug, String id) throws InvalidFeedNameException;
 }

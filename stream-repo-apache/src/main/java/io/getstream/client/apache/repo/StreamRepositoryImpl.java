@@ -31,14 +31,17 @@
 package io.getstream.client.apache.repo;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.beans.FeedFollow;
+import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.apache.repo.handlers.StreamExceptionHandler;
 import io.getstream.client.apache.repo.utils.StreamRepoUtils;
@@ -54,6 +57,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
@@ -65,6 +69,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static io.getstream.client.apache.repo.utils.FeedFilterUtils.apply;
+import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 
 /**
  * Actual implementation of the Stream's REST API calls.
@@ -76,8 +81,10 @@ public class StreamRepositoryImpl implements StreamRepository {
 	static final String API_KEY = "api_key";
 
 	/* will convert camelStyle to lower_case_style */
-	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().setPropertyNamingStrategy(
-			PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+			.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
+			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+			.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
 	private final URI baseEndpoint;
 	private final String apiKey;
@@ -112,6 +119,17 @@ public class StreamRepositoryImpl implements StreamRepository {
 		request.setEntity(new UrlEncodedFormEntity(
 				Collections.singletonList(new BasicNameValuePair("target", targetFeedId))));
 		fireAndForget(addAuthentication(feed, request));
+	}
+
+	@Override
+	public void followMany(BaseFeed feed, FollowMany followManyInput, int activityCopyLimit) throws StreamClientException, IOException {
+		HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("follow_many/")
+				.queryParam("activity_copy_limit", activityCopyLimit)
+				.build());
+		request.addHeader(HttpSignatureInterceptor.X_API_KEY_HEADER, apiKey);
+		request.setEntity(new StringEntity(OBJECT_MAPPER.writeValueAsString(followManyInput), APPLICATION_JSON));
+		fireAndForget(request);
 	}
 
 	@Override
@@ -170,6 +188,11 @@ public class StreamRepositoryImpl implements StreamRepository {
 	@Override
 	public <T extends BaseActivity> T addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException {
 		return streamActivityRepository.addActivity(feed, activity);
+	}
+
+	@Override
+	public <T extends BaseActivity> T addActivityToMany(List<String> targetIds, T activity) throws StreamClientException, IOException {
+		return streamActivityRepository.addToMany(targetIds, activity);
 	}
 
 	@Override
