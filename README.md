@@ -90,6 +90,12 @@ activity.setObject("tweet:1");
 activity.setVerb("tweet");
 activity.setForeignId("tweet:1");
 SimpleActivity response = flatActivityService.addActivity(activity);
+
+/* Remove an activity by its id */
+feed.deleteActivity("e561de8f-00f1-11e4-b400-0cc47a024be0");
+
+/* Remove activities by their foreign_id */
+feed.deleteActivityByForeignId("tweet:1");
 ```
 
 In case you want to add a single activity to multiple feeds, you can use the batch feature _addToMany_:
@@ -101,14 +107,6 @@ flatActivityService.addActivityToMany(ImmutableList.<String>of("user:1", "user:2
 
 The API client allows you to send activities with custom field as well, you can find a
 complete example [here](https://github.com/GetStream/stream-java/blob/master/stream-repo-apache/src/test/java/io/getstream/client/example/mixtype/MixedType.java)
-
-```java
-/* Remove an activity by its id */
-feed.deleteActivity("e561de8f-00f1-11e4-b400-0cc47a024be0");
-
-/* Remove activities by their foreign_id */
-feed.deleteActivityByForeignId("tweet:1");
-```
 
 #### Follow and Unfollow
 
