@@ -4,46 +4,86 @@ stream-java
 
 stream-java is a Java client for [Stream](https://getstream.io/).
 
+The Stream's Java client come in two different flavours, you should decide which one to drag into your project.
+Those two implementations differ according to the underlying library used to handle HTTP connections:
+
+- *stream-repo-apache* uses Apache HttpClient and we recommend it for backend applications. Apache HttpClient is a mature, reliable and rock-solid HTTP library.
+- *stream-repo-okhttp* uses Square's OkHttp which is lightweight, powerful and mobile-oriented HTTP library. We recommend it for mobile application.
 
 ### Installation
 
-Download the latest JAR or grab via Maven:
+If you decide to go for the *Apache HttpClient* implementation, add the following dependency to your pom.xml:
+
+```xml
+<dependency>
+    <groupId>io.getstream.client</groupId>
+    <artifactId>stream-repo-apache</artifactId>
+    <version>1.0</version>
+</dependency>
+```
+
+or in your build.gradle:
+
+```gradle
+compile 'io.getstream.client:stream-repo-apache:1.0'
+```
+
+Instead, if you opted out for the *OkHttp* implementation please add it to your pom.xml
 
 ```xml
 <dependency>
     <groupId>io.getstream.client</groupId>
     <artifactId>stream-repo-okhttp</artifactId>
-    <version>0.1-RC2</version>
+    <version>1.0</version>
 </dependency>
 ```
+
+or in your build.gradle:
+
+```gradle
+compile 'io.getstream.client:stream-repo-okhttp:1.0'
+```
+
+In case you want to download the artifact and put it manually into your project,
+you can download it from [here](https://github.com/GetStream/stream-java/releases).
 
 Snapshots of the development version are available in [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/io/getstream/client/) snapshots repository.
 
 ### Usage
 
 ```java
-// Instantiate a new client to connect to us east API endpoint
-// Find your API keys here https://getstream.io/dashboard/
+/**
+ * Instantiate a new client to connect to us east API endpoint
+ * Find your API keys here https://getstream.io/dashboard/
+ **/
 
 ClientConfiguration streamConfig = new ClientConfiguration().setRegion(StreamRegion.US_EAST);
 StreamClient streamClient = new StreamClientImpl(streamConfig, 'API_KEY', 'API_SECRET');
+```
 
-// Instantiate a feed object
+#### Create a new Feed
+
+```java
+/* Instantiate a feed object */
 Feed feed = streamClient.newFeed("user", "1");
+```
 
-// Create an activity service
+#### Working with Activities
+
+```java
+/* Create an activity service */
 FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
 
-// Get activities from 5 to 10 (using offset pagination)
+/* Get activities from 5 to 10 (using offset pagination) */
 FeedFilter filter = new FeedFilter.Builder().withLimit(5).withOffset(5).build();
 List<SimpleActivity> activities = flatActivityService.getActivities(filter).getResults();
 
-// Filter on an id less than the given UUID
+/* Filter on an id less than the given UUID */
 aid = "e561de8f-00f1-11e4-b400-0cc47a024be0";
 FeedFilter filter = new FeedFilter.Builder().withIdLowerThan(aid).withLimit(5).build();
 List<SimpleActivity> activities = flatActivityService.getActivities(filter).getResults();
 
-// Create a new activity
+/* Create a new activity */
 SimpleActivity activity = new SimpleActivity();
 activity.setActor("user:1");
 activity.setObject("tweet:1");
@@ -52,25 +92,46 @@ activity.setForeignId("tweet:1");
 SimpleActivity response = flatActivityService.addActivity(activity);
 ```
 
-The API client allows you to send activities with custom field as well, you can find a complete example [here](https://github.com/GetStream/stream-java/blob/master/stream-repo-apache/src/test/java/io/getstream/client/example/mixtype/MixedType.java)
+In case you want to add a single activity to multiple feeds, you can use the batch feature _addToMany_:
 
 ```java
-// Remove an activity by its id
+/* Batch adding activities to many feeds */
+flatActivityService.addActivityToMany(ImmutableList.<String>of("user:1", "user:2").asList(), myActivity);
+```
+
+The API client allows you to send activities with custom field as well, you can find a
+complete example [here](https://github.com/GetStream/stream-java/blob/master/stream-repo-apache/src/test/java/io/getstream/client/example/mixtype/MixedType.java)
+
+```java
+/* Remove an activity by its id */
 feed.deleteActivity("e561de8f-00f1-11e4-b400-0cc47a024be0");
 
-// Remove activities by their foreign_id
+/* Remove activities by their foreign_id */
 feed.deleteActivityByForeignId("tweet:1");
+```
 
-// Follow another feed
+#### Follow and Unfollow
+
+```java
+/* Follow another feed */
 feed.follow(flat", "42");
 
-// Stop following another feed
+/* Stop following another feed */
 feed.unfollow(flat", "42");
 
-// Batch adding activities to many feeds
-flatActivityService.addActivityToMany(ImmutableList.<String>of("user:1", "user:2").asList(), myActivity);
+/* Retrieve first 10 followers of a feed */
+FeedFilter filter = new FeedFilter.Builder().withLimit(10).build();
+List<FeedFollow> followingPaged = feed.getFollowing(filter);
 
-// Batch following many feeds
+/* Retrieve the first 10 followed feeds */
+FeedFilter filter = new FeedFilter.Builder().withLimit(10).build();
+List<FeedFollow> followingPaged = feed.getFollowing(filter);
+```
+
+In case you want to send to Stream a long list of following relationships you can use the batch feature _followMany_:
+
+```java
+/* Batch following many feeds */
 FollowMany followMany = new FollowMany.Builder()
     .add("user:1", "user:2")
     .add("user:1", "user:3")
@@ -79,26 +140,15 @@ FollowMany followMany = new FollowMany.Builder()
     .build();
 feed.followMany(followMany);
 
-// Add an activity and push it to other feeds too using the `to` field
-// This is not supported yet
+```
 
-// Remove a feed and its content
-// This is not supported yet
+#### Client token
 
-// Generating tokens for client side usage
+In order to generate a token for client side usage (e.g. JS client), you can use the following code:
+
+```java
+/* Generating tokens for client side usage */
 String token = feed.getToken();
-
-// Retrieve first 10 followers of a feed
-FeedFilter filter = new FeedFilter.Builder().withLimit(10).build();
-List<FeedFollow> followingPaged = feed.getFollowing(filter);
-
-// Retrieve the first 10 followed feeds
-FeedFilter filter = new FeedFilter.Builder().withLimit(10).build();
-List<FeedFollow> followingPaged = feed.getFollowing(filter);
-
-// Check if specific feeds are followed
-// This is not supported yet
-
 ```
 
 For more examples have a look [here](https://github.com/GetStream/stream-java/tree/milestone1/stream-repo-apache/src/test/java/io/getstream/client/apache/example).
