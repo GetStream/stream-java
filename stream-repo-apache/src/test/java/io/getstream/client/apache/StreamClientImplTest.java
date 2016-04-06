@@ -1,8 +1,13 @@
 package io.getstream.client.apache;
 
+import io.getstream.client.StreamClient;
 import io.getstream.client.config.ClientConfiguration;
+import io.getstream.client.config.StreamRegion;
 import io.getstream.client.exception.InvalidFeedNameException;
 import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 public class StreamClientImplTest {
 
@@ -14,6 +19,13 @@ public class StreamClientImplTest {
     public StreamClientImplTest() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         streamClient = new StreamClientImpl(clientConfiguration, API_KEY, API_SECRET);
+    }
+
+    @Test
+    public void shouldCreateClientWithDifferentRegion() throws Exception {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(StreamRegion.LOCAL_TEST),
+                API_KEY, API_SECRET);
+        assertThat(streamClient, notNullValue());
     }
 
     @Test

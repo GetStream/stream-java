@@ -80,6 +80,22 @@ public class ClientConfiguration {
     private AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
 
     /**
+     * Default constructor.
+     */
+    public ClientConfiguration() {
+        super();
+    }
+
+    /**
+     * Create a configuration using a given region.
+     * @param region Region
+     */
+    public ClientConfiguration(final StreamRegion region) {
+        super();
+        this.region = region;
+    }
+
+    /**
      * Create a ClientConfiguration bean from a given json string.
      *
      * @param jsonString Json representation of ClientConfiguration bean.
