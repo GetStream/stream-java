@@ -18,7 +18,7 @@ If you decide to go for the *Apache HttpClient* implementation, add the followin
 <dependency>
     <groupId>io.getstream.client</groupId>
     <artifactId>stream-repo-apache</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ Instead, if you opted out for the *OkHttp* implementation please add it to your 
 <dependency>
     <groupId>io.getstream.client</groupId>
     <artifactId>stream-repo-okhttp</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
