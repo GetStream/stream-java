@@ -57,8 +57,7 @@ Snapshots of the development version are available in [Sonatype](https://oss.son
  * Find your API keys here https://getstream.io/dashboard/
  **/
 
-ClientConfiguration streamConfig = new ClientConfiguration().setRegion(StreamRegion.US_EAST);
-StreamClient streamClient = new StreamClientImpl(streamConfig, 'API_KEY', 'API_SECRET');
+StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "<API_KEY>", "<API_SECRET>");
 ```
 
 #### Create a new Feed
@@ -149,6 +148,10 @@ In order to generate a token for client side usage (e.g. JS client), you can use
 String token = feed.getToken();
 ```
 
+#### Further references
+
 For more examples have a look [here](https://github.com/GetStream/stream-java/tree/milestone1/stream-repo-apache/src/test/java/io/getstream/client/apache/example).
 
 Docs are available on [GetStream.io](http://getstream.io/docs/).
+
+Javadocs are available [here](https://getstream.github.io/stream-java/).
