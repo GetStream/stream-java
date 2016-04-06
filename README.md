@@ -25,7 +25,7 @@ If you decide to go for the *Apache HttpClient* implementation, add the followin
 or in your build.gradle:
 
 ```gradle
-compile 'io.getstream.client:stream-repo-apache:1.0'
+compile 'io.getstream.client:stream-repo-apache:1.0.1'
 ```
 
 Instead, if you opted out for the *OkHttp* implementation please add it to your pom.xml
@@ -41,7 +41,7 @@ Instead, if you opted out for the *OkHttp* implementation please add it to your 
 or in your build.gradle:
 
 ```gradle
-compile 'io.getstream.client:stream-repo-okhttp:1.0'
+compile 'io.getstream.client:stream-repo-okhttp:1.0.1'
 ```
 
 In case you want to download the artifact and put it manually into your project,
