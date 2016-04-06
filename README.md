@@ -28,7 +28,7 @@ or in your build.gradle:
 compile 'io.getstream.client:stream-repo-apache:1.0.1'
 ```
 
-Instead, if you opted out for the *OkHttp* implementation please add it to your pom.xml
+Instead, if you opted for the *OkHttp* implementation please add it to your pom.xml
 
 ```xml
 <dependency>
