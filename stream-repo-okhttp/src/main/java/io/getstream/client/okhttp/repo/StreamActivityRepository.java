@@ -30,11 +30,6 @@
  */
 package io.getstream.client.okhttp.repo;
 
-import io.getstream.client.model.beans.AddMany;
-import io.getstream.client.okhttp.repo.handlers.StreamExceptionHandler;
-import io.getstream.client.okhttp.repo.utils.SignatureUtils;
-import io.getstream.client.okhttp.repo.utils.StreamRepoUtils;
-import io.getstream.client.okhttp.repo.utils.UriBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -45,18 +40,28 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
+import io.getstream.client.model.activities.SimpleActivity;
+import io.getstream.client.model.beans.AddMany;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
+import io.getstream.client.okhttp.repo.handlers.StreamExceptionHandler;
 import io.getstream.client.okhttp.repo.utils.FeedFilterUtils;
+import io.getstream.client.okhttp.repo.utils.SignatureUtils;
+import io.getstream.client.okhttp.repo.utils.StreamRepoUtils;
+import io.getstream.client.okhttp.repo.utils.UriBuilder;
 import io.getstream.client.util.HttpSignatureHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
+
+import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
+import static io.getstream.client.util.JwtAuthenticationUtil.generateToken;
 
 public class StreamActivityRepository {
 
@@ -96,6 +101,30 @@ public class StreamActivityRepository {
 		handleResponseCode(response);
 		return objectMapper.readValue(response.body().byteStream(),
 				objectMapper.getTypeFactory().constructType(activity.getClass()));
+	}
+
+	public <T extends BaseActivity> StreamResponse<T> addActivities(BaseFeed feed, List<T> activities) throws StreamClientException, IOException {
+		Request.Builder requestBuilder = new Request.Builder().url(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
+				.queryParam(StreamRepositoryImpl.API_KEY, apiKey).build().toURL());
+
+		Class<? extends BaseActivity> clazz = SimpleActivity.class;
+		for (T activity : activities) {
+			SignatureUtils.addSignatureToRecipients(secretKey, activity);
+			clazz = activity.getClass();
+			System.out.println(clazz);
+		}
+
+		requestBuilder.post(RequestBody.create(MediaType.parse(APPLICATION_JSON),
+				objectMapper.writeValueAsString(Collections.singletonMap("activities", activities))));
+
+		Request request = addAuthentication(feed, requestBuilder).build();
+		LOG.debug("Invoking url: '{}", request.urlString());
+
+		Response response = httpClient.newCall(request).execute();
+		handleResponseCode(response);
+		return objectMapper.readValue(response.body().byteStream(),
+				objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, clazz));
 	}
 
 	public <T extends BaseActivity> T addToMany(List<String> targetIds, T activity) throws StreamClientException, IOException {
@@ -221,6 +250,25 @@ public class StreamActivityRepository {
 
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);
+	}
+
+	public <T extends BaseActivity> StreamResponse updateActivities(BaseFeed feed, List<T> activities) throws IOException, StreamClientException {
+		Request.Builder requestBuilder = new Request.Builder().delete().url(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("activities/")
+				.queryParam(StreamRepositoryImpl.API_KEY, apiKey).build().toURL());
+
+		requestBuilder.post(RequestBody.create(MediaType.parse(APPLICATION_JSON),
+				objectMapper.writeValueAsBytes(Collections.singletonMap("activities", activities))));
+
+		Request request = StreamRepoUtils.addJwtAuthentication(
+				generateToken(secretKey, "activities", ALL, ALL, null),
+				requestBuilder).build();
+
+		LOG.debug("Invoking url: '{}", request.urlString());
+
+		Response response = httpClient.newCall(request).execute();
+		handleResponseCode(response);
+		return objectMapper.readValue(response.body().byteStream(), StreamResponse.class);
 	}
 
 	private void handleResponseCode(Response response) throws StreamClientException, IOException {

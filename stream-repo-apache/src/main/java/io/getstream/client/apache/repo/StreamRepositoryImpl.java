@@ -191,6 +191,16 @@ public class StreamRepositoryImpl implements StreamRepository {
 	}
 
 	@Override
+	public <T extends BaseActivity> StreamResponse<T> addActivities(BaseFeed feed, List<T> activities) throws StreamClientException, IOException {
+		return streamActivityRepository.addActivities(feed, activities);
+	}
+
+	@Override
+	public <T extends BaseActivity> StreamResponse updateActivities(BaseFeed feed, List<T> activities) throws StreamClientException, IOException {
+		return streamActivityRepository.updateActivities(feed, activities);
+	}
+
+	@Override
 	public <T extends BaseActivity> T addActivityToMany(List<String> targetIds, T activity) throws StreamClientException, IOException {
 		return streamActivityRepository.addToMany(targetIds, activity);
 	}

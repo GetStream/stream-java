@@ -23,7 +23,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -32,8 +35,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IntegrationTest {
 
-    public static final String API_KEY = "nfq26m3qgfyp";
-    public static final String API_SECRET = "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2";
+    public static final String API_KEY = "zdwbqmpxmgh5";
+    public static final String API_SECRET = "myjspevsc7rh7abz7n27q3emxrtgqnuuhgdx2767qrr9p4wresyw38hsbmz82tbx";
 
     @BeforeClass
     public static void setLog() {
@@ -207,7 +210,56 @@ public class IntegrationTest {
         activity.setObject("object");
         activity.setTarget("target");
         activity.setVerb("verb");
+        activity.setForeignId("foreign1");
         flatActivityService.addActivity(activity);
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldAddActivities() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        String userId = this.getTestUserId("shouldAddActivity");
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        activity.setForeignId("foreign1");
+
+        SimpleActivity activity2 = new SimpleActivity();
+        activity2.setActor("actor");
+        activity2.setObject("object");
+        activity2.setTarget("target");
+        activity2.setVerb("verb");
+        activity2.setForeignId("foreign2");
+
+        List<SimpleActivity> listToAdd = new ArrayList<>();
+        listToAdd.add(activity);
+        listToAdd.add(activity2);
+        flatActivityService.addActivities(listToAdd);
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldUpdateActivity() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        String userId = this.getTestUserId("shouldAddActivity");
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setTime(new Date());
+        activity.setForeignId("foreign1");
+        activity.setVerb("verb");
+        flatActivityService.updateActivities(Collections.singletonList(activity));
         streamClient.shutdown();
     }
 
@@ -539,24 +591,23 @@ public class IntegrationTest {
         activity.setTarget("target");
         activity.setVerb("like");
         notificationActivityService.addActivity(activity);
-        activity.setVerb("dislike");
-        notificationActivityService.addActivity(activity);
+
         StreamResponse<NotificationActivity<SimpleActivity>> responseAfter =
                 notificationActivityService.getActivities();
-        assertThat((int)responseAfter.getUnread(), is(2));
-        assertThat((int) responseAfter.getUnseen(), is(2));
+        assertThat((int)responseAfter.getUnread(), is(1));
+        assertThat((int)responseAfter.getUnseen(), is(1));
 
         String aid = responseAfter.getResults().get(0).getId();
         MarkedActivity marker = new MarkedActivity.Builder().withActivityId(aid).build();
         StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark =
                 notificationActivityService.getActivities(new FeedFilter.Builder().build(), marker, new MarkedActivity.Builder().build());
-        assertThat((int)responseAfterMark.getUnread(), is(1));
-        assertThat((int)responseAfterMark.getUnseen(), is(2));
+        assertThat((int)responseAfterMark.getUnread(), is(0));
+        assertThat((int)responseAfterMark.getUnseen(), is(1));
 
         StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark2 =
                 notificationActivityService.getActivities(new FeedFilter.Builder().build(), new MarkedActivity.Builder().build(), marker);
-        assertThat((int)responseAfterMark2.getUnread(), is(1));
-        assertThat((int)responseAfterMark2.getUnseen(), is(1));
+        assertThat((int)responseAfterMark2.getUnread(), is(0));
+        assertThat((int)responseAfterMark2.getUnseen(), is(0));
 
         streamClient.shutdown();
     }

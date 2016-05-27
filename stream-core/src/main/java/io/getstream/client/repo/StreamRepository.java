@@ -148,6 +148,18 @@ public interface StreamRepository {
     <T extends BaseActivity> T addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException;
 
     /**
+     * Add a new list of activities to the given feed.
+     *
+     * @param feed     Feed which the activities belong to
+     * @param activities List of activities to add
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @return Activity as returned by the Stream server
+     * @throws StreamClientException in case of functional or server-side exception
+     * @throws IOException in case of network/socket exceptions
+     */
+    <T extends BaseActivity> StreamResponse<T> addActivities(BaseFeed feed, List<T> activities) throws StreamClientException, IOException;
+
+    /**
      * Update activities (foreignId and time are mandatory fields).
      * Please refer to GetStream.io/docs for more info.
      * @param feed Feed which the activities belong to

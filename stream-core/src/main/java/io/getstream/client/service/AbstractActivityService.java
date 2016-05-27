@@ -72,6 +72,20 @@ public abstract class AbstractActivityService<T extends BaseActivity> {
     /**
      * Add a new activity of type {@link T}.
      *
+     * @param activities List of Activities to add.
+     * @return Response activity of type {@link T} coming from the server.<br>
+     *         The returning activity in the 'to' field contains the targetFeedId along
+     *         with its signature (e.g: 'user:1 6mQhuzQ79e0rZ17bSq1CCxXoRac')
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
+     */
+    public StreamResponse<T> addActivities(List<T> activities) throws IOException, StreamClientException {
+        return streamRepository.addActivities(this.feed, activities);
+    }
+
+    /**
+     * Add a new activity of type {@link T}.
+     *
      * @param activities List of activities to update
      * @return Response activity of type {@link T} coming from the server.<br>
      *         The returning activity in the 'to' field contains the targetFeedId along

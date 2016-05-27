@@ -31,6 +31,7 @@
 package io.getstream.client.apache.repo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.reflect.TypeToken;
 import io.getstream.client.apache.repo.handlers.StreamExceptionHandler;
 import io.getstream.client.apache.repo.utils.SignatureUtils;
 import io.getstream.client.apache.repo.utils.StreamRepoUtils;
@@ -39,6 +40,7 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
+import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.AddMany;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamResponse;
@@ -60,9 +62,12 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 import static io.getstream.client.apache.repo.utils.FeedFilterUtils.apply;
+import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
+import static io.getstream.client.util.JwtAuthenticationUtil.generateToken;
 import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 
 public class StreamActivityRepository {
@@ -99,6 +104,28 @@ public class StreamActivityRepository {
             handleResponseCode(response);
             return objectMapper.readValue(response.getEntity().getContent(),
                                                  objectMapper.getTypeFactory().constructType(activity.getClass()));
+        }
+    }
+
+    public <T extends BaseActivity> StreamResponse<T> addActivities(BaseFeed feed, List<T> activities) throws StreamClientException, IOException {
+        HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
+                .path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
+                .queryParam(StreamRepositoryImpl.API_KEY, apiKey).build());
+        LOG.debug("Invoking url: '{}'", request.getURI());
+
+        Class<? extends BaseActivity> clazz = SimpleActivity.class;
+        for (T activity : activities) {
+            SignatureUtils.addSignatureToRecipients(secretKey, activity);
+            clazz = activity.getClass();
+            System.out.println(clazz);
+        }
+
+        request.setEntity(new InputStreamEntity(new ByteArrayInputStream(
+                objectMapper.writeValueAsBytes(Collections.singletonMap("activities", activities))), APPLICATION_JSON));
+        try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
+            handleResponseCode(response);
+            return objectMapper.readValue(response.getEntity().getContent(),
+                    objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, clazz));
         }
     }
 
@@ -211,6 +238,26 @@ public class StreamActivityRepository {
         LOG.debug("Invoking url: '{}", request.getURI());
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
             handleResponseCode(response);
+        }
+    }
+
+    public <T extends BaseActivity> StreamResponse updateActivities(BaseFeed feed, List<T> activities) throws StreamClientException, IOException {
+        HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
+                .path("activities/")
+                .queryParam(StreamRepositoryImpl.API_KEY, apiKey).build());
+        LOG.debug("Invoking url: '{}'", request.getURI());
+
+
+        request.setEntity(new InputStreamEntity(
+                new ByteArrayInputStream(objectMapper.writeValueAsBytes(Collections.singletonMap("activities", activities))),
+                APPLICATION_JSON)
+        );
+
+        request = StreamRepoUtils.addJwtAuthentication(generateToken(secretKey, "activities", ALL, ALL, null), request);
+
+        try (CloseableHttpResponse response = httpClient.execute(request, HttpClientContext.create())) {
+            handleResponseCode(response);
+            return objectMapper.readValue(response.getEntity().getContent(), StreamResponse.class);
         }
     }
 
