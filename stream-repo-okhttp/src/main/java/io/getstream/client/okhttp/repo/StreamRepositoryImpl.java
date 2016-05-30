@@ -30,20 +30,16 @@
  */
 package io.getstream.client.okhttp.repo;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.RequestBody;
-import io.getstream.client.model.beans.FollowMany;
-import io.getstream.client.okhttp.repo.handlers.StreamExceptionHandler;
-import io.getstream.client.okhttp.repo.utils.StreamRepoUtils;
-import io.getstream.client.okhttp.repo.utils.UriBuilder;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
@@ -51,13 +47,19 @@ import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.beans.FeedFollow;
+import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.model.beans.MarkedActivity;
+import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
-import io.getstream.client.repo.StreamRepository;
+import io.getstream.client.okhttp.repo.handlers.StreamExceptionHandler;
 import io.getstream.client.okhttp.repo.utils.FeedFilterUtils;
+import io.getstream.client.okhttp.repo.utils.StreamRepoUtils;
+import io.getstream.client.okhttp.repo.utils.UriBuilder;
+import io.getstream.client.repo.StreamRepository;
 import io.getstream.client.util.HttpSignatureHandler;
+import io.getstream.client.util.JwtAuthenticationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,11 +74,6 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	private static final String APPLICATION_JSON = "application/json; charset=utf-8";
 
-	@Override
-	public String getToken(BaseFeed feed) {
-		return StreamRepoUtils.createFeedToken(feed, secretKey);
-	}
-
 	private static final Logger LOG = LoggerFactory.getLogger(StreamRepositoryImpl.class);
 
 	static final String API_KEY = "api_key";
@@ -86,7 +83,6 @@ public class StreamRepositoryImpl implements StreamRepository {
 			PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
 			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 			.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-
 
 	private final URI baseEndpoint;
 	private final String apiKey;
@@ -114,9 +110,20 @@ public class StreamRepositoryImpl implements StreamRepository {
 	}
 
 	@Override
-	public void follow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
+	public String getReadOnlyToken(BaseFeed feed) {
+		return JwtAuthenticationUtil.generateToken(secretKey, "read", "*", feed.getFeedSlug().concat(feed.getUserId()), null);
+	}
+
+	@Override
+	public String getToken(BaseFeed feed) {
+		return StreamRepoUtils.createFeedToken(feed, secretKey);
+	}
+
+	@Override
+	public void follow(BaseFeed feed, String targetFeedId, int activityCopyLimit) throws StreamClientException, IOException {
 		Request.Builder requestBuilder = new Request.Builder().url(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")
+				.queryParam("activity_copy_limit", activityCopyLimit)
 				.queryParam(API_KEY, apiKey).build().toURL());
 		requestBuilder.post(new FormEncodingBuilder().add("target", targetFeedId).build());
 
@@ -137,9 +144,10 @@ public class StreamRepositoryImpl implements StreamRepository {
 	}
 
 	@Override
-	public void unfollow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
+	public void unfollow(BaseFeed feed, String targetFeedId, boolean keepHistory) throws StreamClientException, IOException {
 		Request.Builder requestBuilder = new Request.Builder().url(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following").path(targetFeedId + "/")
+				.queryParam("keep_history", Boolean.toString(keepHistory))
 				.queryParam(API_KEY, apiKey).build().toURL()).delete();
 		fireAndForget(addAuthentication(feed, requestBuilder).build());
 	}
@@ -197,13 +205,13 @@ public class StreamRepositoryImpl implements StreamRepository {
 	}
 
 	@Override
-	public <T extends BaseActivity> StreamResponse<T> addActivities(BaseFeed feed, List<T> activities) throws IOException, StreamClientException {
-		return streamActivityRepository.addActivities(feed, activities);
+	public <T extends BaseActivity> StreamActivitiesResponse<T> addActivities(BaseFeed feed, Class<T> type, List<T> activities) throws IOException, StreamClientException {
+		return streamActivityRepository.addActivities(feed, type, activities);
 	}
 
 	@Override
-	public <T extends BaseActivity> StreamResponse updateActivities(BaseFeed feed, List<T> activities) throws IOException, StreamClientException {
-		return streamActivityRepository.updateActivities(feed, activities);
+	public <T extends BaseActivity> StreamActivitiesResponse<T> updateActivities(BaseFeed feed, Class<T> type, List<T> activities) throws IOException, StreamClientException {
+		return streamActivityRepository.updateActivities(feed, type, activities);
 	}
 
 	@Override

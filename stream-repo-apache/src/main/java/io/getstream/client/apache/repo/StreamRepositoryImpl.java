@@ -35,6 +35,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import io.getstream.client.apache.repo.handlers.StreamExceptionHandler;
+import io.getstream.client.apache.repo.utils.StreamRepoUtils;
+import io.getstream.client.apache.repo.utils.UriBuilder;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
@@ -42,14 +45,13 @@ import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.FollowMany;
-import io.getstream.client.model.feeds.BaseFeed;
-import io.getstream.client.apache.repo.handlers.StreamExceptionHandler;
-import io.getstream.client.apache.repo.utils.StreamRepoUtils;
 import io.getstream.client.model.beans.MarkedActivity;
+import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
+import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
-import io.getstream.client.apache.repo.utils.UriBuilder;
 import io.getstream.client.repo.StreamRepository;
+import io.getstream.client.util.JwtAuthenticationUtil;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -112,9 +114,15 @@ public class StreamRepositoryImpl implements StreamRepository {
 	}
 
 	@Override
-	public void follow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
+	public String getReadOnlyToken(BaseFeed feed) {
+		return JwtAuthenticationUtil.generateToken(secretKey, "read", "*", feed.getFeedSlug().concat(feed.getUserId()), null);
+	}
+
+	@Override
+	public void follow(BaseFeed feed, String targetFeedId, int activityCopyLimit) throws StreamClientException, IOException {
 		HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")
+				.queryParam("activity_copy_limit", activityCopyLimit)
 				.queryParam(API_KEY, apiKey).build());
 		request.setEntity(new UrlEncodedFormEntity(
 				Collections.singletonList(new BasicNameValuePair("target", targetFeedId))));
@@ -133,9 +141,10 @@ public class StreamRepositoryImpl implements StreamRepository {
 	}
 
 	@Override
-	public void unfollow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException {
+	public void unfollow(BaseFeed feed, String targetFeedId, boolean keepHistory) throws StreamClientException, IOException {
 		HttpDelete request = new HttpDelete(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following").path(targetFeedId + "/")
+				.queryParam("keep_history", Boolean.toString(keepHistory))
 				.queryParam(API_KEY, apiKey).build());
 		fireAndForget(addAuthentication(feed, request));
 	}
@@ -191,13 +200,13 @@ public class StreamRepositoryImpl implements StreamRepository {
 	}
 
 	@Override
-	public <T extends BaseActivity> StreamResponse<T> addActivities(BaseFeed feed, List<T> activities) throws StreamClientException, IOException {
-		return streamActivityRepository.addActivities(feed, activities);
+	public <T extends BaseActivity> StreamActivitiesResponse<T> addActivities(BaseFeed feed, Class<T> type, List<T> activities) throws StreamClientException, IOException {
+		return streamActivityRepository.addActivities(feed, type, activities);
 	}
 
 	@Override
-	public <T extends BaseActivity> StreamResponse updateActivities(BaseFeed feed, List<T> activities) throws StreamClientException, IOException {
-		return streamActivityRepository.updateActivities(feed, activities);
+	public <T extends BaseActivity> StreamActivitiesResponse<T> updateActivities(BaseFeed feed, Class<T> type, List<T> activities) throws StreamClientException, IOException {
+		return streamActivityRepository.updateActivities(feed, type, activities);
 	}
 
 	@Override

@@ -63,6 +63,12 @@ public interface Feed {
     String getToken();
 
     /**
+     * Generate a JWT token to perform readonly operations
+     * @return Token
+     */
+    String getReadOnlyToken();
+
+    /**
      * Follows the given target feed.
      *
      * @param feedSlug the slug of the target feed.
@@ -71,6 +77,17 @@ public interface Feed {
      * @throws StreamClientException in case of functional or server-side exception
      */
     void follow(String feedSlug, String userId) throws IOException, StreamClientException;
+
+    /**
+     * Follows the given target feed.
+     *
+     * @param feedSlug the slug of the target feed.
+     * @param userId user id
+     * @param activityCopyLimit How many activities should be copied from the target feed
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
+     */
+    void follow(String feedSlug, String userId, int activityCopyLimit) throws IOException, StreamClientException;
 
     /**
      * Follow many feed in one shot.
@@ -103,6 +120,17 @@ public interface Feed {
      * @throws StreamClientException in case of functional or server-side exception
      */
     void unfollow(String feedSlug, String userId) throws IOException, StreamClientException;
+
+    /**
+     * Unfollow the given target feed.
+     *
+     * @param feedSlug the slug of the target feed.
+     * @param userId user id
+     * @param keepHistory Whether the activities from the unfollowed feed should be removed
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
+     */
+    void unfollow(String feedSlug, String userId, boolean keepHistory) throws IOException, StreamClientException;
 
     /**
      * Lists the followers of the feed.

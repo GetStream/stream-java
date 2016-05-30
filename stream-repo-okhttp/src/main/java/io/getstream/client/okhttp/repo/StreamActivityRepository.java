@@ -40,9 +40,9 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
-import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.AddMany;
 import io.getstream.client.model.beans.MarkedActivity;
+import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
@@ -103,16 +103,13 @@ public class StreamActivityRepository {
 				objectMapper.getTypeFactory().constructType(activity.getClass()));
 	}
 
-	public <T extends BaseActivity> StreamResponse<T> addActivities(BaseFeed feed, List<T> activities) throws StreamClientException, IOException {
+	public <T extends BaseActivity> StreamActivitiesResponse<T> addActivities(BaseFeed feed, Class<T> type, List<T> activities) throws StreamClientException, IOException {
 		Request.Builder requestBuilder = new Request.Builder().url(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
 				.queryParam(StreamRepositoryImpl.API_KEY, apiKey).build().toURL());
 
-		Class<? extends BaseActivity> clazz = SimpleActivity.class;
 		for (T activity : activities) {
 			SignatureUtils.addSignatureToRecipients(secretKey, activity);
-			clazz = activity.getClass();
-			System.out.println(clazz);
 		}
 
 		requestBuilder.post(RequestBody.create(MediaType.parse(APPLICATION_JSON),
@@ -124,7 +121,7 @@ public class StreamActivityRepository {
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);
 		return objectMapper.readValue(response.body().byteStream(),
-				objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, clazz));
+				objectMapper.getTypeFactory().constructParametricType(StreamActivitiesResponse.class, type));
 	}
 
 	public <T extends BaseActivity> T addToMany(List<String> targetIds, T activity) throws StreamClientException, IOException {
@@ -252,7 +249,7 @@ public class StreamActivityRepository {
 		handleResponseCode(response);
 	}
 
-	public <T extends BaseActivity> StreamResponse updateActivities(BaseFeed feed, List<T> activities) throws IOException, StreamClientException {
+	public <T extends BaseActivity> StreamActivitiesResponse<T> updateActivities(BaseFeed feed, Class<T> type, List<T> activities) throws IOException, StreamClientException {
 		Request.Builder requestBuilder = new Request.Builder().delete().url(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("activities/")
 				.queryParam(StreamRepositoryImpl.API_KEY, apiKey).build().toURL());
@@ -268,7 +265,8 @@ public class StreamActivityRepository {
 
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);
-		return objectMapper.readValue(response.body().byteStream(), StreamResponse.class);
+		return objectMapper.readValue(response.body().byteStream(),
+				objectMapper.getTypeFactory().constructParametricType(StreamActivitiesResponse.class, type));
 	}
 
 	private void handleResponseCode(Response response) throws StreamClientException, IOException {

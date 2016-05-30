@@ -31,7 +31,6 @@
 package io.getstream.client.apache.repo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.reflect.TypeToken;
 import io.getstream.client.apache.repo.handlers.StreamExceptionHandler;
 import io.getstream.client.apache.repo.utils.SignatureUtils;
 import io.getstream.client.apache.repo.utils.StreamRepoUtils;
@@ -40,9 +39,9 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
-import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.AddMany;
 import io.getstream.client.model.beans.MarkedActivity;
+import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
@@ -107,17 +106,14 @@ public class StreamActivityRepository {
         }
     }
 
-    public <T extends BaseActivity> StreamResponse<T> addActivities(BaseFeed feed, List<T> activities) throws StreamClientException, IOException {
+    public <T extends BaseActivity> StreamActivitiesResponse<T> addActivities(BaseFeed feed, Class<T> type, List<T> activities) throws StreamClientException, IOException {
         HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
                 .path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
                 .queryParam(StreamRepositoryImpl.API_KEY, apiKey).build());
         LOG.debug("Invoking url: '{}'", request.getURI());
 
-        Class<? extends BaseActivity> clazz = SimpleActivity.class;
         for (T activity : activities) {
             SignatureUtils.addSignatureToRecipients(secretKey, activity);
-            clazz = activity.getClass();
-            System.out.println(clazz);
         }
 
         request.setEntity(new InputStreamEntity(new ByteArrayInputStream(
@@ -125,7 +121,7 @@ public class StreamActivityRepository {
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
             handleResponseCode(response);
             return objectMapper.readValue(response.getEntity().getContent(),
-                    objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, clazz));
+                    objectMapper.getTypeFactory().constructParametricType(StreamActivitiesResponse.class, type));
         }
     }
 
@@ -241,7 +237,7 @@ public class StreamActivityRepository {
         }
     }
 
-    public <T extends BaseActivity> StreamResponse updateActivities(BaseFeed feed, List<T> activities) throws StreamClientException, IOException {
+    public <T extends BaseActivity> StreamActivitiesResponse<T> updateActivities(BaseFeed feed, Class<T> type, List<T> activities) throws StreamClientException, IOException {
         HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
                 .path("activities/")
                 .queryParam(StreamRepositoryImpl.API_KEY, apiKey).build());
@@ -257,7 +253,8 @@ public class StreamActivityRepository {
 
         try (CloseableHttpResponse response = httpClient.execute(request, HttpClientContext.create())) {
             handleResponseCode(response);
-            return objectMapper.readValue(response.getEntity().getContent(), StreamResponse.class);
+            return objectMapper.readValue(response.getEntity().getContent(),
+                    objectMapper.getTypeFactory().constructParametricType(StreamActivitiesResponse.class, type));
         }
     }
 

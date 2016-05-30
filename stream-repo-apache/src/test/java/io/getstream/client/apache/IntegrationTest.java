@@ -12,6 +12,7 @@ import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.model.beans.MarkedActivity;
+import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
@@ -30,7 +31,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IntegrationTest {
@@ -51,6 +53,15 @@ public class IntegrationTest {
     }
 
     @Test
+    public void shouldGetReadOnlyToken() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+        Feed feed = streamClient.newFeed("user", "1");
+        assertThat(feed.getReadOnlyToken(), is("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY3Rpb24iOiJyZWFkIiwicmVzb" +
+                "3VyY2UiOiIqIiwiZmVlZF9pZCI6InVzZXIxIn0.slCmD5rirATciiL01aE9jXsxjE3NnUwkSgvviUpBhxE"));
+    }
+
+    @Test
     public void shouldGetFollowers() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
@@ -67,7 +78,6 @@ public class IntegrationTest {
         List<FeedFollow> followersAfter = followedFeed.getFollowers();
         assertThat(followersAfter.size(), is(1));
 
-        streamClient.shutdown();
         streamClient.shutdown();
     }
 
@@ -92,6 +102,25 @@ public class IntegrationTest {
         FeedFilter filter = new FeedFilter.Builder().withLimit(1).withOffset(1).build();
         List<FeedFollow> followingPaged = feed.getFollowing(filter);
         assertThat(followingPaged.size(), is(1));
+
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldFollowWithActivityCopyLimit() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        String followerId = this.getTestUserId("shouldFollow");
+        Feed feed = streamClient.newFeed("user", followerId);
+
+        List<FeedFollow> following = feed.getFollowing();
+        assertThat(following.size(), is(0));
+
+        feed.follow("user", "1", 50);
+
+        List<FeedFollow> followingAfter = feed.getFollowing();
+        assertThat(followingAfter.size(), is(1));
 
         streamClient.shutdown();
     }
@@ -171,9 +200,10 @@ public class IntegrationTest {
         List<FeedFollow> followingAfter = feed.getFollowing();
         assertThat(followingAfter.size(), is(3));
         feed.unfollow("user", "2");
+        feed.unfollow("user", "3", true);
 
         List<FeedFollow> followingAgain = feed.getFollowing();
-        assertThat(followingAgain.size(), is(2));
+        assertThat(followingAgain.size(), is(1));
         streamClient.shutdown();
     }
 
@@ -211,7 +241,9 @@ public class IntegrationTest {
         activity.setTarget("target");
         activity.setVerb("verb");
         activity.setForeignId("foreign1");
-        flatActivityService.addActivity(activity);
+
+        SimpleActivity simpleActivity = flatActivityService.addActivity(activity);
+
         streamClient.shutdown();
     }
 
@@ -240,12 +272,15 @@ public class IntegrationTest {
         List<SimpleActivity> listToAdd = new ArrayList<>();
         listToAdd.add(activity);
         listToAdd.add(activity2);
-        flatActivityService.addActivities(listToAdd);
+
+        StreamActivitiesResponse<SimpleActivity> streamResponse = flatActivityService.addActivities(listToAdd);
+        streamResponse.getActivities();
+
         streamClient.shutdown();
     }
 
     @Test
-    public void shouldUpdateActivity() throws IOException, StreamClientException {
+    public void shouldUpdateActivities() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
 
@@ -259,7 +294,10 @@ public class IntegrationTest {
         activity.setTime(new Date());
         activity.setForeignId("foreign1");
         activity.setVerb("verb");
-        flatActivityService.updateActivities(Collections.singletonList(activity));
+
+        StreamActivitiesResponse<SimpleActivity> response = flatActivityService.updateActivities(Collections.singletonList(activity));
+        response.getActivities();
+
         streamClient.shutdown();
     }
 
@@ -628,7 +666,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldGetActivitiesFromAggregatedFeed() throws IOException, StreamClientException {
+    public void shouldGetActivitiesFromAggregatedFeed() throws IOException, StreamClientException, InterruptedException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
 
@@ -647,20 +685,20 @@ public class IntegrationTest {
 
         aggregatedActivityService.addActivity(activity);
         List<AggregatedActivity<SimpleActivity>> oneActivity = aggregatedActivityService.getActivities().getResults();
-        assertThat(oneActivity.size(), is(1));
-        assertThat((int)oneActivity.get(0).getActivityCount(), is(1));
 
-        aggregatedActivityService.addActivity(activity);
-        List<AggregatedActivity<SimpleActivity>> oneActivityB = aggregatedActivityService.getActivities().getResults();
-        assertThat(oneActivityB.size(), is(1));
-        assertThat((int)oneActivityB.get(0).getActivityCount(), is(2));
+        /* needed to bypass the lock on backend side */
+        Thread.sleep(3500);
 
         activity.setVerb("pin");
         aggregatedActivityService.addActivity(activity);
+
+        assertThat(oneActivity.size(), is(1));
+        assertThat((int)oneActivity.get(0).getActivityCount(), is(1));
+
         List<AggregatedActivity<SimpleActivity>> twoActivities = aggregatedActivityService.getActivities().getResults();
         assertThat(twoActivities.size(), is(2));
         assertThat((int)twoActivities.get(0).getActivityCount(), is(1));
-        assertThat((int)twoActivities.get(1).getActivityCount(), is(2));
+        assertThat((int)twoActivities.get(1).getActivityCount(), is(1));
         streamClient.shutdown();
     }
 

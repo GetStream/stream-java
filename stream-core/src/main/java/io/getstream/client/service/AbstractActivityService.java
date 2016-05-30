@@ -32,7 +32,7 @@ package io.getstream.client.service;
 
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
-import io.getstream.client.model.beans.StreamResponse;
+import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.repo.StreamRepository;
 
@@ -79,8 +79,8 @@ public abstract class AbstractActivityService<T extends BaseActivity> {
      * @throws IOException in case of network/socket exceptions
      * @throws StreamClientException in case of functional or server-side exception
      */
-    public StreamResponse<T> addActivities(List<T> activities) throws IOException, StreamClientException {
-        return streamRepository.addActivities(this.feed, activities);
+    public StreamActivitiesResponse<T> addActivities(List<T> activities) throws IOException, StreamClientException {
+        return streamRepository.addActivities(this.feed, type, activities);
     }
 
     /**
@@ -93,8 +93,8 @@ public abstract class AbstractActivityService<T extends BaseActivity> {
      * @throws IOException in case of network/socket exceptions
      * @throws StreamClientException in case of functional or server-side exception
      */
-    public StreamResponse updateActivities(List<T> activities) throws IOException, StreamClientException {
-        return streamRepository.updateActivities(this.feed, activities);
+    public StreamActivitiesResponse<T> updateActivities(List<T> activities) throws IOException, StreamClientException {
+        return streamRepository.updateActivities(this.feed, type, activities);
     }
 
     /**
