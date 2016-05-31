@@ -46,6 +46,7 @@ public interface StreamClient {
      * @param feedSlug Feed slug
      * @param id Feed id
      * @return A new feed
+     * @throws InvalidFeedNameException if the feed name is not valid
      */
     Feed newFeed(String feedSlug, String id) throws InvalidFeedNameException;
 
