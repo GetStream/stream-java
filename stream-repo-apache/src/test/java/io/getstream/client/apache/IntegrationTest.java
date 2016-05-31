@@ -12,6 +12,7 @@ import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.model.beans.MarkedActivity;
+import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
@@ -23,17 +24,21 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IntegrationTest {
 
-    public static final String API_KEY = "nfq26m3qgfyp";
-    public static final String API_SECRET = "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2";
+    public static final String API_KEY = "zdwbqmpxmgh5";
+    public static final String API_SECRET = "myjspevsc7rh7abz7n27q3emxrtgqnuuhgdx2767qrr9p4wresyw38hsbmz82tbx";
 
     @BeforeClass
     public static void setLog() {
@@ -45,6 +50,15 @@ public class IntegrationTest {
     public String getTestUserId(String userId) {
         long millis = System.currentTimeMillis();
         return String.format("%s_%d", userId, millis);
+    }
+
+    @Test
+    public void shouldGetReadOnlyToken() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+        Feed feed = streamClient.newFeed("user", "1");
+        assertThat(feed.getReadOnlyToken(), is("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY3Rpb24iOiJyZWFkIiwicmVzb" +
+                "3VyY2UiOiIqIiwiZmVlZF9pZCI6InVzZXIxIn0.slCmD5rirATciiL01aE9jXsxjE3NnUwkSgvviUpBhxE"));
     }
 
     @Test
@@ -64,7 +78,6 @@ public class IntegrationTest {
         List<FeedFollow> followersAfter = followedFeed.getFollowers();
         assertThat(followersAfter.size(), is(1));
 
-        streamClient.shutdown();
         streamClient.shutdown();
     }
 
@@ -89,6 +102,25 @@ public class IntegrationTest {
         FeedFilter filter = new FeedFilter.Builder().withLimit(1).withOffset(1).build();
         List<FeedFollow> followingPaged = feed.getFollowing(filter);
         assertThat(followingPaged.size(), is(1));
+
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldFollowWithActivityCopyLimit() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        String followerId = this.getTestUserId("shouldFollow");
+        Feed feed = streamClient.newFeed("user", followerId);
+
+        List<FeedFollow> following = feed.getFollowing();
+        assertThat(following.size(), is(0));
+
+        feed.follow("user", "1", 50);
+
+        List<FeedFollow> followingAfter = feed.getFollowing();
+        assertThat(followingAfter.size(), is(1));
 
         streamClient.shutdown();
     }
@@ -168,9 +200,10 @@ public class IntegrationTest {
         List<FeedFollow> followingAfter = feed.getFollowing();
         assertThat(followingAfter.size(), is(3));
         feed.unfollow("user", "2");
+        feed.unfollow("user", "3", true);
 
         List<FeedFollow> followingAgain = feed.getFollowing();
-        assertThat(followingAgain.size(), is(2));
+        assertThat(followingAgain.size(), is(1));
         streamClient.shutdown();
     }
 
@@ -207,7 +240,64 @@ public class IntegrationTest {
         activity.setObject("object");
         activity.setTarget("target");
         activity.setVerb("verb");
-        flatActivityService.addActivity(activity);
+        activity.setForeignId("foreign1");
+
+        SimpleActivity simpleActivity = flatActivityService.addActivity(activity);
+
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldAddActivities() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        String userId = this.getTestUserId("shouldAddActivity");
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setVerb("verb");
+        activity.setForeignId("foreign1");
+
+        SimpleActivity activity2 = new SimpleActivity();
+        activity2.setActor("actor");
+        activity2.setObject("object");
+        activity2.setTarget("target");
+        activity2.setVerb("verb");
+        activity2.setForeignId("foreign2");
+
+        List<SimpleActivity> listToAdd = new ArrayList<>();
+        listToAdd.add(activity);
+        listToAdd.add(activity2);
+
+        StreamActivitiesResponse<SimpleActivity> streamResponse = flatActivityService.addActivities(listToAdd);
+        streamResponse.getActivities();
+
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldUpdateActivities() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+                API_SECRET);
+
+        String userId = this.getTestUserId("shouldAddActivity");
+        Feed feed = streamClient.newFeed("user", userId);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        SimpleActivity activity = new SimpleActivity();
+        activity.setActor("actor");
+        activity.setObject("object");
+        activity.setTarget("target");
+        activity.setTime(new Date());
+        activity.setForeignId("foreign1");
+        activity.setVerb("verb");
+
+        StreamActivitiesResponse<SimpleActivity> response = flatActivityService.updateActivities(Collections.singletonList(activity));
+        response.getActivities();
+
         streamClient.shutdown();
     }
 
@@ -539,24 +629,23 @@ public class IntegrationTest {
         activity.setTarget("target");
         activity.setVerb("like");
         notificationActivityService.addActivity(activity);
-        activity.setVerb("dislike");
-        notificationActivityService.addActivity(activity);
+
         StreamResponse<NotificationActivity<SimpleActivity>> responseAfter =
                 notificationActivityService.getActivities();
-        assertThat((int)responseAfter.getUnread(), is(2));
-        assertThat((int) responseAfter.getUnseen(), is(2));
+        assertThat((int)responseAfter.getUnread(), is(1));
+        assertThat((int)responseAfter.getUnseen(), is(1));
 
         String aid = responseAfter.getResults().get(0).getId();
         MarkedActivity marker = new MarkedActivity.Builder().withActivityId(aid).build();
         StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark =
                 notificationActivityService.getActivities(new FeedFilter.Builder().build(), marker, new MarkedActivity.Builder().build());
-        assertThat((int)responseAfterMark.getUnread(), is(1));
-        assertThat((int)responseAfterMark.getUnseen(), is(2));
+        assertThat((int)responseAfterMark.getUnread(), is(0));
+        assertThat((int)responseAfterMark.getUnseen(), is(1));
 
         StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark2 =
                 notificationActivityService.getActivities(new FeedFilter.Builder().build(), new MarkedActivity.Builder().build(), marker);
-        assertThat((int)responseAfterMark2.getUnread(), is(1));
-        assertThat((int)responseAfterMark2.getUnseen(), is(1));
+        assertThat((int)responseAfterMark2.getUnread(), is(0));
+        assertThat((int)responseAfterMark2.getUnseen(), is(0));
 
         streamClient.shutdown();
     }
@@ -577,7 +666,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldGetActivitiesFromAggregatedFeed() throws IOException, StreamClientException {
+    public void shouldGetActivitiesFromAggregatedFeed() throws IOException, StreamClientException, InterruptedException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
 
@@ -596,20 +685,20 @@ public class IntegrationTest {
 
         aggregatedActivityService.addActivity(activity);
         List<AggregatedActivity<SimpleActivity>> oneActivity = aggregatedActivityService.getActivities().getResults();
-        assertThat(oneActivity.size(), is(1));
-        assertThat((int)oneActivity.get(0).getActivityCount(), is(1));
 
-        aggregatedActivityService.addActivity(activity);
-        List<AggregatedActivity<SimpleActivity>> oneActivityB = aggregatedActivityService.getActivities().getResults();
-        assertThat(oneActivityB.size(), is(1));
-        assertThat((int)oneActivityB.get(0).getActivityCount(), is(2));
+        /* needed to bypass the lock on backend side */
+        Thread.sleep(3500);
 
         activity.setVerb("pin");
         aggregatedActivityService.addActivity(activity);
+
+        assertThat(oneActivity.size(), is(1));
+        assertThat((int)oneActivity.get(0).getActivityCount(), is(1));
+
         List<AggregatedActivity<SimpleActivity>> twoActivities = aggregatedActivityService.getActivities().getResults();
         assertThat(twoActivities.size(), is(2));
         assertThat((int)twoActivities.get(0).getActivityCount(), is(1));
-        assertThat((int)twoActivities.get(1).getActivityCount(), is(2));
+        assertThat((int)twoActivities.get(1).getActivityCount(), is(1));
         streamClient.shutdown();
     }
 

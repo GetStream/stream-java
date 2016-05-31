@@ -31,41 +31,42 @@
 package io.getstream.client.apache.repo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableList;
+import io.getstream.client.apache.repo.handlers.StreamExceptionHandler;
+import io.getstream.client.apache.repo.utils.SignatureUtils;
+import io.getstream.client.apache.repo.utils.StreamRepoUtils;
+import io.getstream.client.apache.repo.utils.UriBuilder;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.beans.AddMany;
-import io.getstream.client.model.feeds.BaseFeed;
-import io.getstream.client.apache.repo.handlers.StreamExceptionHandler;
-import io.getstream.client.apache.repo.utils.SignatureUtils;
 import io.getstream.client.model.beans.MarkedActivity;
+import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
+import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
-import io.getstream.client.apache.repo.utils.StreamRepoUtils;
-import io.getstream.client.apache.repo.utils.UriBuilder;
 import io.getstream.client.util.HttpSignatureHandler;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 import static io.getstream.client.apache.repo.utils.FeedFilterUtils.apply;
-import static org.apache.http.entity.ContentType.APPLICATION_FORM_URLENCODED;
+import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
+import static io.getstream.client.util.JwtAuthenticationUtil.generateToken;
 import static org.apache.http.entity.ContentType.APPLICATION_JSON;
 
 public class StreamActivityRepository {
@@ -97,11 +98,30 @@ public class StreamActivityRepository {
 
         SignatureUtils.addSignatureToRecipients(secretKey, activity);
 
-        request.setEntity(new StringEntity(objectMapper.writeValueAsString(activity), APPLICATION_JSON));
+        request.setEntity(new InputStreamEntity(new ByteArrayInputStream(objectMapper.writeValueAsBytes(activity)), APPLICATION_JSON));
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
             handleResponseCode(response);
             return objectMapper.readValue(response.getEntity().getContent(),
                                                  objectMapper.getTypeFactory().constructType(activity.getClass()));
+        }
+    }
+
+    public <T extends BaseActivity> StreamActivitiesResponse<T> addActivities(BaseFeed feed, Class<T> type, List<T> activities) throws StreamClientException, IOException {
+        HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
+                .path("feed").path(feed.getFeedSlug()).path(feed.getUserId() + "/")
+                .queryParam(StreamRepositoryImpl.API_KEY, apiKey).build());
+        LOG.debug("Invoking url: '{}'", request.getURI());
+
+        for (T activity : activities) {
+            SignatureUtils.addSignatureToRecipients(secretKey, activity);
+        }
+
+        request.setEntity(new InputStreamEntity(new ByteArrayInputStream(
+                objectMapper.writeValueAsBytes(Collections.singletonMap("activities", activities))), APPLICATION_JSON));
+        try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
+            handleResponseCode(response);
+            return objectMapper.readValue(response.getEntity().getContent(),
+                    objectMapper.getTypeFactory().constructParametricType(StreamActivitiesResponse.class, type));
         }
     }
 
@@ -214,6 +234,27 @@ public class StreamActivityRepository {
         LOG.debug("Invoking url: '{}", request.getURI());
         try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
             handleResponseCode(response);
+        }
+    }
+
+    public <T extends BaseActivity> StreamActivitiesResponse<T> updateActivities(BaseFeed feed, Class<T> type, List<T> activities) throws StreamClientException, IOException {
+        HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
+                .path("activities/")
+                .queryParam(StreamRepositoryImpl.API_KEY, apiKey).build());
+        LOG.debug("Invoking url: '{}'", request.getURI());
+
+
+        request.setEntity(new InputStreamEntity(
+                new ByteArrayInputStream(objectMapper.writeValueAsBytes(Collections.singletonMap("activities", activities))),
+                APPLICATION_JSON)
+        );
+
+        request = StreamRepoUtils.addJwtAuthentication(generateToken(secretKey, "activities", ALL, ALL, null), request);
+
+        try (CloseableHttpResponse response = httpClient.execute(request, HttpClientContext.create())) {
+            handleResponseCode(response);
+            return objectMapper.readValue(response.getEntity().getContent(),
+                    objectMapper.getTypeFactory().constructParametricType(StreamActivitiesResponse.class, type));
         }
     }
 

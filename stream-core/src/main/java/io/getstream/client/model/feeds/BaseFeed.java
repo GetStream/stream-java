@@ -34,12 +34,12 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.FollowMany;
-import io.getstream.client.service.FlatActivityServiceImpl;
-import io.getstream.client.service.UserActivityServiceImpl;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.repo.StreamRepository;
 import io.getstream.client.service.AggregatedActivityServiceImpl;
+import io.getstream.client.service.FlatActivityServiceImpl;
 import io.getstream.client.service.NotificationActivityServiceImpl;
+import io.getstream.client.service.UserActivityServiceImpl;
 
 import java.io.IOException;
 import java.util.List;
@@ -49,7 +49,9 @@ import java.util.List;
  */
 public class BaseFeed implements Feed {
 
-    public static final int DEFAULT_ACTIVITY_COPY_LIMIT = 300;
+    private static final int DEFAULT_ACTIVITY_COPY_LIMIT = 300;
+    private static final boolean DEFAULT_KEEP_HISTORY = false;
+
     protected final StreamRepository streamRepository;
     protected final String feedSlug;
     protected final String userId;
@@ -71,9 +73,20 @@ public class BaseFeed implements Feed {
     }
 
     @Override
+    public String getReadOnlyToken() {
+        return streamRepository.getReadOnlyToken(this);
+    }
+
+    @Override
     public void follow(String feedSlug, String userId) throws IOException, StreamClientException {
         String feedId = String.format("%s:%s", feedSlug, userId);
-        streamRepository.follow(this, feedId);
+        streamRepository.follow(this, feedId, DEFAULT_ACTIVITY_COPY_LIMIT);
+    }
+
+    @Override
+    public void follow(String feedSlug, String userId, int activityCopyLimit) throws IOException, StreamClientException {
+        String feedId = String.format("%s:%s", feedSlug, userId);
+        streamRepository.follow(this, feedId, activityCopyLimit);
     }
 
     @Override
@@ -89,7 +102,13 @@ public class BaseFeed implements Feed {
     @Override
     public void unfollow(String feedSlug, String userId) throws IOException, StreamClientException {
         String feedId = String.format("%s:%s", feedSlug, userId);
-        streamRepository.unfollow(this, feedId);
+        streamRepository.unfollow(this, feedId, DEFAULT_KEEP_HISTORY);
+    }
+
+    @Override
+    public void unfollow(String feedSlug, String userId, boolean keepHistory) throws IOException, StreamClientException {
+        String feedId = String.format("%s:%s", feedSlug, userId);
+        streamRepository.unfollow(this, feedId, keepHistory);
     }
 
     @Override

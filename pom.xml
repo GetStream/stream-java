@@ -57,6 +57,7 @@
         <tomitribe-http-signatures.version>1.0</tomitribe-http-signatures.version>
         <junit.version>4.11</junit.version>
         <mockito.version>1.10.19</mockito.version>
+        <java-jwt.version>2.1.0</java-jwt.version>
 
         <skipITs>true</skipITs>
         <skipTests>false</skipTests>
@@ -103,6 +104,11 @@
                 <groupId>org.tomitribe</groupId>
                 <artifactId>tomitribe-http-signatures</artifactId>
                 <version>${tomitribe-http-signatures.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.auth0</groupId>
+                <artifactId>java-jwt</artifactId>
+                <version>${java-jwt.version}</version>
             </dependency>
 
             <!-- test dependencies -->

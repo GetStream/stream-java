@@ -43,6 +43,9 @@ import java.security.SignatureException;
  */
 public class StreamRepoUtils {
 
+    private static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String HEADER_AUTH_TYPE = "stream-auth-type";
+
     private StreamRepoUtils() {
         throw new AssertionError();
     }
@@ -85,5 +88,17 @@ public class StreamRepoUtils {
     public static String createFeedSignature(BaseFeed feed, String secretKey){
         String token = createFeedToken(feed, secretKey);
         return String.format("%s %s", feed.getFeedId(), token);
+    }
+
+    /**
+     * Add authentication headers to the request using the JWT authentication type.
+     * @param token JWT token
+     * @param requestBuilder Outgoing request builder
+     * @return The same request with authentication headers.
+     */
+    public static Request.Builder addJwtAuthentication(String token, Request.Builder requestBuilder) {
+        requestBuilder.addHeader(HEADER_AUTHORIZATION, token);
+        requestBuilder.addHeader(HEADER_AUTH_TYPE, "jwt");
+        return requestBuilder;
     }
 }

@@ -31,14 +31,15 @@
 package io.getstream.client.repo;
 
 import io.getstream.client.exception.StreamClientException;
+import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
+import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.FollowMany;
-import io.getstream.client.model.feeds.BaseFeed;
-import io.getstream.client.model.activities.AggregatedActivity;
-import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.beans.MarkedActivity;
+import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
+import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 
 import java.io.IOException;
@@ -70,14 +71,22 @@ public interface StreamRepository {
     void deleteActivityByForeignId(BaseFeed feed, String foreignId) throws IOException, StreamClientException;
 
     /**
+     * Generate a JWT token to perform readonly operations.
+     * @param feed Input feed
+     * @return JWT token
+     */
+    String getReadOnlyToken(BaseFeed feed);
+
+    /**
      * Follow a feed.
      *
      * @param feed         Feed that wants to follow a target feed.
      * @param targetFeedId Feed to follow.
+     * @param activityCopyLimit How many activities should be copied from the target feed
      * @throws StreamClientException in case of functional or server-side exception
      * @throws IOException in case of network/socket exceptions
      */
-    void follow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException;
+    void follow(BaseFeed feed, String targetFeedId, int activityCopyLimit) throws StreamClientException, IOException;
 
     /**
      * Follow many feed in one shot.
@@ -95,10 +104,11 @@ public interface StreamRepository {
      *
      * @param feed Source feed
      * @param targetFeedId Feed to unfollow.
+     * @param keepHistory Whether the activities from the unfollowed feed should be removed
      * @throws StreamClientException in case of functional or server-side exception
      * @throws IOException in case of network/socket exceptions
      */
-    void unfollow(BaseFeed feed, String targetFeedId) throws StreamClientException, IOException;
+    void unfollow(BaseFeed feed, String targetFeedId, boolean keepHistory) throws StreamClientException, IOException;
 
     /**
      * List the feeds which the given feed is following.
@@ -146,6 +156,29 @@ public interface StreamRepository {
      * @throws IOException in case of network/socket exceptions
      */
     <T extends BaseActivity> T addActivity(BaseFeed feed, T activity) throws StreamClientException, IOException;
+
+    /**
+     * Add a new list of activities to the given feed.
+     *  @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @param feed     Feed which the activities belong to
+     * @param type   Type of the activity. Must be a subtype of {@link BaseActivity}
+     * @param activities List of activities to add  @return Activity as returned by the Stream server
+     * @throws StreamClientException in case of functional or server-side exception
+     * @throws IOException in case of network/socket exceptions
+     */
+    <T extends BaseActivity> StreamActivitiesResponse<T> addActivities(BaseFeed feed, Class<T> type, List<T> activities) throws StreamClientException, IOException;
+
+    /**
+     * Update activities (foreignId and time are mandatory fields).
+     * Please refer to GetStream.io/docs for more info.
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @param feed Feed which the activities belong to
+     * @param type   Type of the activity. Must be a subtype of {@link BaseActivity}
+     * @param activities List of activities to update  @return Operation response
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
+     */
+    <T extends BaseActivity> StreamActivitiesResponse<T> updateActivities(BaseFeed feed, Class<T> type, List<T> activities) throws IOException, StreamClientException;
 
     /**
      * Add a new activity of type {@link T} to multiple feeds.
