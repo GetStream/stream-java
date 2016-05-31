@@ -100,7 +100,7 @@ public abstract class AbstractActivityService<T extends BaseActivity> {
     /**
      * Add a new activity of type {@link T} to multiple feeds.
      *
-     * @param targetIds Destination feeds.<br/> A target id is defined as $feedSlug:$feedId.
+     * @param targetIds Destination feeds. A target id is defined as $feedSlug:$feedId.
      * @param activity Activity to add.
      * @return Response activity of type {@link T} coming from the server.
      * @throws IOException in case of network/socket exceptions

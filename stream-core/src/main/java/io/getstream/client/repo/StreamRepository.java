@@ -159,10 +159,11 @@ public interface StreamRepository {
 
     /**
      * Add a new list of activities to the given feed.
-     *  @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
      * @param feed     Feed which the activities belong to
      * @param type   Type of the activity. Must be a subtype of {@link BaseActivity}
      * @param activities List of activities to add  @return Activity as returned by the Stream server
+     * @return List of just sent activities
      * @throws StreamClientException in case of functional or server-side exception
      * @throws IOException in case of network/socket exceptions
      */
@@ -175,6 +176,7 @@ public interface StreamRepository {
      * @param feed Feed which the activities belong to
      * @param type   Type of the activity. Must be a subtype of {@link BaseActivity}
      * @param activities List of activities to update  @return Operation response
+     * @return List of just sent activities
      * @throws IOException in case of network/socket exceptions
      * @throws StreamClientException in case of functional or server-side exception
      */
@@ -183,7 +185,8 @@ public interface StreamRepository {
     /**
      * Add a new activity of type {@link T} to multiple feeds.
      *
-     * @param targetIds Destination feeds.<br/> A target id is defined as $feedSlug:$feedId.
+     * @param <T> Subtype of {@link BaseActivity} representing the activity type to handle.
+     * @param targetIds Destination feeds. A target id is defined as $feedSlug:$feedId.
      * @param activity Activity to add.
      * @return Response activity of type {@link T} coming from the server.
      * @throws IOException in case of network/socket exceptions
