@@ -1,10 +1,10 @@
 package io.getstream.client.apache.example.helloworld;
 
-import io.getstream.client.apache.StreamClientImpl;
 import io.getstream.client.StreamClient;
-import io.getstream.client.model.activities.BaseActivity;
+import io.getstream.client.apache.StreamClientImpl;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
+import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.service.FlatActivityServiceImpl;
 
@@ -21,7 +21,7 @@ public class HelloWorld {
          * Create client using api key and secret key.
          */
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), "nfq26m3qgfyp",
-                                                                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
+                "245nvvjm49s3uwrs5e4h3gadsw34mnwste6v3rdnd69ztb35bqspvq8kfzt9v7h2");
 
         /**
          * Get the referent to a feed (either new or existing one).
@@ -51,15 +51,15 @@ public class HelloWorld {
         streamClient.shutdown();
     }
 
-		/**
-		 * A custom activity must extends BaseActivity.
-		 * Feel free to add as many fields as you want.
-		 */
-		static class HelloWorldActivity extends BaseActivity {
-			protected String message;
+    /**
+     * A custom activity must extends BaseActivity.
+     * Feel free to add as many fields as you want.
+     */
+    static class HelloWorldActivity extends BaseActivity {
+        protected String message;
 
-			public void setMessage(String message) {
-				this.message = message;
-			}
-		}
+        public void setMessage(String message) {
+            this.message = message;
+        }
+    }
 }
