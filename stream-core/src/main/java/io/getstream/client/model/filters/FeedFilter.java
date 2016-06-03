@@ -44,6 +44,7 @@ public class FeedFilter {
     public final static String PARAM_ID_LOWER_THAN = "id_lt";
     public final static String PARAM_ID_LOWER_THAN_EQUALS = "id_lte";
     public final static String PARAM_FEED_IDS = "filter";
+    public final static String PARAM_RANKING = "ranking";
 
     private static final int DEFAULT_LIMIT = 25;
 
@@ -53,6 +54,7 @@ public class FeedFilter {
     private String idGreaterThanEquals = null;
     private String idLowerThanEquals = null;
     private String idLowerThan = null;
+    private String ranking = null;
     private List<String> feedIds = null;
 
     protected FeedFilter() {
@@ -84,6 +86,10 @@ public class FeedFilter {
 
     public List<String> getFeedIds() {
         return feedIds;
+    }
+
+    public String getRanking() {
+        return ranking;
     }
 
     /**
@@ -135,5 +141,9 @@ public class FeedFilter {
             return this;
         }
 
+        public Builder withRanking(String ranking) {
+            feedFilter.ranking = ranking;
+            return this;
+        }
     }
 }

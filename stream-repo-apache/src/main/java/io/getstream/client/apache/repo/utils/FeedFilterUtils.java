@@ -38,6 +38,9 @@ public class FeedFilterUtils {
         if (null != filter.getFeedIds()) {
             uriBuilder.queryParam(FeedFilter.PARAM_FEED_IDS, Joiner.on(",").join(filter.getFeedIds()));
         }
+        if (null != filter.getRanking()) {
+            uriBuilder.queryParam(FeedFilter.PARAM_RANKING, filter.getRanking());
+        }
         return uriBuilder;
     }
 }

@@ -53,6 +53,9 @@ public abstract class BaseActivity {
     protected String object;
     protected String target;
 
+    @JsonProperty("score")
+    protected Double score;
+
     @JsonDeserialize(using = DateDeserializer.class)
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.S")
     protected Date time;
@@ -146,6 +149,10 @@ public abstract class BaseActivity {
         this.foreignId = foreignId;
     }
 
+    public Double getScore() {
+        return score;
+    }
+
     @JsonIgnore
     public String getDuration() {
         return duration;
@@ -167,6 +174,7 @@ public abstract class BaseActivity {
                 .add("time", this.time)
                 .add("to", this.to.toString())
                 .add("origin", this.origin)
+                .add("score", this.score)
                 .add("duration", this.duration).toString();
     }
 }

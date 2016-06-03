@@ -1,5 +1,7 @@
 package io.getstream.client.okhttp;
 
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.JWTVerifyException;
 import com.google.common.collect.ImmutableList;
 import io.getstream.client.StreamClient;
 import io.getstream.client.config.ClientConfiguration;
@@ -23,13 +25,19 @@ import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -46,12 +54,15 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldGetReadOnlyToken() throws IOException, StreamClientException {
+    public void shouldGetReadOnlyToken() throws IOException, StreamClientException, NoSuchAlgorithmException, SignatureException, JWTVerifyException, InvalidKeyException {
         StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
                 API_SECRET);
         Feed feed = streamClient.newFeed("user", "1");
-        assertThat(feed.getReadOnlyToken(), is("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhY3Rpb24iOiJyZWFkIiwicmV" +
-                "zb3VyY2UiOiIqIiwiZmVlZF9pZCI6InVzZXIxIn0.MywMBtZJzjzSlTU7jfBglJ1NcUeaAWY1uhe6sjB97Wg"));
+
+        Map<String, Object> map = verifyToken(feed.getReadOnlyToken());
+        assertTrue(map.size() > 0);
+        assertThat(map.get("action").toString(), is("read"));
+        assertThat(map.get("resource").toString(), is(ALL));
     }
 
     @Test
@@ -752,5 +763,10 @@ public class IntegrationTest {
         Feed feed = streamClient.newFeed("aggregated", "whatever");
         String token = feed.getToken();
         assertThat(token, notNullValue());
+    }
+
+    private Map<String, Object> verifyToken(final String token) throws SignatureException, NoSuchAlgorithmException, JWTVerifyException, InvalidKeyException, IOException {
+        byte[] secret = API_SECRET.getBytes();
+        return new JWTVerifier(secret, "audience").verify(token);
     }
 }
