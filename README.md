@@ -150,7 +150,7 @@ String token = feed.getToken();
 
 #### Further references
 
-For more examples have a look [here](https://github.com/GetStream/stream-java/tree/milestone1/stream-repo-apache/src/test/java/io/getstream/client/apache/example).
+For more examples have a look [here](https://github.com/GetStream/stream-java/tree/master/stream-repo-apache/src/test/java/io/getstream/client/apache/example).
 
 Docs are available on [GetStream.io](http://getstream.io/docs/).
 
