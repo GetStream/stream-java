@@ -25,12 +25,13 @@ public class JwtAuthenticationUtilTest {
                 JwtAuthenticationUtil.generateToken(
                         SECRET_KEY,
                         "activities",
-                        "myResource",
+                        "read",
                         null,
                         null)
         );
         assertTrue(map.size() > 0);
-        assertThat(map.get("action").toString(), is("activities"));
+        assertThat(map.get("action").toString(), is("read"));
+        assertThat(map.get("resource").toString(), is("activities"));
     }
 
     @Test
@@ -44,7 +45,7 @@ public class JwtAuthenticationUtilTest {
                         null)
         );
         assertTrue(map.size() > 0);
-        assertThat(map.get("resource").toString(), is(ALL));
+        assertThat(map.get("action").toString(), is(ALL));
         assertThat(map.get("feed_id").toString(), is("feedId"));
     }
 
@@ -59,7 +60,7 @@ public class JwtAuthenticationUtilTest {
                         "userId1")
         );
         assertTrue(map.size() > 0);
-        assertThat(map.get("resource").toString(), is(ALL));
+        assertThat(map.get("action").toString(), is(ALL));
         assertThat(map.get("user_id").toString(), is("userId1"));
     }
 
@@ -74,7 +75,7 @@ public class JwtAuthenticationUtilTest {
                         "userId1")
         );
         assertTrue(map.size() > 0);
-        assertThat(map.get("resource").toString(), is(ALL));
+        assertThat(map.get("action").toString(), is(ALL));
         assertThat(map.get("feed_id").toString(), is("feedId"));
         assertThat(map.get("user_id").toString(), is("userId1"));
     }

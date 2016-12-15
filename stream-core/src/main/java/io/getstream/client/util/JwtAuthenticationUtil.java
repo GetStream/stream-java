@@ -25,7 +25,7 @@ public class JwtAuthenticationUtil {
      * @param userId UserId (if null it will not be added to the payload)
      * @return Token string
      */
-    public static String generateToken(final String secretKey, final String action, final String resource, final String feedId, final String userId) {
+    public static String generateToken(final String secretKey, final String resource, final String action, final String feedId, final String userId) {
         Map<String, Object> claims = new LinkedHashMap<String, Object>();
         claims.put("action", action);
         claims.put("resource", resource);
