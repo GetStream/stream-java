@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifyException;
 import com.google.common.collect.ImmutableList;
 import io.getstream.client.StreamClient;
 import io.getstream.client.config.ClientConfiguration;
+import io.getstream.client.config.StreamRegion;
 import io.getstream.client.exception.AuthenticationFailedException;
 import io.getstream.client.exception.InvalidOrMissingInputException;
 import io.getstream.client.exception.StreamClientException;
@@ -47,6 +48,7 @@ public class IntegrationTest {
 
     public static final String API_KEY = "zdwbqmpxmgh5";
     public static final String API_SECRET = "myjspevsc7rh7abz7n27q3emxrtgqnuuhgdx2767qrr9p4wresyw38hsbmz82tbx";
+    public static final ClientConfiguration CLIENT_CONFIGURATION = new ClientConfiguration(StreamRegion.QA_TEST);
 
     @BeforeClass
     public static void setLog() {
@@ -62,7 +64,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetReadOnlyToken() throws IOException, StreamClientException, NoSuchAlgorithmException, SignatureException, JWTVerifyException, InvalidKeyException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         Feed feed = streamClient.newFeed("user", "1");
 
@@ -74,7 +76,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetFollowers() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         String followerId = this.getTestUserId("shouldGetFollowers");
         String followedId = this.getTestUserId("shouldGetFollowersFollowed");
@@ -94,7 +96,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldFollow() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         String followerId = this.getTestUserId("shouldFollow");
@@ -119,7 +121,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldFollowWithActivityCopyLimit() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         String followerId = this.getTestUserId("shouldFollow");
@@ -138,7 +140,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldFollowMany() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         String followerId = this.getTestUserId("shouldFollowMany");
@@ -166,7 +168,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldHaveOriginField() throws IOException, StreamClientException, InterruptedException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         String producerId = this.getTestUserId("shouldHaveOriginField1");
@@ -195,7 +197,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldUnfollow() throws IOException, StreamClientException, InterruptedException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         String followerId = this.getTestUserId("follower");
@@ -220,7 +222,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetActivities() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         String userId = this.getTestUserId("shouldGetActivities");
@@ -240,7 +242,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldAddActivity() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         String userId = this.getTestUserId("shouldAddActivity");
@@ -260,7 +262,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldAddActivities() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         String userId = this.getTestUserId("shouldAddActivity");
@@ -292,7 +294,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldUpdateActivities() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         String userId = this.getTestUserId("shouldAddActivity");
@@ -314,7 +316,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldAddActivityToMany() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         String userId = this.getTestUserId("shouldAddActivityToMany");
@@ -331,7 +333,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldAddActivityToRecipients() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         Feed feed = streamClient.newFeed("user", "2");
@@ -348,7 +350,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldAddAndRetrieveActivity() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         String userId = this.getTestUserId("shouldAddAndRetrieveActivityToRecipients");
 
@@ -369,7 +371,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldAddAndRetrieveActivityToRecipients() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         String userId = this.getTestUserId("shouldAddAndRetrieveActivityToRecipients");
         String recipientId1 = this.getTestUserId("shouldAddAndRetrieveActivityToRecipients1");
@@ -405,7 +407,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldReturnActivityIdAfterInsert() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         String userId = this.getTestUserId("shouldReturnActivityId");
 
@@ -425,7 +427,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldActivityShouldHaveId() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         String userId = this.getTestUserId("shouldActivityShouldHaveId");
 
@@ -447,7 +449,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldRemoveActivity() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         String userId = this.getTestUserId("shouldRemoveActivity");
 
@@ -476,7 +478,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldRemoveActivityByForeignId() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         String userId = this.getTestUserId("shouldRemoveActivity");
 
@@ -505,7 +507,7 @@ public class IntegrationTest {
     }
     @Test
     public void shouldGetActivitiesWithFilter() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         String userId = this.getTestUserId("shouldGetActivitiesWithFilter");
         Feed feed = streamClient.newFeed("user", userId);
@@ -516,7 +518,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetActivitiesWithIdFilter() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         String userId = this.getTestUserId("shouldGetActivitiesWithIdFilter");
         SimpleActivity activity = new SimpleActivity();
@@ -555,7 +557,7 @@ public class IntegrationTest {
 
     @Test(expected = InvalidOrMissingInputException.class)
     public void shouldGetInvalidOrMissingInputException() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         Feed feed = streamClient.newFeed("foo", "2");
@@ -566,7 +568,7 @@ public class IntegrationTest {
 
     @Test(expected = AuthenticationFailedException.class)
     public void shouldGetAuthenticationFailed() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                                                                 "foo");
 
         Feed feed = streamClient.newFeed("user", "2");
@@ -576,7 +578,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetActivitiesFromNotificationFeed() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         String userId = getTestUserId("shouldGetActivitiesFromNotificationFeed");
         Feed feed = streamClient.newFeed("notification", userId);
@@ -589,7 +591,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetActivitiesFromNotificationFeedAndMarkThem() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         String userId = getTestUserId("shouldGetActivitiesFromNotificationFeedAndMarkThem");
         Feed feed = streamClient.newFeed("notification", userId);
@@ -624,7 +626,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetActivitiesFromNotificationFeedAndMarkThemById() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         String userId = getTestUserId("shouldGetActivitiesFromNotificationFeedAndMarkThemById");
         Feed feed = streamClient.newFeed("notification", userId);
@@ -664,7 +666,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetActivitiesFromEmptyAggregatedFeed() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         String userId = this.getTestUserId("2");
@@ -678,7 +680,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldGetActivitiesFromAggregatedFeed() throws IOException, StreamClientException, InterruptedException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
         String userId = getTestUserId("shouldGetActivitiesFromAggregatedFeed");
@@ -715,7 +717,7 @@ public class IntegrationTest {
 
     @Test
     public void shouldHaveToken() throws IOException, StreamClientException {
-        StreamClient streamClient = new StreamClientImpl(new ClientConfiguration(), API_KEY,
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         Feed feed = streamClient.newFeed("aggregated", "whatever");
         String token = feed.getToken();
