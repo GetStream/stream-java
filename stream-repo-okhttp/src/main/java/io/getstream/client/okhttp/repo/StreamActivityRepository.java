@@ -258,7 +258,7 @@ public class StreamActivityRepository {
 				objectMapper.writeValueAsBytes(Collections.singletonMap("activities", activities))));
 
 		Request request = StreamRepoUtils.addJwtAuthentication(
-				generateToken(secretKey, "activities", ALL, ALL, null),
+				generateToken(secretKey, ALL, "activities", ALL, null),
 				requestBuilder).build();
 
 		LOG.debug("Invoking url: '{}", request.urlString());

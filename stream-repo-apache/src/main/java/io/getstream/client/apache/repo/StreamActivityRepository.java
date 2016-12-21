@@ -249,7 +249,7 @@ public class StreamActivityRepository {
                 APPLICATION_JSON)
         );
 
-        request = StreamRepoUtils.addJwtAuthentication(generateToken(secretKey, "activities", ALL, ALL, null), request);
+        request = StreamRepoUtils.addJwtAuthentication(generateToken(secretKey, ALL, "activities", ALL, null), request);
 
         try (CloseableHttpResponse response = httpClient.execute(request, HttpClientContext.create())) {
             handleResponseCode(response);
