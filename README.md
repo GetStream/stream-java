@@ -155,3 +155,9 @@ For more examples have a look [here](https://github.com/GetStream/stream-java/tr
 Docs are available on [GetStream.io](http://getstream.io/docs/).
 
 Javadocs are available [here](https://getstream.github.io/stream-java/).
+
+### Copyright and License Information
+
+Copyright (c) 2016-2017 Stream.io Inc, and individual contributors. All rights reserved.
+
+See the file "LICENSE" for information on the history of this software, terms & conditions for usage, and a DISCLAIMER OF ALL WARRANTIES.
