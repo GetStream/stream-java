@@ -156,6 +156,12 @@ Docs are available on [GetStream.io](http://getstream.io/docs/).
 
 Javadocs are available [here](https://getstream.github.io/stream-java/).
 
+### Credits & Contributors
+
+This project was originally contributed by [Alessandro Pieri](sirio7g), prior to him joining Stream as an employee.
+
+We continue to welcome pull requests from community members.
+
 ### Copyright and License Information
 
 Copyright (c) 2016-2017 Stream.io Inc, and individual contributors. All rights reserved.
