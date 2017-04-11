@@ -6,6 +6,6 @@ env:
   - secure: TmI+K6gSOfDy5oa5EgLCGijimKdR5cHAwM6RASDegTjlRQ/sWVf8BNF4IPJHnAYFWNCgyX6vLdfPS3IJNrYS9iI1Er2a1Ctcq1TbCZfZpn4eIj8mcUXxr2Fo6hLJh2KeuXj3OQwfUy/Jul1Own/9R5YoVDJYD0ntnt1HJgFqq+0=
   - secure: DethMgIykOufLLQn9Jykmg7rdvZp4ONXD4A1XVQNaEVQytv20Fb2QidEPmVEocuDmpmU6SjWNMhAeBdlWnyGB4lECMG9594HJpSnNkyFQzzsfSWdOwHixiUCuD+rMJlEPRJDM4ayxhilPnK1gkycKBAZ1gtutriC4O/BdEOCN6A=
   - secure: F6jGxeoyhD1tmC0ovRW2RqeEQDN5t5Kfqktmtcj0Lz3S4ddgzMwC6RYKyYiiu9T3FSfh/hEMrx2SrMK+Neu2ctfYflNibUjgZJVPZHR7DA3S+g30teyj10XWspb6+OLC7U0DnGbdLee/w0KkuugQHYNv1aM9oEPtLWi+3VpvIIU=
-script: mvn test -B -DskipITs=false
+script: mvn clean install -DskipITs=false
 #after_success:
 #- ".travis/publish.sh"
