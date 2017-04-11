@@ -7,5 +7,5 @@ env:
   - secure: DethMgIykOufLLQn9Jykmg7rdvZp4ONXD4A1XVQNaEVQytv20Fb2QidEPmVEocuDmpmU6SjWNMhAeBdlWnyGB4lECMG9594HJpSnNkyFQzzsfSWdOwHixiUCuD+rMJlEPRJDM4ayxhilPnK1gkycKBAZ1gtutriC4O/BdEOCN6A=
   - secure: F6jGxeoyhD1tmC0ovRW2RqeEQDN5t5Kfqktmtcj0Lz3S4ddgzMwC6RYKyYiiu9T3FSfh/hEMrx2SrMK+Neu2ctfYflNibUjgZJVPZHR7DA3S+g30teyj10XWspb6+OLC7U0DnGbdLee/w0KkuugQHYNv1aM9oEPtLWi+3VpvIIU=
 script: mvn test -B -DskipITs=false
-after_success:
-- ".travis/publish.sh"
+#after_success:
+#- ".travis/publish.sh"
