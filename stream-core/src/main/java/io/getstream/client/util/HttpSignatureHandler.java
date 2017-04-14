@@ -7,6 +7,7 @@ import org.tomitribe.auth.signatures.Signer;
 import javax.crypto.spec.SecretKeySpec;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -43,7 +44,7 @@ public class HttpSignatureHandler {
      * @return A string representing the date of today
      */
     protected String getTodayDate() {
-        final SimpleDateFormat today = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz");
+        final SimpleDateFormat today = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.ENGLISH);
         today.setTimeZone(TimeZone.getTimeZone("GMT"));
         return today.format(new Date());
     }
