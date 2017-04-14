@@ -50,7 +50,7 @@ public class ClientConfiguration {
     /**
      * Connection timeout in ms.
      */
-    private int connectionTimeout = 500;
+    private int connectionTimeout = 1500;
 
     /**
      * TimeToLive in ms.
