@@ -612,15 +612,13 @@ public class IntegrationTest {
         assertThat((int)responseAfter.getUnread(), is(1));
         assertThat((int) responseAfter.getUnseen(), is(1));
 
-        StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark =
-                notificationActivityService.getActivities(new FeedFilter.Builder().build(), true, false);
-        assertThat((int)responseAfterMark.getUnread(), is(0));
-        assertThat((int) responseAfterMark.getUnseen(), is(1));
+        /* updated marked seen and read */
+        notificationActivityService.getActivities(new FeedFilter.Builder().build(), true, true);
 
-        StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark2 =
+        StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark =
                 notificationActivityService.getActivities(new FeedFilter.Builder().build(), false, true);
-        assertThat((int)responseAfterMark2.getUnread(), is(0));
-        assertThat((int) responseAfterMark2.getUnseen(), is(0));
+        assertThat((int)responseAfterMark.getUnread(), is(0));
+        assertThat((int) responseAfterMark.getUnseen(), is(0));
         streamClient.shutdown();
     }
 
@@ -648,17 +646,15 @@ public class IntegrationTest {
         assertThat((int)responseAfter.getUnread(), is(1));
         assertThat((int)responseAfter.getUnseen(), is(1));
 
+        /* update marked read and seen */
         String aid = responseAfter.getResults().get(0).getId();
         MarkedActivity marker = new MarkedActivity.Builder().withActivityId(aid).build();
-        StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark =
-                notificationActivityService.getActivities(new FeedFilter.Builder().build(), marker, new MarkedActivity.Builder().build());
-        assertThat((int)responseAfterMark.getUnread(), is(0));
-        assertThat((int)responseAfterMark.getUnseen(), is(1));
+        notificationActivityService.getActivities(new FeedFilter.Builder().build(), marker, marker);
 
-        StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark2 =
+        StreamResponse<NotificationActivity<SimpleActivity>> responseAfterMark =
                 notificationActivityService.getActivities(new FeedFilter.Builder().build(), new MarkedActivity.Builder().build(), marker);
-        assertThat((int)responseAfterMark2.getUnread(), is(0));
-        assertThat((int)responseAfterMark2.getUnseen(), is(0));
+        assertThat((int)responseAfterMark.getUnread(), is(0));
+        assertThat((int)responseAfterMark.getUnseen(), is(0));
 
         streamClient.shutdown();
     }
