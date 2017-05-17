@@ -2,7 +2,9 @@ stream-java
 ===========
 [![Build Status](https://travis-ci.org/GetStream/stream-java.svg?branch=master)](https://travis-ci.org/GetStream/stream-java)
 
-stream-java is a Java client for [Stream](https://getstream.io/).
+[stream-java](https://github.com/GetStream/stream-java) is a Java client for [Stream](https://getstream.io/).
+
+You can sign up for a Stream account at https://getstream.io/get_started.
 
 The Stream's Java client come in two different flavours, you should decide which one to drag into your project.
 Those two implementations differ according to the underlying library used to handle HTTP connections:
@@ -48,6 +50,10 @@ In case you want to download the artifact and put it manually into your project,
 you can download it from [here](https://github.com/GetStream/stream-java/releases).
 
 Snapshots of the development version are available in [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/io/getstream/client/) snapshots repository.
+
+### Full documentation
+
+Documentation for this Java client are available at the [Stream website](https://getstream.io/docs/?language=java).
 
 ### Usage
 
