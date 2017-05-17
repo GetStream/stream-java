@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
  */
 public enum StreamRegion {
 
+    BASE("https://api.getstream.io/api"),
     US_EAST("https://us-east-api.getstream.io/api"),
     US_WEST("https://us-west-api.getstream.io/api"),
     EU_WEST("https://eu-west-api.getstream.io/api"),
