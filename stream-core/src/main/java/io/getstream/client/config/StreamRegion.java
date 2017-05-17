@@ -16,7 +16,8 @@ public enum StreamRegion {
     AP_NORTH_EAST("https://ap-northeast-api.getstream.io/api"),
     AP_SOUTH_EAST("https://ap-southeast-api.getstream.io/api"),
     LOCAL_TEST("http://localhost:8089/api"), /* used for testing purpose only */
-    QA_TEST("http://qa-api.getstream.io/api"); /* used for integration test */
+    QA_TEST("http://qa-api.getstream.io/api"), /* used for integration test */
+    SNI_TEST("https://sni-api.getstream.io/api"); /* used for testing purpose only */
 
     protected final static String VERSION = "v1.0";
 
