@@ -1,6 +1,7 @@
 package io.getstream.client.apache.repo.utils;
 
 import io.getstream.client.model.feeds.BaseFeed;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 
@@ -69,6 +70,18 @@ public class StreamRepoUtils {
      * @return The same request with authentication headers.
      */
     public static HttpPost addJwtAuthentication(String token, HttpPost request) {
+        request.addHeader(HEADER_AUTHORIZATION, token);
+        request.addHeader(HEADER_AUTH_TYPE, "jwt");
+        return request;
+    }
+
+    /**
+     * Add authentication headers to the request using the JWT authentication type.
+     * @param token JWT token
+     * @param request Outgoing request
+     * @return The same request with authentication headers.
+     */
+    public static HttpGet addJwtAuthentication(String token, HttpGet request) {
         request.addHeader(HEADER_AUTHORIZATION, token);
         request.addHeader(HEADER_AUTH_TYPE, "jwt");
         return request;

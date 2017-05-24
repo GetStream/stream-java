@@ -1,6 +1,7 @@
 package io.getstream.client.apache.repo.utils;
 
 import io.getstream.client.model.feeds.BaseFeed;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.junit.Before;
@@ -43,8 +44,17 @@ public class StreamRepoUtilsTest {
     }
 
     @Test
-    public void shouldAddJwtAuthentication() throws Exception {
+    public void shouldAddJwtAuthenticationPost() throws Exception {
         HttpPost request = mock(HttpPost.class);
+
+        StreamRepoUtils.addJwtAuthentication("token", request);
+        verify(request).addHeader(eq("Authorization"), eq("token"));
+        verify(request).addHeader(eq("stream-auth-type"), eq("jwt"));
+    }
+
+    @Test
+    public void shouldAddJwtAuthenticationGet() throws Exception {
+        HttpGet request = mock(HttpGet.class);
 
         StreamRepoUtils.addJwtAuthentication("token", request);
         verify(request).addHeader(eq("Authorization"), eq("token"));
