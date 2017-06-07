@@ -34,7 +34,7 @@ public class StreamRepositoryImplTest {
 
     public StreamRepositoryImplTest() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
-        clientConfiguration.setRegion(StreamRegion.QA_TEST);
+        clientConfiguration.setRegion(StreamRegion.LOCAL_TEST);
         streamClient = new StreamClientImpl(clientConfiguration, API_KEY, API_SECRET);
         streamRepository = new StreamRepositoryImpl(clientConfiguration, mock(CloseableHttpClient.class));
     }
