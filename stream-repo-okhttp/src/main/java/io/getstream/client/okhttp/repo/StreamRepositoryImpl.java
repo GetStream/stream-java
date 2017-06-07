@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -35,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -95,7 +95,9 @@ public class StreamRepositoryImpl implements StreamRepository {
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")
 				.queryParam("activity_copy_limit", activityCopyLimit)
 				.queryParam(API_KEY, apiKey).build().toURL());
-		requestBuilder.post(new FormEncodingBuilder().add("target", targetFeedId).build());
+		requestBuilder.post(
+				RequestBody.create(MediaType.parse(APPLICATION_JSON),
+				OBJECT_MAPPER.writeValueAsString(Collections.singletonMap("target", targetFeedId))));
 
 		Request request = addAuthentication(feed, requestBuilder).build();
 		fireAndForget(request);

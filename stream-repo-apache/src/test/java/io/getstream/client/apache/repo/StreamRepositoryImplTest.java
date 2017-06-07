@@ -1,14 +1,10 @@
 package io.getstream.client.apache.repo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.client.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import io.getstream.client.StreamClient;
 import io.getstream.client.apache.StreamClientImpl;
-import io.getstream.client.config.AuthenticationHandlerConfiguration;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.config.StreamRegion;
-import io.getstream.client.exception.InvalidFeedNameException;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.SimpleActivity;
 import io.getstream.client.model.beans.FollowMany;
@@ -16,15 +12,13 @@ import io.getstream.client.model.feeds.Feed;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.Result;
 
 import java.io.IOException;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
 public class StreamRepositoryImplTest {
 
@@ -40,7 +34,7 @@ public class StreamRepositoryImplTest {
 
     public StreamRepositoryImplTest() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
-        clientConfiguration.setRegion(StreamRegion.LOCAL_TEST);
+        clientConfiguration.setRegion(StreamRegion.QA_TEST);
         streamClient = new StreamClientImpl(clientConfiguration, API_KEY, API_SECRET);
         streamRepository = new StreamRepositoryImpl(clientConfiguration, mock(CloseableHttpClient.class));
     }

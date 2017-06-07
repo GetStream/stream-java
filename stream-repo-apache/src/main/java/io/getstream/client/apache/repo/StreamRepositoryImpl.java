@@ -22,7 +22,6 @@ import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.repo.StreamRepository;
 import io.getstream.client.util.JwtAuthenticationUtil;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -31,7 +30,6 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,8 +92,9 @@ public class StreamRepositoryImpl implements StreamRepository {
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")
 				.queryParam("activity_copy_limit", activityCopyLimit)
 				.queryParam(API_KEY, apiKey).build());
-		request.setEntity(new UrlEncodedFormEntity(
-				Collections.singletonList(new BasicNameValuePair("target", targetFeedId))));
+		request.setEntity(new StringEntity(
+						OBJECT_MAPPER.writeValueAsString(Collections.singletonMap("target", targetFeedId)),
+						APPLICATION_JSON));
 		fireAndForget(addAuthentication(feed, request));
 	}
 
