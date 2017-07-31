@@ -75,6 +75,12 @@
 			<artifactId>mockito-core</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.github.tomakehurst</groupId>
+			<artifactId>wiremock</artifactId>
+			<classifier>standalone</classifier>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
