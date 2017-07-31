@@ -2,7 +2,6 @@ package io.getstream.client.service;
 
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.SimpleActivity;
-import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
@@ -17,9 +16,7 @@ import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.notNullValue;
-import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

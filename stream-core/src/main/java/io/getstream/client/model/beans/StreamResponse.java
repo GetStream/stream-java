@@ -1,5 +1,7 @@
 package io.getstream.client.model.beans;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 /**
@@ -19,6 +21,11 @@ public class StreamResponse<T> {
 
     private long unseen;
 
+    private String version;
+
+    @JsonProperty("app_id")
+    private Long appId;
+
     public List<T> getResults() {
         return results;
     }
@@ -37,5 +44,13 @@ public class StreamResponse<T> {
 
     public long getUnseen() {
         return unseen;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public Long getAppId() {
+        return appId;
     }
 }
