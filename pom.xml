@@ -58,6 +58,7 @@
         <junit.version>4.11</junit.version>
         <mockito.version>1.10.19</mockito.version>
         <java-jwt.version>2.1.0</java-jwt.version>
+        <wiremock.version>1.57</wiremock.version>
 
         <skipITs>true</skipITs>
         <skipTests>false</skipTests>
@@ -127,7 +128,7 @@
             <dependency>
                 <groupId>com.github.tomakehurst</groupId>
                 <artifactId>wiremock</artifactId>
-                <version>1.57</version>
+                <version>${wiremock.version}</version>
                 <scope>test</scope>
 
                 <!-- Include everything below here if you have dependency conflicts -->
@@ -249,7 +250,7 @@
                 <configuration>
                     <skipTests>${skipTests}</skipTests>
                     <excludes>
-                        <exclude>**/IntegrationTest.java</exclude>
+                        <exclude>**/*IntegrationTest.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>

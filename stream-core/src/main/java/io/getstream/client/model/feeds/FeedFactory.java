@@ -26,4 +26,14 @@ public interface FeedFactory {
      * @throws InvalidFeedNameException if the name of the feed is not valid
      */
     Feed createFeed(String feedSlug, String id) throws InvalidFeedNameException;
+
+    /**
+     * Create new personalized feed.
+     *
+     * @param feedSlug feed slug.
+     * @param id feed id.
+     * @return A new feed
+     * @throws InvalidFeedNameException if the name of the feed is not valid
+     */
+    PersonalizedFeed createPersonalizedFeed(String feedSlug, String id) throws InvalidFeedNameException;
 }

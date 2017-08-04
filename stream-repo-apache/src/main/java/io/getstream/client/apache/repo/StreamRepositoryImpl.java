@@ -1,10 +1,8 @@
 package io.getstream.client.apache.repo;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.SerializationFeature;
+import io.getstream.client.apache.StreamClientImpl;
 import io.getstream.client.apache.repo.handlers.StreamExceptionHandler;
 import io.getstream.client.apache.repo.utils.StreamRepoUtils;
 import io.getstream.client.apache.repo.utils.UriBuilder;
@@ -50,12 +48,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	static final String API_KEY = "api_key";
 
-	/* will convert camelStyle to lower_case_style */
-	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-			.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
-			.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-			.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-
+	private final ObjectMapper objectMapper;
 	private final URI baseEndpoint;
 	private final String apiKey;
 	private final String secretKey;
@@ -68,16 +61,18 @@ public class StreamRepositoryImpl implements StreamRepository {
 	 * Create a new {@link StreamRepository} using the given configuration {@link ClientConfiguration} and
 	 * a pre-instantiated HttpClient {@link CloseableHttpClient}.
 	 *
+	 * @param objectMapper Json Object Mapper
 	 * @param streamClient Client configuration
 	 * @param closeableHttpClient Actual instance of Apache client
 	 */
-	public StreamRepositoryImpl(ClientConfiguration streamClient, CloseableHttpClient closeableHttpClient) {
+	public StreamRepositoryImpl(ObjectMapper objectMapper, ClientConfiguration streamClient, CloseableHttpClient closeableHttpClient) {
+		this.objectMapper = objectMapper;
 		this.baseEndpoint = streamClient.getRegion().getEndpoint();
 		this.apiKey = streamClient.getAuthenticationHandlerConfiguration().getApiKey();
 		this.secretKey = streamClient.getAuthenticationHandlerConfiguration().getSecretKey();
-		this.exceptionHandler = new StreamExceptionHandler(OBJECT_MAPPER);
+		this.exceptionHandler = new StreamExceptionHandler(objectMapper);
 		this.httpClient = closeableHttpClient;
-		this.streamActivityRepository = new StreamActivityRepository(OBJECT_MAPPER, baseEndpoint, apiKey, exceptionHandler,
+		this.streamActivityRepository = new StreamActivityRepository(objectMapper, baseEndpoint, apiKey, exceptionHandler,
 				httpClient, secretKey);
 	}
 
@@ -93,7 +88,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 				.queryParam("activity_copy_limit", activityCopyLimit)
 				.queryParam(API_KEY, apiKey).build());
 		request.setEntity(new StringEntity(
-						OBJECT_MAPPER.writeValueAsString(Collections.singletonMap("target", targetFeedId)),
+						objectMapper.writeValueAsString(Collections.singletonMap("target", targetFeedId)),
 						APPLICATION_JSON));
 		fireAndForget(addAuthentication(feed, request));
 	}
@@ -105,7 +100,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 				.queryParam("activity_copy_limit", activityCopyLimit)
 				.build());
 		request.addHeader(HttpSignatureInterceptor.X_API_KEY_HEADER, apiKey);
-		request.setEntity(new StringEntity(OBJECT_MAPPER.writeValueAsString(followManyInput), APPLICATION_JSON));
+		request.setEntity(new StringEntity(objectMapper.writeValueAsString(followManyInput), APPLICATION_JSON));
 		fireAndForget(request);
 	}
 
@@ -126,7 +121,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 		LOG.debug("Invoking url: '{}'", request.getURI());
 		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
 			handleResponseCode(response);
-			StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
+			StreamResponse<FeedFollow> streamResponse = objectMapper.readValue(response.getEntity().getContent(),
 					new TypeReference<StreamResponse<FeedFollow>>() {
 					});
 			return streamResponse.getResults();
@@ -141,7 +136,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 		LOG.debug("Invoking url: '{}'", request.getURI());
 		try (CloseableHttpResponse response = httpClient.execute(addAuthentication(feed, request), HttpClientContext.create())) {
 			handleResponseCode(response);
-			StreamResponse<FeedFollow> streamResponse = OBJECT_MAPPER.readValue(response.getEntity().getContent(),
+			StreamResponse<FeedFollow> streamResponse = objectMapper.readValue(response.getEntity().getContent(),
 					new TypeReference<StreamResponse<FeedFollow>>() {
 					});
 			return streamResponse.getResults();
@@ -228,7 +223,13 @@ public class StreamRepositoryImpl implements StreamRepository {
 		return StreamRepoUtils.addAuthentication(feed, secretKey, httpRequest);
 	}
 
+	/**
+	 * Get Jackson's object mapper. This method is deprecated.
+	 * Please use StreamClientImpl.getObjectMapper() instead.
+	 * @return Object mapper
+     */
+	@Deprecated
 	public static ObjectMapper getObjectMapper() {
-		return OBJECT_MAPPER;
+		return StreamClientImpl.getObjectMapper();
 	}
 }

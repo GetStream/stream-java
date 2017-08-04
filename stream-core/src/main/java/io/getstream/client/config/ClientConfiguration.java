@@ -47,6 +47,12 @@ public class ClientConfiguration {
      */
     private StreamRegion region = StreamRegion.US_EAST;
 
+    /**
+     * Personalized feed endpoint
+     */
+    private String personalizedFeedEndpoint;
+
+
     private AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
 
     /**
@@ -141,4 +147,12 @@ public class ClientConfiguration {
 	public void setKeepAlive(long keepAlive) {
 		this.keepAlive = keepAlive;
 	}
+
+    public String getPersonalizedFeedEndpoint() {
+        return personalizedFeedEndpoint;
+    }
+
+    public void setPersonalizedFeedEndpoint(String personalizedFeedEndpoint) {
+        this.personalizedFeedEndpoint = personalizedFeedEndpoint;
+    }
 }
