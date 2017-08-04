@@ -3,7 +3,7 @@ package io.getstream.client.model.activities;
 import java.util.List;
 
 /**
- * Personalized activities are subset of {@see io.getstream.client.model.activities.BaseActivity}.
+ * Personalized activities are subset of {@link io.getstream.client.model.activities.BaseActivity}.
  * Any custom personalized activity must be a subclasses of PersonalizedActivity.
  */
 public class PersonalizedActivity extends BaseActivity {
