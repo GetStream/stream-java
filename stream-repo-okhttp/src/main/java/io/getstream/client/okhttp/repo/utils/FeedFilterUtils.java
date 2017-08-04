@@ -17,6 +17,9 @@ public class FeedFilterUtils {
      * @return A {@link UriBuilder}
      */
     public static UriBuilder apply(final UriBuilder uriBuilder, final FeedFilter filter) {
+        if (null == filter) {
+            return uriBuilder;
+        }
         if (null != filter.getLimit()) {
             uriBuilder.queryParam(FeedFilter.PARAM_LIMIT, filter.getLimit());
         }

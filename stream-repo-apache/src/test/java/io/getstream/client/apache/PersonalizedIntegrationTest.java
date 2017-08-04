@@ -8,6 +8,7 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.PersonalizedActivity;
 import io.getstream.client.model.beans.MetaResponse;
 import io.getstream.client.model.feeds.PersonalizedFeed;
+import io.getstream.client.model.filters.FeedFilter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -22,8 +23,9 @@ import static org.junit.Assert.assertTrue;
 
 public class PersonalizedIntegrationTest {
 
-    public static final String API_KEY = "qssg44g3xjqu";
-    public static final String API_SECRET = "kq3ueg2wpxz9qjqkuxgfmhn8p768mxygg4tqtvxymnbbrfsdktf3ntz8ndg9eg53";
+    public static final String PERSONALIZED_FEED_ENDPOINT = "";
+    public static final String API_KEY = "";
+    public static final String API_SECRET = "";
     public static final ClientConfiguration CLIENT_CONFIGURATION = new ClientConfiguration(StreamRegion.QA_TEST);
 
     @BeforeClass
@@ -35,16 +37,21 @@ public class PersonalizedIntegrationTest {
 
     @BeforeClass
     public static void initClient() {
-        CLIENT_CONFIGURATION.setPersonalizedFeedEndpoint("http://ml-api.staging.gtstrm.com:85/fullmeasureed");
+        CLIENT_CONFIGURATION.setPersonalizedFeedEndpoint(PERSONALIZED_FEED_ENDPOINT);
     }
 
     @Test
     public void shouldGetPersonalizedFeed() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY, API_SECRET);
 
-        PersonalizedFeed feed = streamClient.newPersonalizedFeed("aggregated", "2");
-        List<PersonalizedActivity> response = feed.get(PersonalizedActivity.class);
+        PersonalizedFeed feed = streamClient.newPersonalizedFeed("aggregated", "f4774599-a0e5-46cb-81e8-451cb38d3fc7");
+        List<PersonalizedActivity> response = feed.get(PersonalizedActivity.class, new FeedFilter.Builder().withLimit(20).build());
         assertTrue(response.size() > 0);
+        for (PersonalizedActivity personalizedActivity : response) {
+            System.out.println(personalizedActivity.getId());
+            System.out.println(personalizedActivity.getTime());
+        }
+
 
         streamClient.shutdown();
     }
@@ -53,7 +60,7 @@ public class PersonalizedIntegrationTest {
     public void shouldGetPersonalizedFeedInterest() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY, API_SECRET);
 
-        PersonalizedFeed feed = streamClient.newPersonalizedFeed("aggregated", "2");
+        PersonalizedFeed feed = streamClient.newPersonalizedFeed("aggregated", "f4774599-a0e5-46cb-81e8-451cb38d3fc7");
         List<Interest> response = feed.getInterest(Interest.class);
         assertTrue(response.size() > 0);
 
@@ -65,7 +72,7 @@ public class PersonalizedIntegrationTest {
     public void shouldSendMeta() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY, API_SECRET);
 
-        PersonalizedFeed feed = streamClient.newPersonalizedFeed("user", "2");
+        PersonalizedFeed feed = streamClient.newPersonalizedFeed("user", "f4774599-a0e5-46cb-81e8-451cb38d3fc7");
 
         MetaResponse response = feed.addMeta(feed, new MetaInterest(Collections.singletonList("java")));
         assertThat(response.getResponseCode(), is(201));

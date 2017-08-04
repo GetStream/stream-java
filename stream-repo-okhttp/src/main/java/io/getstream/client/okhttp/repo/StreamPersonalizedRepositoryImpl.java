@@ -12,6 +12,7 @@ import io.getstream.client.model.activities.PersonalizedActivity;
 import io.getstream.client.model.beans.MetaResponse;
 import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.PersonalizedFeed;
+import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.okhttp.repo.handlers.StreamExceptionHandler;
 import io.getstream.client.okhttp.repo.utils.StreamRepoUtils;
 import io.getstream.client.okhttp.repo.utils.UriBuilder;
@@ -26,6 +27,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 
+import static io.getstream.client.okhttp.repo.utils.FeedFilterUtils.apply;
 import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
 import static io.getstream.client.util.JwtAuthenticationUtil.generateToken;
 
@@ -56,12 +58,12 @@ public class StreamPersonalizedRepositoryImpl implements StreamPersonalizedRepos
     }
 
     @Override
-    public <T extends PersonalizedActivity> List<T> get(PersonalizedFeed feed, Class<T> type) throws IOException, StreamClientException {
+    public <T extends PersonalizedActivity> List<T> get(PersonalizedFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
         Request.Builder requestBuilder = new Request.Builder().url(
-                UriBuilder.fromEndpoint(baseEndpoint)
+                apply(UriBuilder.fromEndpoint(baseEndpoint)
                 .path("personalized_feed/")
                 .path(feed.getUserId().concat("/"))
-                .queryParam(API_KEY, apiKey).build().toURL()).get();
+                .queryParam(API_KEY, apiKey), filter).build().toURL()).get();
 
         Request request = StreamRepoUtils.addJwtAuthentication(
                 generateToken(secretKey, ALL, ALL, null, feed.getUserId()),

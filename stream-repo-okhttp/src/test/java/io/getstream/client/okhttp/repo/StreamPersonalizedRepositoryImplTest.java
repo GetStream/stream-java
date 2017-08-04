@@ -54,7 +54,7 @@ public class StreamPersonalizedRepositoryImplTest {
                         .withBody("{\"duration\": \"7ms\", \"results\":[{\"tags\":[\"foo\", \"bar\"]}]}")));
 
         PersonalizedFeed feed = streamClient.newPersonalizedFeed("user", "1234");
-        List<PersonalizedActivity> personalizedActivities = feed.get(PersonalizedActivity.class);
+        List<PersonalizedActivity> personalizedActivities = feed.get(PersonalizedActivity.class, null);
 
         System.out.println(JwtAuthenticationUtil.generateToken(API_SECRET, "*", "*", null, "1234"));
         verify(getRequestedFor(urlEqualTo("/yourcompany/personalized_feed/1234/?api_key=" + API_KEY))
