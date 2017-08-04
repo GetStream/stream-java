@@ -5,7 +5,7 @@
     <groupId>io.getstream.client</groupId>
     <artifactId>stream-java</artifactId>
     <packaging>pom</packaging>
-    <version>1.3.1-SNAPSHOT</version>
+    <version>1.3.1</version>
 
 	<name>stream-java</name>
 	<description>stream-java is a Java client for http://getstream.io.</description>
@@ -39,7 +39,7 @@
 		<connection>scm:git:git@github.com:GetStream/stream-java.git</connection>
 		<developerConnection>scm:git:git@github.com:GetStream/stream-java.git</developerConnection>
 		<url>git@github.com:GetStream/stream-java.git</url>
-	  <tag>HEAD</tag>
+	  <tag>stream-java-1.3.1</tag>
   </scm>
 
 	<modules>
