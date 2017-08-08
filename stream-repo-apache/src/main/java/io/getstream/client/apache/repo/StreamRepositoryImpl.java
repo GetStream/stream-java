@@ -13,6 +13,7 @@ import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.FollowMany;
+import io.getstream.client.model.beans.FollowRequest;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
@@ -33,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 
 import static io.getstream.client.apache.repo.utils.FeedFilterUtils.apply;
@@ -85,11 +85,10 @@ public class StreamRepositoryImpl implements StreamRepository {
 	public void follow(BaseFeed feed, String targetFeedId, int activityCopyLimit) throws StreamClientException, IOException {
 		HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")
-				.queryParam("activity_copy_limit", activityCopyLimit)
 				.queryParam(API_KEY, apiKey).build());
+
 		request.setEntity(new StringEntity(
-						objectMapper.writeValueAsString(Collections.singletonMap("target", targetFeedId)),
-						APPLICATION_JSON));
+						objectMapper.writeValueAsString(new FollowRequest(targetFeedId, activityCopyLimit)), APPLICATION_JSON));
 		fireAndForget(addAuthentication(feed, request));
 	}
 

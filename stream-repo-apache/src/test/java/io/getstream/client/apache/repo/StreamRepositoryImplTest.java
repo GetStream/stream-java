@@ -83,5 +83,4 @@ public class StreamRepositoryImplTest {
                 .withRequestBody(containing("\"target\":\"user:3\""))
         );
     }
-
 }

@@ -127,13 +127,18 @@ public class IntegrationTest {
         String followerId = this.getTestUserId("shouldFollow");
         Feed feed = streamClient.newFeed("user", followerId);
 
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService = feed.newFlatActivityService(SimpleActivity.class);
+        assertThat(flatActivityService.getActivities().getResults().size(), is(0));
+
         List<FeedFollow> following = feed.getFollowing();
         assertThat(following.size(), is(0));
 
-        feed.follow("user", "1", 50);
+        feed.follow("user", "1", 10);
 
         List<FeedFollow> followingAfter = feed.getFollowing();
         assertThat(followingAfter.size(), is(1));
+
+        assertThat(flatActivityService.getActivities().getResults().size(), is(10));
 
         streamClient.shutdown();
     }
