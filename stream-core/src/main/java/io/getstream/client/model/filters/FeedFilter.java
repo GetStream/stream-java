@@ -115,5 +115,10 @@ public class FeedFilter {
             feedFilter.ranking = ranking;
             return this;
         }
+
+        public Builder withFeedIds(List<String> feeds) {
+            feedFilter.feedIds = feeds;
+            return this;
+        }
     }
 }

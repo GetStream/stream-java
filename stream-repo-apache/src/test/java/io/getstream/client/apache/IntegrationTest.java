@@ -164,9 +164,13 @@ public class IntegrationTest {
         List<FeedFollow> followingAfter = feed.getFollowing();
         assertThat(followingAfter.size(), is(3));
 
-        FeedFilter filter = new FeedFilter.Builder().withLimit(1).withOffset(1).build();
-        List<FeedFollow> followingPaged = feed.getFollowing(filter);
+        FeedFilter filterPaged = new FeedFilter.Builder().withLimit(1).withOffset(1).build();
+        List<FeedFollow> followingPaged = feed.getFollowing(filterPaged);
         assertThat(followingPaged.size(), is(1));
+
+        FeedFilter filterByIds = new FeedFilter.Builder().withFeedIds(Arrays.asList("user:1", "user:2")).build();
+        List<FeedFollow> followingIds = feed.getFollowing(filterByIds);
+        assertThat(followingIds.size(), is(2));
 
         streamClient.shutdown();
     }
