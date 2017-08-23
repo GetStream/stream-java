@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: io.getstream.client.apache.repo.StreamRepositoryImplTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.213 sec - in io.getstream.client.apache.repo.StreamRepositoryImplTest

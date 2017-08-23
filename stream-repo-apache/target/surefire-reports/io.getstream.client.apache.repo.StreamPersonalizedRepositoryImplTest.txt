@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: io.getstream.client.apache.repo.StreamPersonalizedRepositoryImplTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.954 sec - in io.getstream.client.apache.repo.StreamPersonalizedRepositoryImplTest
