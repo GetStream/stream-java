@@ -49,7 +49,7 @@ public class IntegrationTest {
     public static final String API_KEY = "aygdeg2vhjxg";
     public static final String API_SECRET = "4vknf33hn4n94exgrg367jbmg4jxetem93bqcg3nkdf2xau3q8pmy3pftytq4w8v";
     public static final ClientConfiguration CLIENT_CONFIGURATION = new ClientConfiguration(StreamRegion.QA_TEST);
-    
+
     public String getTestUserId(String userId) {
         long millis = System.currentTimeMillis();
         return String.format("%s_%d", userId, millis);
@@ -158,9 +158,13 @@ public class IntegrationTest {
         List<FeedFollow> followingAfter = feed.getFollowing();
         assertThat(followingAfter.size(), is(3));
 
-        FeedFilter filter = new FeedFilter.Builder().withLimit(1).withOffset(1).build();
-        List<FeedFollow> followingPaged = feed.getFollowing(filter);
+        FeedFilter filterPaged = new FeedFilter.Builder().withLimit(1).withOffset(1).build();
+        List<FeedFollow> followingPaged = feed.getFollowing(filterPaged);
         assertThat(followingPaged.size(), is(1));
+
+        FeedFilter filterByIds = new FeedFilter.Builder().withFeedIds(Arrays.asList("user:1", "user:2")).build();
+        List<FeedFollow> followingIds = feed.getFollowing(filterByIds);
+        assertThat(followingIds.size(), is(2));
 
         streamClient.shutdown();
     }
