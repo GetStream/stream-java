@@ -10,15 +10,14 @@ import java.net.URISyntaxException;
  */
 public enum StreamRegion {
 
-    BASE("https://api.getstream.io/api"),
-    US_EAST("https://us-east-api.getstream.io/api"),
-    US_WEST("https://us-west-api.getstream.io/api"),
-    EU_WEST("https://eu-west-api.getstream.io/api"),
-    AP_NORTH_EAST("https://ap-northeast-api.getstream.io/api"),
-    AP_SOUTH_EAST("https://ap-southeast-api.getstream.io/api"),
+    BASE("https://api.stream-io-api.com/api"),
+    US_EAST("https://us-east-api.stream-io-api.com/api"),
+    US_WEST("https://us-west-api.stream-io-api.com/api"),
+    EU_WEST("https://eu-west-api.stream-io-api.com/api"),
+    AP_NORTH_EAST("https://ap-northeast-api.stream-io-api.com/api"),
+    AP_SOUTH_EAST("https://ap-southeast-api.stream-io-api.com/api"),
     LOCAL_TEST("http://localhost:8089/api"), /* used for testing purpose only */
-    QA_TEST("http://qa-api.getstream.io/api"), /* used for integration test */
-    SNI_TEST("https://sni-api.getstream.io/api"); /* used for testing purpose only */
+    QA_TEST("https://qa-api.stream-io-api.com/api"); /* used for integration test */
 
     protected final static String VERSION = "v1.0";
 
