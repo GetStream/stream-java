@@ -26,6 +26,7 @@ import io.getstream.client.okhttp.repo.utils.FeedFilterUtils;
 import io.getstream.client.okhttp.repo.utils.StreamRepoUtils;
 import io.getstream.client.okhttp.repo.utils.UriBuilder;
 import io.getstream.client.repo.StreamRepository;
+import io.getstream.client.util.EndpointUtil;
 import io.getstream.client.util.HttpSignatureHandler;
 import io.getstream.client.util.JwtAuthenticationUtil;
 import org.slf4j.Logger;
@@ -64,7 +65,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 	 * @param closeableHttpClient Actual instance of OkHTTP client
 	 */
 	public StreamRepositoryImpl(ObjectMapper objectMapper, ClientConfiguration streamClient, OkHttpClient closeableHttpClient) {
-		this.baseEndpoint = streamClient.getRegion().getEndpoint();
+		this.baseEndpoint = EndpointUtil.getBaseEndpoint(streamClient);
 		this.apiKey = streamClient.getAuthenticationHandlerConfiguration().getApiKey();
 		this.secretKey = streamClient.getAuthenticationHandlerConfiguration().getSecretKey();
 		this.exceptionHandler = new StreamExceptionHandler(objectMapper);

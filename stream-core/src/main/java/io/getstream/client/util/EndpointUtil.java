@@ -38,4 +38,21 @@ public class EndpointUtil {
             throw new UriBuilderException("Malformed personalized feed's URL.");
         }
     }
+
+    /**
+     * Build the base endpoint.
+     * @param streamClient Configuration container
+     * @return A valid URI endpoint
+     * @throws UriBuilderException In case the URI is malformed
+     */
+    public static URI getBaseEndpoint(final ClientConfiguration streamClient) throws UriBuilderException {
+        if (null != streamClient.getDefaultEndpoint()) {
+            try {
+                return new URI(streamClient.getDefaultEndpoint());
+            } catch (URISyntaxException e) {
+                throw new UriBuilderException("Malformed GetStream.io base URL.");
+            }
+        }
+        return streamClient.getRegion().getEndpoint();
+    }
 }

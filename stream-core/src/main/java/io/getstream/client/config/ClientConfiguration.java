@@ -52,6 +52,14 @@ public class ClientConfiguration {
      */
     private String personalizedFeedEndpoint;
 
+    /**
+     * Set a custom endpoint.
+     * If set the client will use the given endpoint instead of the default one associated with
+     * the selected region.
+     * It is usually not needed to provide an endpoint here.
+     */
+    private String defaultEndpoint;
+
 
     private AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
 
@@ -154,5 +162,13 @@ public class ClientConfiguration {
 
     public void setPersonalizedFeedEndpoint(String personalizedFeedEndpoint) {
         this.personalizedFeedEndpoint = personalizedFeedEndpoint;
+    }
+
+    public String getDefaultEndpoint() {
+        return defaultEndpoint;
+    }
+
+    public void setDefaultEndpoint(String defaultEndpoint) {
+        this.defaultEndpoint = defaultEndpoint;
     }
 }
