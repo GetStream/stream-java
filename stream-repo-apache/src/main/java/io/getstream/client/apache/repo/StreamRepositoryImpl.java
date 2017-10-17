@@ -20,6 +20,7 @@ import io.getstream.client.model.beans.StreamResponse;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.repo.StreamRepository;
+import io.getstream.client.util.EndpointUtil;
 import io.getstream.client.util.JwtAuthenticationUtil;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
@@ -67,7 +68,7 @@ public class StreamRepositoryImpl implements StreamRepository {
 	 */
 	public StreamRepositoryImpl(ObjectMapper objectMapper, ClientConfiguration streamClient, CloseableHttpClient closeableHttpClient) {
 		this.objectMapper = objectMapper;
-		this.baseEndpoint = streamClient.getRegion().getEndpoint();
+		this.baseEndpoint = EndpointUtil.getBaseEndpoint(streamClient);
 		this.apiKey = streamClient.getAuthenticationHandlerConfiguration().getApiKey();
 		this.secretKey = streamClient.getAuthenticationHandlerConfiguration().getSecretKey();
 		this.exceptionHandler = new StreamExceptionHandler(objectMapper);
