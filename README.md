@@ -51,6 +51,12 @@ you can download it from [here](https://github.com/GetStream/stream-java/release
 
 Snapshots of the development version are available in [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/io/getstream/client/) snapshots repository.
 
+#### JDK / JVM version requirements
+
+This API Client project requires Java SE 8.
+
+See the [Travis configuration](.travis.yml) for details of how it is built, tested and packaged.
+
 ### Full documentation
 
 Documentation for this Java client are available at the [Stream website](https://getstream.io/docs/?language=java).

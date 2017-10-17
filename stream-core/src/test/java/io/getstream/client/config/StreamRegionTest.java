@@ -9,6 +9,6 @@ public class StreamRegionTest {
 
     @Test
     public void shouldGetEndpoint() {
-        assertThat(StreamRegion.US_EAST.getEndpoint().toString(), is("https://us-east-api.getstream.io/api/" + StreamRegion.VERSION));
+        assertThat(StreamRegion.US_EAST.getEndpoint().toString(), is("https://us-east-api.stream-io-api.com/api/" + StreamRegion.VERSION));
     }
 }
