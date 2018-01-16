@@ -44,6 +44,9 @@ public class FeedFilterUtils {
         if (null != filter.getRanking()) {
             uriBuilder.queryParam(FeedFilter.PARAM_RANKING, filter.getRanking());
         }
+        if (null != filter.getSession()) {
+            uriBuilder.queryParam(FeedFilter.PARAM_SESSION, filter.getSession());
+        }
         return uriBuilder;
     }
 }

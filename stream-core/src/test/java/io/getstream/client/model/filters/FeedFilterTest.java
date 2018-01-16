@@ -1,9 +1,9 @@
 package io.getstream.client.model.filters;
 
+import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.List;
-
-import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -20,6 +20,7 @@ public class FeedFilterTest {
         String id_lt = "ghi";
         String id_lte = "jkl";
         String ranking  = "ranking-method";
+        String session = "session";
         List<String> feedIds = Arrays.asList("user:123", "user:456");
 
         FeedFilter filter = new FeedFilter.Builder()
@@ -31,6 +32,7 @@ public class FeedFilterTest {
             .withIdLowerThanEquals(id_lte)
             .withRanking(ranking)
             .withFeedIds(feedIds)
+            .withSession(session)
             .build();
 
         assertThat(filter.getLimit(), is(limit));
@@ -41,6 +43,7 @@ public class FeedFilterTest {
         assertThat(filter.getIdLowerThanEquals(), is(id_lte));
         assertThat(filter.getRanking(), is(ranking));
         assertThat(filter.getFeedIds(), is(feedIds));
+        assertThat(filter.getSession(), is(session));
     }
 
     @Test
