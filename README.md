@@ -117,7 +117,7 @@ flatActivityService.addActivityToMany(ImmutableList.<String>of("user:1", "user:2
 ```
 
 The API client allows you to send activities with custom field as well, you can find a
-complete example [here](https://github.com/GetStream/stream-java/blob/master/stream-repo-apache/src/test/java/io/getstream/client/example/mixtype/MixedType.java)
+complete example [here](https://github.com/GetStream/stream-java/blob/master/stream-repo-apache/src/test/java/io/getstream/client/apache/example/mixtype/MixedType.java)
 
 #### Follow and Unfollow
 
