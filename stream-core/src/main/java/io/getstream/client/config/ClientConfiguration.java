@@ -63,6 +63,26 @@ public class ClientConfiguration {
 
     private AuthenticationHandlerConfiguration authenticationHandlerConfiguration;
 
+    private String proxyHost;
+
+    public String getProxyHost() {
+        return proxyHost;
+    }
+
+    public void setProxyHost(String proxyHost) {
+        this.proxyHost = proxyHost;
+    }
+
+    public Integer getProxyPort() {
+        return proxyPort;
+    }
+
+    public void setProxyPort(Integer proxyPort) {
+        this.proxyPort = proxyPort;
+    }
+
+    private Integer proxyPort;
+
     /**
      * Default constructor.
      */

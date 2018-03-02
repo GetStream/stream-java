@@ -20,6 +20,7 @@ import io.getstream.client.model.feeds.PersonalizedFeed;
 import io.getstream.client.repo.StreamPersonalizedRepository;
 import io.getstream.client.repo.StreamRepository;
 import io.getstream.client.util.InfoUtil;
+import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
@@ -117,6 +118,7 @@ public class StreamClientImpl implements StreamClient {
                 .setMaxConnTotal(config.getMaxConnections())
                 .setConnectionManager(connectionManager)
                 .addInterceptorLast(new HttpSignatureInterceptor(authConfig))
+                .setProxy(new HttpHost(config.getProxyHost(),config.getProxyPort()))
                 .build();
     }
 
