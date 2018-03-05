@@ -24,6 +24,7 @@ import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 
@@ -108,7 +109,7 @@ public class StreamClientImpl implements StreamClient {
         connectionManager.setDefaultMaxPerRoute(config.getMaxConnectionsPerRoute());
         connectionManager.setMaxTotal(config.getMaxConnections());
 
-        return HttpClients.custom()
+        HttpClientBuilder httpClientBuilder = HttpClients.custom()
                 .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
                 .setUserAgent(getUserAgent())
                 .setDefaultRequestConfig(RequestConfig.custom()
@@ -117,8 +118,13 @@ public class StreamClientImpl implements StreamClient {
                 .setMaxConnPerRoute(config.getMaxConnectionsPerRoute())
                 .setMaxConnTotal(config.getMaxConnections())
                 .setConnectionManager(connectionManager)
-                .addInterceptorLast(new HttpSignatureInterceptor(authConfig))
-                .setProxy(new HttpHost(config.getProxyHost(),config.getProxyPort()))
+                .addInterceptorLast(new HttpSignatureInterceptor(authConfig));
+
+         if ( !(config.getProxyHost().equalsIgnoreCase("") || config.getProxyPort() == 0)){
+            httpClientBuilder.setProxy(new HttpHost(config.getProxyHost(), config.getProxyPort()));
+         }
+
+        return httpClientBuilder
                 .build();
     }
 
