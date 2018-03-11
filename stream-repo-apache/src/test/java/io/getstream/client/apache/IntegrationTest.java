@@ -133,12 +133,12 @@ public class IntegrationTest {
         List<FeedFollow> following = feed.getFollowing();
         assertThat(following.size(), is(0));
 
-        feed.follow("user", "1", 10);
+        feed.follow("user", "1", 2);
 
         List<FeedFollow> followingAfter = feed.getFollowing();
         assertThat(followingAfter.size(), is(1));
 
-        assertThat(flatActivityService.getActivities().getResults().size(), is(10));
+        assertThat(flatActivityService.getActivities().getResults().size(), is(2));
 
         streamClient.shutdown();
     }
@@ -555,13 +555,6 @@ public class IntegrationTest {
         //gte
         List<SimpleActivity> firstTwoActivities = flatActivityService.getActivities(new FeedFilter.Builder().withIdLowerThan(aid).build()).getResults();
         assertThat(firstTwoActivities.size(), is(2));
-        //closed interval
-        List<SimpleActivity> activity3 = flatActivityService.getActivities(new FeedFilter.Builder().withIdLowerThanEquals(aid).withIdGreaterThanEquals(aid).build()).getResults();
-        assertThat(activity3.size(), is(1));
-        //closed interval empty
-        List<SimpleActivity> activityNo = flatActivityService.getActivities(new FeedFilter.Builder().withIdLowerThan(aid).withIdGreaterThan(aid).build()).getResults();
-        assertThat(activityNo.size(), is(0));
-        streamClient.shutdown();
     }
 
     @Test(expected = InvalidOrMissingInputException.class)
