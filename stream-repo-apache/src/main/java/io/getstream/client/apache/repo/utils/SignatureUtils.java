@@ -1,17 +1,20 @@
 package io.getstream.client.apache.repo.utils;
 
-import com.google.common.collect.ImmutableList;
-import io.getstream.client.exception.StreamClientException;
-import io.getstream.client.model.activities.BaseActivity;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import javax.xml.bind.DatatypeConverter;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import javax.xml.bind.DatatypeConverter;
+
+import com.google.common.collect.ImmutableList;
+import io.getstream.client.exception.StreamClientException;
+import io.getstream.client.model.activities.BaseActivity;
 
 /**
  * Utility class to handle signatures in Stream.io.
@@ -19,7 +22,6 @@ import java.security.SignatureException;
 public final class SignatureUtils {
 
     private static final String HMAC_SHA1 = "HmacSHA1";
-    public static final String UTF_8 = "UTF-8";
 
     private SignatureUtils() {
         throw new AssertionError();

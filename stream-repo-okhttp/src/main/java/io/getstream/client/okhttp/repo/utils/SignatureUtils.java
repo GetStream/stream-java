@@ -1,16 +1,20 @@
 package io.getstream.client.okhttp.repo.utils;
 
-import com.google.common.collect.ImmutableList;
-import io.getstream.client.exception.StreamClientException;
-import io.getstream.client.model.activities.BaseActivity;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.util.Base64;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import com.google.common.collect.ImmutableList;
+import io.getstream.client.exception.StreamClientException;
+import io.getstream.client.model.activities.BaseActivity;
 
 /**
  * Utility class to handle signatures in Stream.io.
@@ -18,7 +22,7 @@ import java.security.SignatureException;
 public final class SignatureUtils {
 
     private static final String HMAC_SHA1 = "HmacSHA1";
-    public static final String UTF_8 = "UTF-8";
+    private static final Base64.Encoder BASE64_ENCODER = Base64.getEncoder();
 
     private SignatureUtils() {
         throw new AssertionError();
@@ -61,7 +65,7 @@ public final class SignatureUtils {
         SecretKeySpec signingKey = new SecretKeySpec(toSHA1(secretKey), HMAC_SHA1);
         Mac mac = Mac.getInstance(HMAC_SHA1);
         mac.init(signingKey);
-        return escapeDigest(Base64.encodeToString(mac.doFinal(feedId.getBytes(UTF_8)), Base64.DEFAULT));
+        return escapeDigest(BASE64_ENCODER.encodeToString(mac.doFinal(feedId.getBytes(UTF_8))));
     }
 
     private static byte[] toSHA1(final String key) throws UnsupportedEncodingException, NoSuchAlgorithmException {
