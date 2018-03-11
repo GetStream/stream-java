@@ -1,10 +1,10 @@
 package io.getstream.client.util;
 
-import com.auth0.jwt.Algorithm;
-import com.auth0.jwt.JWTSigner;
+import java.io.UnsupportedEncodingException;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTCreator;
+import com.auth0.jwt.algorithms.Algorithm;
 
 /**
  * Utility class to generate a JWT token.
@@ -26,15 +26,23 @@ public class JwtAuthenticationUtil {
      * @return Token string
      */
     public static String generateToken(final String secretKey, final String action, final String resource, final String feedId, final String userId) {
-        Map<String, Object> claims = new LinkedHashMap<String, Object>();
-        claims.put("action", action);
-        claims.put("resource", resource);
+        JWTCreator.Builder jwtBuilder = JWT.create();
+
+        jwtBuilder = jwtBuilder.withClaim("action", action);
+        jwtBuilder = jwtBuilder.withClaim("resource", resource);
         if (null != feedId) {
-            claims.put("feed_id", feedId);
+            jwtBuilder = jwtBuilder.withClaim("feed_id", feedId);
         }
         if (null != userId) {
-            claims.put("user_id", userId);
+            jwtBuilder = jwtBuilder.withClaim("user_id", userId);
         }
-        return new JWTSigner(secretKey).sign(claims, new JWTSigner.Options().setAlgorithm(Algorithm.HS256));
+
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+
+            return jwtBuilder.sign(algorithm);
+        } catch (UnsupportedEncodingException exc) {
+            throw new IllegalStateException("Fatal error: JWT Algorithm unsupported.");
+        }
     }
 }

@@ -57,7 +57,7 @@
         <tomitribe-http-signatures.version>1.0</tomitribe-http-signatures.version>
         <junit.version>4.11</junit.version>
         <mockito.version>1.10.19</mockito.version>
-        <java-jwt.version>2.1.0</java-jwt.version>
+        <java-jwt.version>3.3.0</java-jwt.version>
         <wiremock.version>1.57</wiremock.version>
 
         <skipITs>true</skipITs>

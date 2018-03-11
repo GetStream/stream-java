@@ -1,7 +1,10 @@
 package io.getstream.client.okhttp;
 
+import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.JWTVerifyException;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.common.collect.ImmutableList;
 import io.getstream.client.StreamClient;
 import io.getstream.client.config.ClientConfiguration;
@@ -56,15 +59,15 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldGetReadOnlyToken() throws IOException, StreamClientException, NoSuchAlgorithmException, SignatureException, JWTVerifyException, InvalidKeyException {
+    public void shouldGetReadOnlyToken() throws StreamClientException {
         StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         Feed feed = streamClient.newFeed("user", "1");
 
-        Map<String, Object> map = verifyToken(feed.getReadOnlyToken());
+        Map<String, Claim> map = verifyToken(feed.getReadOnlyToken());
         assertTrue(map.size() > 0);
-        assertThat(map.get("action").toString(), is("read"));
-        assertThat(map.get("resource").toString(), is(ALL));
+        assertThat(map.get("action").asString(), is("read"));
+        assertThat(map.get("resource").asString(), is(ALL));
     }
 
     @Test
@@ -227,7 +230,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldUnfollow() throws IOException, StreamClientException, InterruptedException {
+    public void shouldUnfollow() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
 
@@ -756,7 +759,7 @@ public class IntegrationTest {
     }
 
     @Test
-    public void shouldHaveToken() throws IOException, StreamClientException {
+    public void shouldHaveToken() throws StreamClientException {
         StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
         Feed feed = streamClient.newFeed("aggregated", "whatever");
@@ -764,8 +767,14 @@ public class IntegrationTest {
         assertThat(token, notNullValue());
     }
 
-    private Map<String, Object> verifyToken(final String token) throws SignatureException, NoSuchAlgorithmException, JWTVerifyException, InvalidKeyException, IOException {
+    private Map<String, Claim> verifyToken(final String token) {
         byte[] secret = API_SECRET.getBytes();
-        return new JWTVerifier(secret, "audience").verify(token);
+
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT jwt = verifier.verify(token);
+
+        return jwt.getClaims();
     }
 }
