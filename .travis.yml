@@ -1,6 +1,9 @@
 language: java
 jdk:
 - oraclejdk8
+cache:
+  directories:
+  - $HOME/.m2
 env:
   global:
   - secure: TmI+K6gSOfDy5oa5EgLCGijimKdR5cHAwM6RASDegTjlRQ/sWVf8BNF4IPJHnAYFWNCgyX6vLdfPS3IJNrYS9iI1Er2a1Ctcq1TbCZfZpn4eIj8mcUXxr2Fo6hLJh2KeuXj3OQwfUy/Jul1Own/9R5YoVDJYD0ntnt1HJgFqq+0=
