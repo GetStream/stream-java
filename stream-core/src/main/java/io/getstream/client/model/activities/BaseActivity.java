@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.MoreObjects;
-import io.getstream.client.util.DateDeserializer;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -26,7 +25,6 @@ public abstract class BaseActivity {
     @JsonProperty("score")
     protected Double score;
 
-    @JsonDeserialize(using = DateDeserializer.class)
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.S")
     protected Date time;
 

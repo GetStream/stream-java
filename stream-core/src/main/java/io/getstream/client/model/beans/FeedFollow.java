@@ -1,8 +1,6 @@
 package io.getstream.client.model.beans;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import io.getstream.client.util.DateDeserializer;
 
 import java.util.Date;
 
@@ -11,7 +9,6 @@ import java.util.Date;
  */
 public class FeedFollow {
 
-    @JsonDeserialize(using = DateDeserializer.class)
     @JsonProperty("created_at")
     private Date createdAt;
 
@@ -21,7 +18,6 @@ public class FeedFollow {
     @JsonProperty("target_id")
     private String targetId;
 
-    @JsonDeserialize(using = DateDeserializer.class)
     @JsonProperty("updated_at")
     private Date updatedAt;
 

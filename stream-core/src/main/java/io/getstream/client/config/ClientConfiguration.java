@@ -2,6 +2,7 @@ package io.getstream.client.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.IOException;
 
@@ -88,7 +89,7 @@ public class ClientConfiguration {
      */
     private static ClientConfiguration fromJsonString(final String jsonString) throws IOException {
         checkNotNull(jsonString, "Input string cannot be null");
-        return new ObjectMapper().readValue(jsonString, new TypeReference<ClientConfiguration>() {
+        return new ObjectMapper().registerModule(new JavaTimeModule()).readValue(jsonString, new TypeReference<ClientConfiguration>() {
         });
     }
 
