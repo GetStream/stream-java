@@ -1,17 +1,18 @@
 package io.getstream.client.okhttp.repo;
 
-import com.google.common.base.Optional;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import io.getstream.client.config.AuthenticationHandlerConfiguration;
-import io.getstream.client.util.HttpSignatureHandler;
-import org.tomitribe.auth.signatures.Signature;
-
 import java.io.IOException;
 import java.util.Collections;
 
-public class HttpSignatureinterceptor extends HttpSignatureHandler implements Interceptor{
+import org.tomitribe.auth.signatures.Signature;
+
+import com.google.common.base.Optional;
+import io.getstream.client.config.AuthenticationHandlerConfiguration;
+import io.getstream.client.util.HttpSignatureHandler;
+import okhttp3.Interceptor;
+import okhttp3.Request;
+import okhttp3.Response;
+
+public class HttpSignatureinterceptor extends HttpSignatureHandler implements Interceptor {
 
     /**
      * Create a {@link Signature} template object using the incoming credentials.
@@ -32,7 +33,7 @@ public class HttpSignatureinterceptor extends HttpSignatureHandler implements In
             newRequest.addHeader(DATE_HEADER, today);
             Signature signature = getSigner().sign(
                     request.method(),
-                    request.urlString(),
+                    request.url().toString(),
                     Collections.singletonMap(DATE_HEADER, today)
             );
             newRequest.addHeader(AUTHORIZATION_HEADER, signature.toString());

@@ -1,15 +1,17 @@
 package io.getstream.client.okhttp;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.io.IOException;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
-import com.squareup.okhttp.ConnectionPool;
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Response;
 import io.getstream.client.StreamClient;
 import io.getstream.client.config.AuthenticationHandlerConfiguration;
 import io.getstream.client.config.ClientConfiguration;
@@ -24,12 +26,10 @@ import io.getstream.client.okhttp.repo.StreamRepositoryImpl;
 import io.getstream.client.repo.StreamPersonalizedRepository;
 import io.getstream.client.repo.StreamRepository;
 import io.getstream.client.util.InfoUtil;
-
-import java.io.IOException;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import okhttp3.ConnectionPool;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
 public class StreamClientImpl implements StreamClient {
 
@@ -83,15 +83,15 @@ public class StreamClientImpl implements StreamClient {
     }
 
     private OkHttpClient initClient(final ClientConfiguration config, AuthenticationHandlerConfiguration authConfig) {
-        OkHttpClient client = new OkHttpClient();
-        client.setConnectTimeout(config.getConnectionTimeout(), TimeUnit.MILLISECONDS);
-        client.setReadTimeout(config.getTimeout(), TimeUnit.MILLISECONDS);
-        client.setWriteTimeout(config.getTimeout(), TimeUnit.MILLISECONDS);
-        client.setRetryOnConnectionFailure(true);
-        client.interceptors().add(new UserAgentInterceptor());
-        client.interceptors().add(new HttpSignatureinterceptor(authConfig));
-        client.setConnectionPool(new ConnectionPool(config.getMaxConnections(), config.getKeepAlive()));
-        return client;
+        return new OkHttpClient().newBuilder()
+            .connectTimeout(config.getConnectionTimeout(), TimeUnit.MILLISECONDS)
+            .readTimeout(config.getTimeout(), TimeUnit.MILLISECONDS)
+            .writeTimeout(config.getTimeout(), TimeUnit.MILLISECONDS)
+            .retryOnConnectionFailure(true)
+            .addInterceptor(new UserAgentInterceptor())
+            .addInterceptor(new HttpSignatureinterceptor(authConfig))
+            .connectionPool(new ConnectionPool(config.getMaxConnections(), config.getKeepAlive(), TimeUnit.MILLISECONDS))
+            .build();
     }
 
     private Optional<StreamPersonalizedRepository> initPersonalizedRepo(ClientConfiguration config, OkHttpClient httpClient) {

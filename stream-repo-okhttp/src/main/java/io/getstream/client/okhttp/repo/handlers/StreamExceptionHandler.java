@@ -1,7 +1,8 @@
 package io.getstream.client.okhttp.repo.handlers;
 
+import java.io.IOException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.Response;
 import io.getstream.client.exception.AuthenticationFailedException;
 import io.getstream.client.exception.InternalServerException;
 import io.getstream.client.exception.InvalidOrMissingInputException;
@@ -9,8 +10,7 @@ import io.getstream.client.exception.RateLimitExceededException;
 import io.getstream.client.exception.ResourceNotFoundException;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.beans.StreamErrorResponse;
-
-import java.io.IOException;
+import okhttp3.Response;
 
 /**
  * It provides a mechanism to translate the http status code (different from 200)

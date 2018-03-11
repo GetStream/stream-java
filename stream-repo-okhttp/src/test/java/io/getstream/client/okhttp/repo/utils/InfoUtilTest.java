@@ -1,10 +1,12 @@
-package io.getstream.client.util;
-
-import org.junit.Test;
+package io.getstream.client.okhttp.repo.utils;
 
 import static org.hamcrest.CoreMatchers.any;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import org.junit.Test;
+
+import io.getstream.client.util.InfoUtil;
 
 public class InfoUtilTest {
 

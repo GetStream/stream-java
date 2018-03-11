@@ -21,7 +21,7 @@
     </licenses>
 
 	<properties>
-		<okhttp.version>2.2.0</okhttp.version>
+		<okhttp.version>3.10.0</okhttp.version>
 	</properties>
 
 	<dependencies>
@@ -47,7 +47,7 @@
 			<artifactId>guava</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.squareup.okhttp</groupId>
+			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
 			<version>${okhttp.version}</version>
 		</dependency>

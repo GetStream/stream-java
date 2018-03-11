@@ -1,10 +1,10 @@
 package io.getstream.client.util;
 
-import com.auth0.jwt.Algorithm;
-import com.auth0.jwt.JWTSigner;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import com.auth0.jwt.Algorithm;
+import com.auth0.jwt.JWTSigner;
 
 /**
  * Utility class to generate a JWT token.
@@ -26,7 +26,7 @@ public class JwtAuthenticationUtil {
      * @return Token string
      */
     public static String generateToken(final String secretKey, final String action, final String resource, final String feedId, final String userId) {
-        Map<String, Object> claims = new LinkedHashMap<String, Object>();
+        Map<String, Object> claims = new LinkedHashMap<>();
         claims.put("action", action);
         claims.put("resource", resource);
         if (null != feedId) {

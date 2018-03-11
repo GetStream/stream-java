@@ -1,12 +1,12 @@
 package io.getstream.client.okhttp.repo.utils;
 
-import com.squareup.okhttp.Request;
-import io.getstream.client.model.feeds.BaseFeed;
-
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+
+import io.getstream.client.model.feeds.BaseFeed;
+import okhttp3.Request;
 
 /**
  * Support utils for StreamRepository.
@@ -29,7 +29,7 @@ public class StreamRepoUtils {
      * @return Request with the Authorization header.
      */
     public static Request.Builder addAuthentication(BaseFeed feed, String secretKey, Request.Builder httpRequest) {
-        httpRequest.addHeader("Authorization", createFeedSignature(feed, secretKey));
+        httpRequest.addHeader(HEADER_AUTHORIZATION, createFeedSignature(feed, secretKey));
         return httpRequest;
     }
 

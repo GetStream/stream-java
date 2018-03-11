@@ -1,11 +1,17 @@
 package io.getstream.client.okhttp.repo;
 
+import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
+import static io.getstream.client.util.JwtAuthenticationUtil.generateToken;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
@@ -22,16 +28,11 @@ import io.getstream.client.okhttp.repo.utils.SignatureUtils;
 import io.getstream.client.okhttp.repo.utils.StreamRepoUtils;
 import io.getstream.client.okhttp.repo.utils.UriBuilder;
 import io.getstream.client.util.HttpSignatureHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-
-import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
-import static io.getstream.client.util.JwtAuthenticationUtil.generateToken;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class StreamActivityRepository {
 
@@ -65,7 +66,7 @@ public class StreamActivityRepository {
 		requestBuilder.post(RequestBody.create(MediaType.parse(APPLICATION_JSON), objectMapper.writeValueAsString(activity)));
 
 		Request request = addAuthentication(feed, requestBuilder).build();
-		LOG.debug("Invoking url: '{}", request.urlString());
+		LOG.debug("Invoking url: '{}", request.url().toString());
 
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);
@@ -86,7 +87,7 @@ public class StreamActivityRepository {
 				objectMapper.writeValueAsString(Collections.singletonMap("activities", activities))));
 
 		Request request = addAuthentication(feed, requestBuilder).build();
-		LOG.debug("Invoking url: '{}", request.urlString());
+		LOG.debug("Invoking url: '{}", request.url().toString());
 
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);
@@ -105,7 +106,7 @@ public class StreamActivityRepository {
 				objectMapper.writeValueAsString(new AddMany<>(targetIds, activity))));
 
 		final Request request = requestBuilder.build();
-		LOG.debug("Invoking url: '{}", request.urlString());
+		LOG.debug("Invoking url: '{}", request.url().toString());
 
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);
@@ -119,7 +120,7 @@ public class StreamActivityRepository {
 				.queryParam(StreamRepositoryImpl.API_KEY, apiKey), filter).build().toURL()).get();
 
 		Request request = addAuthentication(feed, requestBuilder).build();
-		LOG.debug("Invoking url: '{}", request.urlString());
+		LOG.debug("Invoking url: '{}", request.url().toString());
 
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);
@@ -133,7 +134,7 @@ public class StreamActivityRepository {
 				.queryParam(StreamRepositoryImpl.API_KEY, apiKey), filter).build().toURL()).get();
 
 		Request request = addAuthentication(feed, requestBuilder).build();
-		LOG.debug("Invoking url: '{}", request.urlString());
+		LOG.debug("Invoking url: '{}", request.url().toString());
 
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);
@@ -147,7 +148,7 @@ public class StreamActivityRepository {
 				.queryParam(StreamRepositoryImpl.API_KEY, apiKey), filter).build().toURL()).get();
 
 		Request request = addAuthentication(feed, requestBuilder).build();
-		LOG.debug("Invoking url: '{}", request.urlString());
+		LOG.debug("Invoking url: '{}", request.url().toString());
 
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);
@@ -164,7 +165,7 @@ public class StreamActivityRepository {
 				.queryParam("mark_seen", Boolean.toString(markAsSeen)), filter).build().toURL()).get();
 
 		Request request = addAuthentication(feed, requestBuilder).build();
-		LOG.debug("Invoking url: '{}", request.urlString());
+		LOG.debug("Invoking url: '{}", request.url().toString());
 
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);
@@ -186,7 +187,7 @@ public class StreamActivityRepository {
 		Request.Builder requestBuilder = new Request.Builder().url(FeedFilterUtils.apply(baseUri, filter).build().toURL()).get();
 
 		Request request = addAuthentication(feed, requestBuilder).build();
-		LOG.debug("Invoking url: '{}", request.urlString());
+		LOG.debug("Invoking url: '{}", request.url().toString());
 
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);
@@ -200,7 +201,7 @@ public class StreamActivityRepository {
 				.queryParam(StreamRepositoryImpl.API_KEY, apiKey).build().toURL());
 
 		Request request = addAuthentication(feed, requestBuilder).build();
-        LOG.debug("Invoking url: '{}", request.urlString());
+        LOG.debug("Invoking url: '{}", request.url().toString());
 
 		Response response = httpClient.newCall(request).execute();
         handleResponseCode(response);
@@ -213,7 +214,7 @@ public class StreamActivityRepository {
 				.queryParam(StreamRepositoryImpl.API_KEY, apiKey).build().toURL());
 
 		Request request = addAuthentication(feed, requestBuilder).build();
-		LOG.debug("Invoking url: '{}", request.urlString());
+		LOG.debug("Invoking url: '{}", request.url().toString());
 
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);
@@ -231,7 +232,7 @@ public class StreamActivityRepository {
 				generateToken(secretKey, ALL, "activities", ALL, null),
 				requestBuilder).build();
 
-		LOG.debug("Invoking url: '{}", request.urlString());
+		LOG.debug("Invoking url: '{}", request.url().toString());
 
 		Response response = httpClient.newCall(request).execute();
 		handleResponseCode(response);

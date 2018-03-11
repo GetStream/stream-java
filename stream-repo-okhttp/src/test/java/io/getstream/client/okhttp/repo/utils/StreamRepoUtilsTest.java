@@ -1,14 +1,17 @@
 package io.getstream.client.okhttp.repo.utils;
 
-import com.squareup.okhttp.Request;
-import io.getstream.client.model.feeds.BaseFeed;
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import io.getstream.client.model.feeds.BaseFeed;
+import okhttp3.Request;
 
 public class StreamRepoUtilsTest {
 
@@ -23,7 +26,7 @@ public class StreamRepoUtilsTest {
     }
 
     @Test
-    public void shouldAddAuthentication() throws Exception {
+    public void shouldAddAuthentication() {
         Request.Builder request = mock(Request.Builder.class);
         String signature = StreamRepoUtils.createFeedSignature(feed, API_SECRET);
 
@@ -32,17 +35,17 @@ public class StreamRepoUtilsTest {
     }
 
     @Test
-    public void shouldCreateFeedToken() throws Exception {
+    public void shouldCreateFeedToken() {
         assertThat(StreamRepoUtils.createFeedToken(feed, API_SECRET), is("0DayILmfWZ4i8h6WHFUV0diDXOg"));
     }
 
     @Test
-    public void shouldCreateFeedSignature() throws Exception {
+    public void shouldCreateFeedSignature(){
         assertThat(StreamRepoUtils.createFeedSignature(feed, API_SECRET), is("id 0DayILmfWZ4i8h6WHFUV0diDXOg"));
     }
 
     @Test
-    public void shouldAddJwtAuthentication() throws Exception {
+    public void shouldAddJwtAuthentication() {
         Request.Builder request = mock(Request.Builder.class);
 
         StreamRepoUtils.addJwtAuthentication("token", request);

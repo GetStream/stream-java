@@ -1,11 +1,19 @@
 package io.getstream.client.okhttp.repo;
 
+import static io.getstream.client.okhttp.repo.utils.FeedFilterUtils.apply;
+import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
+import static io.getstream.client.util.JwtAuthenticationUtil.generateToken;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.PersonalizedActivity;
@@ -18,18 +26,11 @@ import io.getstream.client.okhttp.repo.utils.StreamRepoUtils;
 import io.getstream.client.okhttp.repo.utils.UriBuilder;
 import io.getstream.client.repo.StreamPersonalizedRepository;
 import io.getstream.client.util.EndpointUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-
-import static io.getstream.client.okhttp.repo.utils.FeedFilterUtils.apply;
-import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
-import static io.getstream.client.util.JwtAuthenticationUtil.generateToken;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class StreamPersonalizedRepositoryImpl implements StreamPersonalizedRepository {
 
@@ -68,7 +69,7 @@ public class StreamPersonalizedRepositoryImpl implements StreamPersonalizedRepos
         Request request = StreamRepoUtils.addJwtAuthentication(
                 generateToken(secretKey, ALL, ALL, null, feed.getUserId()),
                 requestBuilder).build();
-        LOG.debug("Invoking url: '{}", request.urlString());
+        LOG.debug("Invoking url: '{}", request.url().toString());
 
         Response response = httpClient.newCall(request).execute();
         handleResponseCode(response);
@@ -92,7 +93,7 @@ public class StreamPersonalizedRepositoryImpl implements StreamPersonalizedRepos
         Request request = StreamRepoUtils.addJwtAuthentication(
                 generateToken(secretKey, ALL, ALL, null, feed.getUserId()), requestBuilder).build();
 
-        LOG.debug("Invoking url: '{}", request.urlString());
+        LOG.debug("Invoking url: '{}", request.url().toString());
 
         Response response = httpClient.newCall(request).execute();
         handleResponseCode(response);
@@ -115,7 +116,7 @@ public class StreamPersonalizedRepositoryImpl implements StreamPersonalizedRepos
         Request request = StreamRepoUtils.addJwtAuthentication(
                 generateToken(secretKey, ALL, ALL, null, feed.getUserId()),
                 requestBuilder).build();
-        LOG.debug("Invoking url: '{}", request.urlString());
+        LOG.debug("Invoking url: '{}", request.url().toString());
 
         Response response = httpClient.newCall(request).execute();
         handleResponseCode(response);
