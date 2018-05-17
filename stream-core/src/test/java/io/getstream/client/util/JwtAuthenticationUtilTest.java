@@ -1,7 +1,11 @@
 package io.getstream.client.util;
 
+import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.JWTVerifyException;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.Claim;
+import com.auth0.jwt.interfaces.DecodedJWT;
+
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,7 +25,7 @@ public class JwtAuthenticationUtilTest {
 
     @Test
     public void testGenerateToken() throws Exception {
-        Map<String, Object> map = verifyToken(
+        Map<String, Claim> map = verifyToken(
                 JwtAuthenticationUtil.generateToken(
                         SECRET_KEY,
                         "activities",
@@ -30,12 +34,12 @@ public class JwtAuthenticationUtilTest {
                         null)
         );
         assertTrue(map.size() > 0);
-        assertThat(map.get("action").toString(), is("activities"));
+        assertThat(map.get("action").asString(), is("activities"));
     }
 
     @Test
     public void testGenerateTokenWithFeedId() throws Exception {
-        Map<String, Object> map = verifyToken(
+        Map<String, Claim> map = verifyToken(
                 JwtAuthenticationUtil.generateToken(
                         SECRET_KEY,
                         "activities",
@@ -44,13 +48,13 @@ public class JwtAuthenticationUtilTest {
                         null)
         );
         assertTrue(map.size() > 0);
-        assertThat(map.get("resource").toString(), is(ALL));
-        assertThat(map.get("feed_id").toString(), is("feedId"));
+        assertThat(map.get("resource").asString(), is(ALL));
+        assertThat(map.get("feed_id").asString(), is("feedId"));
     }
 
     @Test
     public void testGenerateTokenWithUserId() throws Exception {
-        Map<String, Object> map = verifyToken(
+        Map<String, Claim> map = verifyToken(
                 JwtAuthenticationUtil.generateToken(
                         SECRET_KEY,
                         "activities",
@@ -59,13 +63,13 @@ public class JwtAuthenticationUtilTest {
                         "userId1")
         );
         assertTrue(map.size() > 0);
-        assertThat(map.get("resource").toString(), is(ALL));
-        assertThat(map.get("user_id").toString(), is("userId1"));
+        assertThat(map.get("resource").asString(), is(ALL));
+        assertThat(map.get("user_id").asString(), is("userId1"));
     }
 
     @Test
     public void testGenerateTokenWithFeedAndUserId() throws Exception {
-        Map<String, Object> map = verifyToken(
+        Map<String, Claim> map = verifyToken(
                 JwtAuthenticationUtil.generateToken(
                         SECRET_KEY,
                         "activities",
@@ -74,13 +78,18 @@ public class JwtAuthenticationUtilTest {
                         "userId1")
         );
         assertTrue(map.size() > 0);
-        assertThat(map.get("resource").toString(), is(ALL));
-        assertThat(map.get("feed_id").toString(), is("feedId"));
-        assertThat(map.get("user_id").toString(), is("userId1"));
+        assertThat(map.get("resource").asString(), is(ALL));
+        assertThat(map.get("feed_id").asString(), is("feedId"));
+        assertThat(map.get("user_id").asString(), is("userId1"));
     }
 
-    private Map<String, Object> verifyToken(final String token) throws SignatureException, NoSuchAlgorithmException, JWTVerifyException, InvalidKeyException, IOException {
+    private Map<String, Claim> verifyToken(final String token) {
         byte[] secret = SECRET_KEY.getBytes();
-        return new JWTVerifier(secret, "audience").verify(token);
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT jwt = verifier.verify(token);
+
+        return jwt.getClaims();
     }
 }
