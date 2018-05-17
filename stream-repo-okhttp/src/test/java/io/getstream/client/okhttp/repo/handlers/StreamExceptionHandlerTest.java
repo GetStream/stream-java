@@ -1,22 +1,23 @@
 package io.getstream.client.okhttp.repo.handlers;
 
+import static org.mockito.Mockito.mock;
+
+import java.io.IOException;
+
+import org.junit.Test;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.Protocol;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-import com.squareup.okhttp.internal.http.RealResponseBody;
 import io.getstream.client.exception.AuthenticationFailedException;
 import io.getstream.client.exception.InternalServerException;
 import io.getstream.client.exception.InvalidOrMissingInputException;
 import io.getstream.client.exception.RateLimitExceededException;
 import io.getstream.client.exception.ResourceNotFoundException;
 import io.getstream.client.exception.StreamClientException;
-import org.junit.Test;
-
-import java.io.IOException;
-
-import static org.mockito.Mockito.mock;
+import okhttp3.MediaType;
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.internal.http.RealResponseBody;
 
 public class StreamExceptionHandlerTest {
 

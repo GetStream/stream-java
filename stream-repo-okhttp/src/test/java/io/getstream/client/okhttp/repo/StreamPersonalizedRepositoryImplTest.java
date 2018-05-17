@@ -1,9 +1,31 @@
 package io.getstream.client.okhttp.repo;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.containing;
+import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.verify;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.mock;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+
+import org.hamcrest.Matcher;
+import org.junit.Rule;
+import org.junit.Test;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import com.squareup.okhttp.OkHttpClient;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.config.StreamRegion;
 import io.getstream.client.exception.StreamClientException;
@@ -11,19 +33,7 @@ import io.getstream.client.model.activities.PersonalizedActivity;
 import io.getstream.client.model.feeds.PersonalizedFeed;
 import io.getstream.client.okhttp.StreamClientImpl;
 import io.getstream.client.util.JwtAuthenticationUtil;
-import org.hamcrest.Matcher;
-import org.junit.Rule;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static org.hamcrest.CoreMatchers.hasItems;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
+import okhttp3.OkHttpClient;
 
 public class StreamPersonalizedRepositoryImplTest {
 

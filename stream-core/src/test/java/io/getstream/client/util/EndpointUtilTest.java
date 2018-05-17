@@ -1,18 +1,19 @@
 package io.getstream.client.util;
 
-import io.getstream.client.config.ClientConfiguration;
-import io.getstream.client.config.StreamRegion;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 import java.net.URI;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import org.junit.Test;
+
+import io.getstream.client.config.ClientConfiguration;
+import io.getstream.client.config.StreamRegion;
 
 public class EndpointUtilTest {
 
     @Test
-    public void shouldGetPersonalizedEndpoint() throws Exception {
+    public void shouldGetPersonalizedEndpoint() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         clientConfiguration.setPersonalizedFeedEndpoint("http://yourcompany.getstream.io/yourcompany");
 
@@ -21,7 +22,7 @@ public class EndpointUtilTest {
     }
 
     @Test
-    public void shouldGetPersonalizedEndpointWithoutDoubleSlash() throws Exception {
+    public void shouldGetPersonalizedEndpointWithoutDoubleSlash() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         clientConfiguration.setPersonalizedFeedEndpoint("http://yourcompany.getstream.io/yourcompany/");
 
@@ -30,7 +31,7 @@ public class EndpointUtilTest {
     }
 
     @Test
-    public void shouldGetCustomEndpoint() throws Exception {
+    public void shouldGetCustomEndpoint() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         clientConfiguration.setDefaultEndpoint("http://www.example.com/v1");
 
@@ -39,7 +40,7 @@ public class EndpointUtilTest {
     }
 
     @Test
-    public void shouldGetRegionDefaultEndpoint() throws Exception {
+    public void shouldGetRegionDefaultEndpoint() {
         ClientConfiguration clientConfiguration = new ClientConfiguration(StreamRegion.US_EAST);
 
         URI personalizedEndpoint = EndpointUtil.getBaseEndpoint(clientConfiguration);
@@ -47,7 +48,7 @@ public class EndpointUtilTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void shouldFail() throws Exception {
+    public void shouldFail() {
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         clientConfiguration.setPersonalizedFeedEndpoint(null);
 
