@@ -224,7 +224,9 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	private void fireAndForget(final Request request) throws IOException, StreamClientException {
 		LOG.debug("Invoking url: '{}", request.url().toString());
-		handleResponseCode(httpClient.newCall(request).execute());
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+		}
 	}
 
 	private void handleResponseCode(Response response) throws StreamClientException, IOException {
