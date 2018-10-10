@@ -20,6 +20,7 @@ import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
+import io.getstream.client.model.beans.UnfollowMany;
 import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.service.AggregatedActivityServiceImpl;
@@ -29,9 +30,6 @@ import org.hamcrest.MatcherAssert;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -168,6 +166,40 @@ public class IntegrationTest {
         FeedFilter filterByIds = new FeedFilter.Builder().withFeedIds(Arrays.asList("user:1", "user:2")).build();
         List<FeedFollow> followingIds = feed.getFollowing(filterByIds);
         assertThat(followingIds.size(), is(2));
+
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldUnfollowMany() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
+                API_SECRET);
+
+        String followerId = this.getTestUserId("shouldunfollowMany");
+        Feed feed = streamClient.newFeed("user", followerId);
+
+        List<FeedFollow> following = feed.getFollowing();
+        assertThat(following.size(), is(0));
+
+        FollowMany followMany = new FollowMany.Builder()
+                .add("user:" + followerId, "user:1")
+                .add("user:" + followerId, "user:2")
+                .add("user:" + followerId, "user:3")
+                .build();
+        feed.followMany(followMany);
+
+        List<FeedFollow> followingAfter = feed.getFollowing();
+        assertThat(followingAfter.size(), is(3));
+
+        UnfollowMany unfollowMany = new UnfollowMany.Builder()
+                .add("user:" + followerId, "user:1")
+                .add("user:" + followerId, "user:2", true)
+                .add("user:" + followerId, "user:3", false)
+                .build();
+        feed.unfollowMany(unfollowMany);
+
+        List<FeedFollow> unfollowingAfter = feed.getFollowing();
+        assertThat(unfollowingAfter.size(), is(0));
 
         streamClient.shutdown();
     }

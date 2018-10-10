@@ -4,6 +4,7 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.FollowMany;
+import io.getstream.client.model.beans.UnfollowMany;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.service.AggregatedActivityServiceImpl;
 import io.getstream.client.service.FlatActivityServiceImpl;
@@ -60,7 +61,7 @@ public interface Feed {
     void follow(String feedSlug, String userId, int activityCopyLimit) throws IOException, StreamClientException;
 
     /**
-     * Follow many feed in one shot.
+     * Follow many feeds in one shot.
      *
      * @param follows A {@link FollowMany} object which contains a list of sources and targets
      * @param activityCopyLimit the maximum number of activities from a
@@ -71,7 +72,7 @@ public interface Feed {
     void followMany(FollowMany follows, int activityCopyLimit) throws IOException, StreamClientException;
 
     /**
-     * Follow many feed in one shot.
+     * Follow many feeds in one shot.
      * Default activity copy limit is set to 300. Maximum 300 activities from a given source feed
      * will be copied to the target feed.
      *
@@ -80,6 +81,17 @@ public interface Feed {
      * @throws IOException in case of network/socket exceptions
      */
     void followMany(FollowMany follows) throws IOException, StreamClientException;
+
+    /**
+     * Unfollow many feeds in one shot.
+     *
+     * @param unfollowMany A {@link UnfollowMany} object which contains a list of sources and targets.
+     *                     Any arbitrary feed can be specified as {@link io.getstream.client.model.beans.UnfollowMany.Entry#setSource(String)},
+     *                     regardless the one used to trigger this operation.
+     * @throws StreamClientException in case of functional or server-side exception
+     * @throws IOException in case of network/socket exceptions
+     */
+    void unfollowMany(UnfollowMany unfollowMany) throws IOException, StreamClientException;
 
     /**
      * Unfollow the given target feed.

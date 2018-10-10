@@ -4,6 +4,7 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.FollowMany;
+import io.getstream.client.model.beans.UnfollowMany;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.repo.StreamRepository;
 import io.getstream.client.service.AggregatedActivityServiceImpl;
@@ -67,6 +68,11 @@ public class BaseFeed implements Feed {
     @Override
     public void followMany(FollowMany follows) throws IOException, StreamClientException {
         streamRepository.followMany(this, follows, DEFAULT_ACTIVITY_COPY_LIMIT);
+    }
+
+    @Override
+    public void unfollowMany(UnfollowMany unfollowMany) throws IOException, StreamClientException {
+        streamRepository.unfollowMany(this, unfollowMany);
     }
 
     @Override
