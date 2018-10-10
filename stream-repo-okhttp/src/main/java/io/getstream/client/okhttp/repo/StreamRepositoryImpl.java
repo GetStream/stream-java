@@ -1,12 +1,5 @@
 package io.getstream.client.okhttp.repo;
 
-import java.io.IOException;
-import java.net.URI;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.getstream.client.config.ClientConfiguration;
@@ -20,6 +13,7 @@ import io.getstream.client.model.beans.FollowRequest;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
+import io.getstream.client.model.beans.UnfollowMany;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.okhttp.StreamClientImpl;
@@ -36,6 +30,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.List;
 
 /**
  * Actual implementation of the Stream's REST API calls.
@@ -108,6 +108,16 @@ public class StreamRepositoryImpl implements StreamRepository {
 				.build().toURL());
 		requestBuilder.addHeader(HttpSignatureHandler.X_API_KEY_HEADER, apiKey);
 		requestBuilder.post(RequestBody.create(MediaType.parse(APPLICATION_JSON), objectMapper.writeValueAsString(followManyInput)));
+		fireAndForget(requestBuilder.build());
+	}
+
+	@Override
+	public void unfollowMany(BaseFeed feed, UnfollowMany unfollowManyInput) throws StreamClientException, IOException {
+		Request.Builder requestBuilder = new Request.Builder().url(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("unfollow_many/")
+				.build().toURL());
+		requestBuilder.addHeader(HttpSignatureHandler.X_API_KEY_HEADER, apiKey);
+		requestBuilder.post(RequestBody.create(MediaType.parse(APPLICATION_JSON), objectMapper.writeValueAsString(unfollowManyInput)));
 		fireAndForget(requestBuilder.build());
 	}
 
@@ -214,7 +224,9 @@ public class StreamRepositoryImpl implements StreamRepository {
 
 	private void fireAndForget(final Request request) throws IOException, StreamClientException {
 		LOG.debug("Invoking url: '{}", request.url().toString());
-		handleResponseCode(httpClient.newCall(request).execute());
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+		}
 	}
 
 	private void handleResponseCode(Response response) throws StreamClientException, IOException {

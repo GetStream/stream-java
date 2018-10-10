@@ -1,18 +1,5 @@
 package io.getstream.client.okhttp.repo;
 
-import static io.getstream.client.okhttp.repo.utils.FeedFilterUtils.apply;
-import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
-import static io.getstream.client.util.JwtAuthenticationUtil.generateToken;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.getstream.client.config.ClientConfiguration;
 import io.getstream.client.exception.StreamClientException;
@@ -31,6 +18,18 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+
+import static io.getstream.client.okhttp.repo.utils.FeedFilterUtils.apply;
+import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
+import static io.getstream.client.util.JwtAuthenticationUtil.generateToken;
 
 public class StreamPersonalizedRepositoryImpl implements StreamPersonalizedRepository {
 
@@ -71,11 +70,12 @@ public class StreamPersonalizedRepositoryImpl implements StreamPersonalizedRepos
                 requestBuilder).build();
         LOG.debug("Invoking url: '{}", request.url().toString());
 
-        Response response = httpClient.newCall(request).execute();
-        handleResponseCode(response);
-        StreamResponse<T> streamResponse = objectMapper.readValue(response.body().byteStream(),
-                objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, type));
-        return streamResponse.getResults();
+        try (Response response = httpClient.newCall(request).execute()) {
+            handleResponseCode(response);
+            StreamResponse<T> streamResponse = objectMapper.readValue(response.body().byteStream(),
+                    objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, type));
+            return streamResponse.getResults();
+        }
     }
 
     @Override
@@ -95,14 +95,15 @@ public class StreamPersonalizedRepositoryImpl implements StreamPersonalizedRepos
 
         LOG.debug("Invoking url: '{}", request.url().toString());
 
-        Response response = httpClient.newCall(request).execute();
-        handleResponseCode(response);
+        try (Response response = httpClient.newCall(request).execute()) {
+            handleResponseCode(response);
 
-        StreamResponse responseValue = objectMapper.readValue(response.body().byteStream(), StreamResponse.class);
-        if (responseValue != null) {
-            duration = Double.parseDouble(responseValue.getDuration());
+            StreamResponse responseValue = objectMapper.readValue(response.body().byteStream(), StreamResponse.class);
+            if (responseValue != null) {
+                duration = Double.parseDouble(responseValue.getDuration());
+            }
+            return new MetaResponse(duration, response.code());
         }
-        return new MetaResponse(duration, response.code());
     }
 
     @Override
@@ -118,11 +119,12 @@ public class StreamPersonalizedRepositoryImpl implements StreamPersonalizedRepos
                 requestBuilder).build();
         LOG.debug("Invoking url: '{}", request.url().toString());
 
-        Response response = httpClient.newCall(request).execute();
-        handleResponseCode(response);
-        StreamResponse<T> streamResponse = objectMapper.readValue(response.body().byteStream(),
-                objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, type));
-        return streamResponse.getResults();
+        try (Response response = httpClient.newCall(request).execute()) {
+            handleResponseCode(response);
+            StreamResponse<T> streamResponse = objectMapper.readValue(response.body().byteStream(),
+                    objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, type));
+            return streamResponse.getResults();
+        }
     }
 
     private void handleResponseCode(Response response) throws StreamClientException, IOException {

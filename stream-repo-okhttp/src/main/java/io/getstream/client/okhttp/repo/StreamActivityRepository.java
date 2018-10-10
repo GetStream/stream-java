@@ -1,16 +1,5 @@
 package io.getstream.client.okhttp.repo;
 
-import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
-import static io.getstream.client.util.JwtAuthenticationUtil.generateToken;
-
-import java.io.IOException;
-import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
@@ -33,6 +22,16 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.net.URI;
+import java.util.Collections;
+import java.util.List;
+
+import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
+import static io.getstream.client.util.JwtAuthenticationUtil.generateToken;
 
 public class StreamActivityRepository {
 
@@ -68,10 +67,11 @@ public class StreamActivityRepository {
 		Request request = addAuthentication(feed, requestBuilder).build();
 		LOG.debug("Invoking url: '{}", request.url().toString());
 
-		Response response = httpClient.newCall(request).execute();
-		handleResponseCode(response);
-		return objectMapper.readValue(response.body().byteStream(),
-				objectMapper.getTypeFactory().constructType(activity.getClass()));
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+			return objectMapper.readValue(response.body().byteStream(),
+					objectMapper.getTypeFactory().constructType(activity.getClass()));
+		}
 	}
 
 	public <T extends BaseActivity> StreamActivitiesResponse<T> addActivities(BaseFeed feed, Class<T> type, List<T> activities) throws StreamClientException, IOException {
@@ -89,10 +89,11 @@ public class StreamActivityRepository {
 		Request request = addAuthentication(feed, requestBuilder).build();
 		LOG.debug("Invoking url: '{}", request.url().toString());
 
-		Response response = httpClient.newCall(request).execute();
-		handleResponseCode(response);
-		return objectMapper.readValue(response.body().byteStream(),
-				objectMapper.getTypeFactory().constructParametricType(StreamActivitiesResponse.class, type));
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+			return objectMapper.readValue(response.body().byteStream(),
+					objectMapper.getTypeFactory().constructParametricType(StreamActivitiesResponse.class, type));
+		}
 	}
 
 	public <T extends BaseActivity> T addToMany(List<String> targetIds, T activity) throws StreamClientException, IOException {
@@ -108,10 +109,11 @@ public class StreamActivityRepository {
 		final Request request = requestBuilder.build();
 		LOG.debug("Invoking url: '{}", request.url().toString());
 
-		Response response = httpClient.newCall(request).execute();
-		handleResponseCode(response);
-		return objectMapper.readValue(response.body().byteStream(),
-				objectMapper.getTypeFactory().constructType(activity.getClass()));
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+			return objectMapper.readValue(response.body().byteStream(),
+					objectMapper.getTypeFactory().constructType(activity.getClass()));
+		}
 	}
 
 	public <T extends BaseActivity> StreamResponse<T> getActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
@@ -122,10 +124,11 @@ public class StreamActivityRepository {
 		Request request = addAuthentication(feed, requestBuilder).build();
 		LOG.debug("Invoking url: '{}", request.url().toString());
 
-		Response response = httpClient.newCall(request).execute();
-		handleResponseCode(response);
-		return objectMapper.readValue(response.body().byteStream(),
-				objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, type));
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+			return objectMapper.readValue(response.body().byteStream(),
+					objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, type));
+		}
 	}
 
 	public <T extends BaseActivity> StreamResponse<AggregatedActivity<T>> getAggregatedActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
@@ -136,10 +139,11 @@ public class StreamActivityRepository {
 		Request request = addAuthentication(feed, requestBuilder).build();
 		LOG.debug("Invoking url: '{}", request.url().toString());
 
-		Response response = httpClient.newCall(request).execute();
-		handleResponseCode(response);
-		return objectMapper.readValue(response.body().byteStream(),
-				objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, objectMapper.getTypeFactory().constructParametricType(AggregatedActivity.class, type)));
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+			return objectMapper.readValue(response.body().byteStream(),
+					objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, objectMapper.getTypeFactory().constructParametricType(AggregatedActivity.class, type)));
+		}
 	}
 
 	public <T extends BaseActivity> StreamResponse<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter) throws IOException, StreamClientException {
@@ -150,11 +154,12 @@ public class StreamActivityRepository {
 		Request request = addAuthentication(feed, requestBuilder).build();
 		LOG.debug("Invoking url: '{}", request.url().toString());
 
-		Response response = httpClient.newCall(request).execute();
-		handleResponseCode(response);
-		return objectMapper.readValue(response.body().byteStream(),
-				objectMapper.getTypeFactory().constructParametricType(StreamResponse.class,
-						objectMapper.getTypeFactory().constructParametricType(NotificationActivity.class, type)));
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+			return objectMapper.readValue(response.body().byteStream(),
+					objectMapper.getTypeFactory().constructParametricType(StreamResponse.class,
+							objectMapper.getTypeFactory().constructParametricType(NotificationActivity.class, type)));
+		}
 	}
 
 	public <T extends BaseActivity> StreamResponse<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, boolean markAsRead, boolean markAsSeen) throws IOException, StreamClientException {
@@ -167,10 +172,11 @@ public class StreamActivityRepository {
 		Request request = addAuthentication(feed, requestBuilder).build();
 		LOG.debug("Invoking url: '{}", request.url().toString());
 
-		Response response = httpClient.newCall(request).execute();
-		handleResponseCode(response);
-		return objectMapper.readValue(response.body().byteStream(),
-				objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, objectMapper.getTypeFactory().constructParametricType(NotificationActivity.class, type)));
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+			return objectMapper.readValue(response.body().byteStream(),
+					objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, objectMapper.getTypeFactory().constructParametricType(NotificationActivity.class, type)));
+		}
 	}
 
 	public <T extends BaseActivity> StreamResponse<NotificationActivity<T>> getNotificationActivities(BaseFeed feed, Class<T> type, FeedFilter filter, MarkedActivity markAsRead, MarkedActivity markAsSeen) throws IOException, StreamClientException {
@@ -189,10 +195,11 @@ public class StreamActivityRepository {
 		Request request = addAuthentication(feed, requestBuilder).build();
 		LOG.debug("Invoking url: '{}", request.url().toString());
 
-		Response response = httpClient.newCall(request).execute();
-		handleResponseCode(response);
-		return objectMapper.readValue(response.body().byteStream(),
-				objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, objectMapper.getTypeFactory().constructParametricType(NotificationActivity.class, type)));
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+			return objectMapper.readValue(response.body().byteStream(),
+					objectMapper.getTypeFactory().constructParametricType(StreamResponse.class, objectMapper.getTypeFactory().constructParametricType(NotificationActivity.class, type)));
+		}
 	}
 
     public void deleteActivityById(BaseFeed feed, String activityId) throws IOException, StreamClientException {
@@ -203,8 +210,9 @@ public class StreamActivityRepository {
 		Request request = addAuthentication(feed, requestBuilder).build();
         LOG.debug("Invoking url: '{}", request.url().toString());
 
-		Response response = httpClient.newCall(request).execute();
-        handleResponseCode(response);
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+		}
     }
 
 	public void deleteActivityByForeignId(BaseFeed feed, String activityId) throws IOException, StreamClientException {
@@ -216,8 +224,9 @@ public class StreamActivityRepository {
 		Request request = addAuthentication(feed, requestBuilder).build();
 		LOG.debug("Invoking url: '{}", request.url().toString());
 
-		Response response = httpClient.newCall(request).execute();
-		handleResponseCode(response);
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+		}
 	}
 
 	public <T extends BaseActivity> StreamActivitiesResponse<T> updateActivities(BaseFeed feed, Class<T> type, List<T> activities) throws IOException, StreamClientException {
@@ -234,10 +243,11 @@ public class StreamActivityRepository {
 
 		LOG.debug("Invoking url: '{}", request.url().toString());
 
-		Response response = httpClient.newCall(request).execute();
-		handleResponseCode(response);
-		return objectMapper.readValue(response.body().byteStream(),
-				objectMapper.getTypeFactory().constructParametricType(StreamActivitiesResponse.class, type));
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+			return objectMapper.readValue(response.body().byteStream(),
+					objectMapper.getTypeFactory().constructParametricType(StreamActivitiesResponse.class, type));
+		}
 	}
 
 	private void handleResponseCode(Response response) throws StreamClientException, IOException {

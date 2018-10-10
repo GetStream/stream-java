@@ -17,6 +17,7 @@ import io.getstream.client.model.beans.FollowRequest;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
+import io.getstream.client.model.beans.UnfollowMany;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.repo.StreamRepository;
@@ -101,6 +102,16 @@ public class StreamRepositoryImpl implements StreamRepository {
 				.build());
 		request.addHeader(HttpSignatureInterceptor.X_API_KEY_HEADER, apiKey);
 		request.setEntity(new StringEntity(objectMapper.writeValueAsString(followManyInput), APPLICATION_JSON));
+		fireAndForget(request);
+	}
+
+	@Override
+	public void unfollowMany(BaseFeed feed, UnfollowMany unfollowManyInput) throws StreamClientException, IOException {
+		HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("unfollow_many/")
+				.build());
+		request.addHeader(HttpSignatureInterceptor.X_API_KEY_HEADER, apiKey);
+		request.setEntity(new StringEntity(objectMapper.writeValueAsString(unfollowManyInput), APPLICATION_JSON));
 		fireAndForget(request);
 	}
 
