@@ -69,6 +69,15 @@ public class IntegrationTest {
     }
 
     @Test
+    public void shouldGetUserSessionToken() throws StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY, API_SECRET);
+        Feed feed = streamClient.newFeed("feedslug", "aUserId");
+
+        Map<String, Claim> map = verifyToken(feed.getUserSessionToken());
+        assertThat(map.get("user_id").asString(), is("aUserId"));
+    }
+
+    @Test
     public void shouldGetFollowers() throws IOException, StreamClientException {
         StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
                 API_SECRET);
