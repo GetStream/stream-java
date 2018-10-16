@@ -20,6 +20,7 @@ import io.getstream.client.model.feeds.PersonalizedFeed;
 import io.getstream.client.repo.StreamPersonalizedRepository;
 import io.getstream.client.repo.StreamRepository;
 import io.getstream.client.util.InfoUtil;
+import io.getstream.client.util.JwtAuthenticationUtil;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
@@ -39,6 +40,8 @@ public class StreamClientImpl implements StreamClient {
     private FeedFactory feedFactory;
     private final StreamRepository streamRepository;
     private final Optional<StreamPersonalizedRepository> streamPersonalizedRepository;
+    private final String apiKey;
+    private final String secretKey;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
@@ -46,6 +49,9 @@ public class StreamClientImpl implements StreamClient {
             .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
     public StreamClientImpl(final ClientConfiguration clientConfiguration, final String key, final String secretKey) {
+        this.apiKey = key;
+        this.secretKey = secretKey;
+
         Preconditions.checkNotNull(clientConfiguration, "Client configuration cannot be null.");
         AuthenticationHandlerConfiguration authenticationHandlerConfiguration = new AuthenticationHandlerConfiguration();
         authenticationHandlerConfiguration.setApiKey(checkNotNull(key, "API key cannot be null."));
@@ -68,6 +74,11 @@ public class StreamClientImpl implements StreamClient {
     public PersonalizedFeed newPersonalizedFeed(final String feedSlug,
                                                 final String id) throws InvalidFeedNameException {
         return this.feedFactory.createPersonalizedFeed(feedSlug, id);
+    }
+
+    @Override
+    public String getUserSessionToken(String userId) {
+        return JwtAuthenticationUtil.generateToken(getSecretKey(), null, userId);
     }
 
     @Override
@@ -122,5 +133,13 @@ public class StreamClientImpl implements StreamClient {
 
     public static ObjectMapper getObjectMapper() {
         return OBJECT_MAPPER;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
     }
 }

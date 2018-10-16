@@ -31,6 +31,14 @@ public interface StreamClient {
      */
     PersonalizedFeed newPersonalizedFeed(String feedSlug, String id) throws InvalidFeedNameException;
 
+
+    /**
+     * Generate User Session JWT Token.
+     * @param userId User identifier
+     * @return JWT Token
+     */
+    String getUserSessionToken(String userId);
+
     /**
      * Send the shutdown signal to the client.
      *

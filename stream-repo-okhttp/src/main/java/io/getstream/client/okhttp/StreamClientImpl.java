@@ -1,11 +1,5 @@
 package io.getstream.client.okhttp;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
-import java.io.IOException;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
@@ -26,10 +20,17 @@ import io.getstream.client.okhttp.repo.StreamRepositoryImpl;
 import io.getstream.client.repo.StreamPersonalizedRepository;
 import io.getstream.client.repo.StreamRepository;
 import io.getstream.client.util.InfoUtil;
+import io.getstream.client.util.JwtAuthenticationUtil;
 import okhttp3.ConnectionPool;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
+
+import java.io.IOException;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class StreamClientImpl implements StreamClient {
 
@@ -38,6 +39,8 @@ public class StreamClientImpl implements StreamClient {
     private final Optional<StreamPersonalizedRepository> streamPersonalizedRepository;
     private FeedFactory feedFactory;
     private final StreamRepository streamRepository;
+    private final String apiKey;
+    private final String secretKey;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES)
@@ -45,6 +48,9 @@ public class StreamClientImpl implements StreamClient {
             .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
     public StreamClientImpl(final ClientConfiguration clientConfiguration, final String key, final String secretKey) {
+        this.apiKey = key;
+        this.secretKey = secretKey;
+
         Preconditions.checkNotNull(clientConfiguration, "Client configuration cannot be null.");
         AuthenticationHandlerConfiguration authenticationHandlerConfiguration = new AuthenticationHandlerConfiguration();
         authenticationHandlerConfiguration.setApiKey(checkNotNull(key, "API key cannot be null."));
@@ -67,6 +73,11 @@ public class StreamClientImpl implements StreamClient {
     public PersonalizedFeed newPersonalizedFeed(final String feedSlug,
                                                 final String id) throws InvalidFeedNameException {
         return this.feedFactory.createPersonalizedFeed(feedSlug, id);
+    }
+
+    @Override
+    public String getUserSessionToken(String userId) {
+        return JwtAuthenticationUtil.generateToken(getSecretKey(), null, userId);
     }
 
     @Override
@@ -123,5 +134,13 @@ public class StreamClientImpl implements StreamClient {
 
     public static ObjectMapper getObjectMapper() {
         return OBJECT_MAPPER;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public String getSecretKey() {
+        return secretKey;
     }
 }
