@@ -49,11 +49,6 @@ public class BaseFeed implements Feed {
     }
 
     @Override
-    public String getUserSessionToken() {
-        return streamRepository.getUserSessionToken(this);
-    }
-
-    @Override
     public void follow(String feedSlug, String userId) throws IOException, StreamClientException {
         String feedId = String.format("%s:%s", feedSlug, userId);
         streamRepository.follow(this, feedId, DEFAULT_ACTIVITY_COPY_LIMIT);

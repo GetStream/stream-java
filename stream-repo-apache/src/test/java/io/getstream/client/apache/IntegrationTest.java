@@ -81,9 +81,7 @@ public class IntegrationTest {
     @Test
     public void shouldGetUserSessionToken() throws StreamClientException {
         StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY, API_SECRET);
-        Feed feed = streamClient.newFeed("feedslug", "aUserId");
-
-        Map<String, Claim> map = verifyToken(feed.getUserSessionToken());
+        Map<String, Claim> map = verifyToken(streamClient.getUserSessionToken("aUserId"));
         assertThat(map.get("user_id").asString(), is("aUserId"));
     }
 
