@@ -48,6 +48,8 @@ public interface StreamRepository {
      */
     String getReadOnlyToken(BaseFeed feed);
 
+    String getUserSessionToken(BaseFeed feed);
+
     /**
      * Follow a feed.
      *

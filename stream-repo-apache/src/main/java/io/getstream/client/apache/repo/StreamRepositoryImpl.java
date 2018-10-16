@@ -84,6 +84,11 @@ public class StreamRepositoryImpl implements StreamRepository {
 	}
 
 	@Override
+	public String getUserSessionToken(BaseFeed feed) {
+		return JwtAuthenticationUtil.generateToken(secretKey, null, feed.getUserId());
+	}
+
+	@Override
 	public void follow(BaseFeed feed, String targetFeedId, int activityCopyLimit) throws StreamClientException, IOException {
 		HttpPost request = new HttpPost(UriBuilder.fromEndpoint(baseEndpoint)
 				.path("feed").path(feed.getFeedSlug()).path(feed.getUserId()).path("following/")

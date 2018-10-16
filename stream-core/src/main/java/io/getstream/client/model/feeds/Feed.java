@@ -40,6 +40,12 @@ public interface Feed {
     String getReadOnlyToken();
 
     /**
+     * Generate User Session JWT Token. UserId is taken from {@link Feed#getId()}.
+     * @return Token
+     */
+    String getUserSessionToken();
+
+    /**
      * Follows the given target feed.
      *
      * @param feedSlug the slug of the target feed.
