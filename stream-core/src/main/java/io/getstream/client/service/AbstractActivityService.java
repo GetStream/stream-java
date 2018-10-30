@@ -2,7 +2,9 @@ package io.getstream.client.service;
 
 import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.BaseActivity;
+import io.getstream.client.model.activities.UpdateTargetResponse;
 import io.getstream.client.model.beans.StreamActivitiesResponse;
+import io.getstream.client.model.beans.Targets;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.repo.StreamRepository;
 
@@ -65,6 +67,19 @@ public abstract class AbstractActivityService<T extends BaseActivity> {
      */
     public StreamActivitiesResponse<T> updateActivities(List<T> activities) throws IOException, StreamClientException {
         return streamRepository.updateActivities(this.feed, type, activities);
+    }
+
+    /**
+     * Update the <b>to</b> target(s) of a given {@link T} activity.
+     * @param activity The activity in scope.
+     * @param targets A container for the operations that need to be performed on the <b>to</b> field.
+     * @param <T> The type of the activity.
+     * @return Response containing the modified activity and a summary of the actions performed to the <b>to</b> field.
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
+     */
+    public <T extends BaseActivity> UpdateTargetResponse<T> updateToTargets(BaseActivity activity, Targets targets) throws IOException, StreamClientException {
+        return streamRepository.updateToTargets(feed, activity, targets);
     }
 
     /**

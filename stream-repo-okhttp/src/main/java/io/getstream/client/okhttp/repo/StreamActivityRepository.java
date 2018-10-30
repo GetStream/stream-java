@@ -5,10 +5,13 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
+import io.getstream.client.model.activities.UpdateTargetResponse;
 import io.getstream.client.model.beans.AddMany;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
+import io.getstream.client.model.beans.Targets;
+import io.getstream.client.model.beans.UpdateTo;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
 import io.getstream.client.okhttp.repo.handlers.StreamExceptionHandler;
@@ -247,6 +250,36 @@ public class StreamActivityRepository {
 			handleResponseCode(response);
 			return objectMapper.readValue(response.body().byteStream(),
 					objectMapper.getTypeFactory().constructParametricType(StreamActivitiesResponse.class, type));
+		}
+	}
+
+	public <T extends BaseActivity> UpdateTargetResponse<T> updateToTargets(BaseFeed feed, BaseActivity activity, Targets targets) throws StreamClientException, IOException {
+		Request.Builder requestBuilder = new Request.Builder().delete().url(UriBuilder.fromEndpoint(baseEndpoint)
+				.path("feed_targets/")
+				.path(feed.getFeedSlug().concat("/"))
+				.path(feed.getUserId().concat("/"))
+				.path("activity_to_targets/")
+				.queryParam(StreamRepositoryImpl.API_KEY, apiKey).build().toURL());
+
+		UpdateTo updateActivity = new UpdateTo();
+		updateActivity.setForeignId(activity.getForeignId());
+		updateActivity.setTime(activity.getTime());
+		updateActivity.setNewTargets(targets.getNewTargets());
+		updateActivity.setAddedTargets(targets.getAddedTargets());
+		updateActivity.setRemovedTargets(targets.getRemovedTargets());
+
+		requestBuilder.post(RequestBody.create(MediaType.parse(APPLICATION_JSON), objectMapper.writeValueAsBytes(updateActivity)));
+
+		Request request = StreamRepoUtils.addJwtAuthentication(generateToken(secretKey, "write", "feed_targets",
+				feed.getFeedSlug().concat(feed.getUserId()), null), requestBuilder).build();
+
+		LOG.debug("Invoking url: '{}", request.url().toString());
+
+		try (Response response = httpClient.newCall(request).execute()) {
+			handleResponseCode(response);
+			return objectMapper.readValue(response.body().byteStream(),
+					objectMapper.getTypeFactory().constructParametricType(UpdateTargetResponse.class,
+					objectMapper.constructType(activity.getClass())));
 		}
 	}
 
