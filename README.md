@@ -20,14 +20,14 @@ If you decide to go for the *Apache HttpClient* implementation, add the followin
 <dependency>
     <groupId>io.getstream.client</groupId>
     <artifactId>stream-repo-apache</artifactId>
-    <version>2.1.2</version>
+    <version>2.1.3</version>
 </dependency>
 ```
 
 or in your build.gradle:
 
 ```gradle
-compile 'io.getstream.client:stream-repo-apache:2.1.2'
+compile 'io.getstream.client:stream-repo-apache:2.1.3'
 ```
 
 Instead, if you opted for the *OkHttp* implementation please add it to your pom.xml
@@ -36,14 +36,14 @@ Instead, if you opted for the *OkHttp* implementation please add it to your pom.
 <dependency>
     <groupId>io.getstream.client</groupId>
     <artifactId>stream-repo-okhttp</artifactId>
-    <version>2.1.2</version>
+    <version>2.1.3</version>
 </dependency>
 ```
 
 or in your build.gradle:
 
 ```gradle
-compile 'io.getstream.client:stream-repo-okhttp:2.1.2'
+compile 'io.getstream.client:stream-repo-okhttp:2.1.3'
 ```
 
 In case you want to download the artifact and put it manually into your project,
