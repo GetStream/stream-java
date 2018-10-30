@@ -1,5 +1,6 @@
 package io.getstream.client.apache.repo.handlers;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.getstream.client.exception.AuthenticationFailedException;
 import io.getstream.client.exception.InternalServerException;
@@ -69,12 +70,17 @@ public class StreamExceptionHandler {
 
     private StreamClientException buildException(StreamClientException exception,
                                                  CloseableHttpResponse response) throws IOException {
-        StreamErrorResponse error = objectMapper.readValue(response.getEntity().getContent(), StreamErrorResponse.class);
-        if (null != error) {
-            exception.setCode(error.getCode());
+        try {
+            StreamErrorResponse error = objectMapper.readValue(response.getEntity().getContent(), StreamErrorResponse.class);
+            if (null != error) {
+                exception.setCode(error.getCode());
+                exception.setHttpStatusCode(response.getStatusLine().getStatusCode());
+                exception.setDetail(error.getDetail());
+                exception.setExceptionField(error.getException());
+            }
+        } catch (JsonParseException e) {
             exception.setHttpStatusCode(response.getStatusLine().getStatusCode());
-            exception.setDetail(error.getDetail());
-            exception.setExceptionField(error.getException());
+            exception.setDetail(response.getStatusLine().getReasonPhrase());
         }
         return exception;
     }

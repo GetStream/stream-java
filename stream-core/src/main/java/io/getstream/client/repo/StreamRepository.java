@@ -4,11 +4,13 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
+import io.getstream.client.model.activities.UpdateTargetResponse;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
+import io.getstream.client.model.beans.Targets;
 import io.getstream.client.model.beans.UnfollowMany;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
@@ -162,6 +164,18 @@ public interface StreamRepository {
      * @throws StreamClientException in case of functional or server-side exception
      */
     <T extends BaseActivity> StreamActivitiesResponse<T> updateActivities(BaseFeed feed, Class<T> type, List<T> activities) throws IOException, StreamClientException;
+
+    /**
+     * Update the <b>to</b> target(s) of a given {@link T} activity.
+     * @param feed Feed which the activity belong to
+     * @param activity The activity in scope.
+     * @param targets A container for the operations that need to be performed on the <b>to</b> field.
+     * @param <T> The type of the activity.
+     * @return Response containing the modified activity and a summary of the actions performed to the <b>to</b> field.
+     * @throws IOException in case of network/socket exceptions
+     * @throws StreamClientException in case of functional or server-side exception
+     */
+    <T extends BaseActivity> UpdateTargetResponse<T> updateToTargets(BaseFeed feed, BaseActivity activity, Targets targets) throws StreamClientException, IOException;
 
     /**
      * Add a new activity of type {@link T} to multiple feeds.

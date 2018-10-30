@@ -15,11 +15,13 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.NotificationActivity;
 import io.getstream.client.model.activities.SimpleActivity;
+import io.getstream.client.model.activities.UpdateTargetResponse;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
+import io.getstream.client.model.beans.Targets;
 import io.getstream.client.model.beans.UnfollowMany;
 import io.getstream.client.model.feeds.Feed;
 import io.getstream.client.model.filters.FeedFilter;
@@ -44,8 +46,7 @@ import java.util.concurrent.TimeUnit;
 
 import static io.getstream.client.util.JwtAuthenticationUtil.ALL;
 import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class IntegrationTest {
@@ -364,6 +365,74 @@ public class IntegrationTest {
 
         StreamActivitiesResponse<SimpleActivity> response = flatActivityService.updateActivities(Collections.singletonList(activity));
         response.getActivities();
+
+        streamClient.shutdown();
+    }
+
+    @Test
+    public void shouldUpdateToTargets() throws IOException, StreamClientException {
+        StreamClient streamClient = new StreamClientImpl(CLIENT_CONFIGURATION, API_KEY,
+                API_SECRET);
+
+        String user1 = this.getTestUserId("shouldChangeTo1");
+        Feed feed = streamClient.newFeed("user", user1);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService1 = feed.newFlatActivityService(SimpleActivity.class);
+
+        SimpleActivity activityUser1 = new SimpleActivity();
+        activityUser1.setForeignId("activityUser1");
+        activityUser1.setActor("user1");
+        activityUser1.setVerb("like");
+        activityUser1.setObject("object1");
+        activityUser1.setTime(new Date());
+
+        /* add activity 'activityUser1' */
+        flatActivityService1.addActivity(activityUser1);
+
+
+        String user2 = this.getTestUserId("shouldChangeTo2");
+        Feed feed2 = streamClient.newFeed("user", user2);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService2 = feed2.newFlatActivityService(SimpleActivity.class);
+
+        SimpleActivity activityUser2 = new SimpleActivity();
+        activityUser2.setForeignId("activityUser2");
+        activityUser2.setActor("user2");
+        activityUser2.setVerb("like");
+        activityUser2.setObject("object1");
+        activityUser2.setTime(new Date());
+
+        /* add activity 'activityUser2' */
+        flatActivityService2.addActivity(activityUser2);
+
+
+        String user3 = this.getTestUserId("shouldChangeTo2");
+        Feed feed3 = streamClient.newFeed("user", user3);
+        FlatActivityServiceImpl<SimpleActivity> flatActivityService3 = feed2.newFlatActivityService(SimpleActivity.class);
+
+        SimpleActivity activityUser3 = new SimpleActivity();
+        activityUser3.setForeignId("activityUser3");
+        activityUser3.setActor("user3");
+        activityUser3.setVerb("like");
+        activityUser3.setObject("object1");
+        activityUser3.setTime(new Date());
+        activityUser3.setForeignId("user:".concat(user1));
+        activityUser3.setTo(Collections.singletonList("user:".concat(user1))); // 'to' field points to 'user1' feed
+
+        /* add activity 'activityUser3' with 'to' field pointing to feed user1 */
+        flatActivityService3.addActivity(activityUser3);
+
+        /* change the 'to' field of activity 'activityUser3' from user1 to user2 */
+        /* addNewTarget(new_activity) replaces the 'to' field. It's equivalent to run addTargetToAdd(new_activity) and
+         * addTargetToRemove(old_activity). See the below assertions. */
+        Targets toTargets = new Targets.Builder()
+                .addNewTarget("user:".concat(user2))
+                .build();
+
+        /* perform the change */
+        UpdateTargetResponse<SimpleActivity> response = flatActivityService3.updateToTargets(activityUser3, toTargets);
+
+        assertThat(response.getRemovedTargets(), hasItem("user:".concat(user1)));
+        assertThat(response.getAddedTargets(), hasItem("user:".concat(user2)));
+        assertThat(response.getActivity().getTo(), hasItem("user:".concat(user2)));
 
         streamClient.shutdown();
     }

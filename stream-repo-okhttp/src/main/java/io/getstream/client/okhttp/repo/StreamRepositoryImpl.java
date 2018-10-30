@@ -7,12 +7,14 @@ import io.getstream.client.exception.StreamClientException;
 import io.getstream.client.model.activities.AggregatedActivity;
 import io.getstream.client.model.activities.BaseActivity;
 import io.getstream.client.model.activities.NotificationActivity;
+import io.getstream.client.model.activities.UpdateTargetResponse;
 import io.getstream.client.model.beans.FeedFollow;
 import io.getstream.client.model.beans.FollowMany;
 import io.getstream.client.model.beans.FollowRequest;
 import io.getstream.client.model.beans.MarkedActivity;
 import io.getstream.client.model.beans.StreamActivitiesResponse;
 import io.getstream.client.model.beans.StreamResponse;
+import io.getstream.client.model.beans.Targets;
 import io.getstream.client.model.beans.UnfollowMany;
 import io.getstream.client.model.feeds.BaseFeed;
 import io.getstream.client.model.filters.FeedFilter;
@@ -190,6 +192,11 @@ public class StreamRepositoryImpl implements StreamRepository {
 	@Override
 	public <T extends BaseActivity> StreamActivitiesResponse<T> updateActivities(BaseFeed feed, Class<T> type, List<T> activities) throws IOException, StreamClientException {
 		return streamActivityRepository.updateActivities(feed, type, activities);
+	}
+
+	@Override
+	public <T extends BaseActivity> UpdateTargetResponse<T> updateToTargets(BaseFeed feed, BaseActivity activity, Targets targets) throws StreamClientException, IOException {
+		return streamActivityRepository.updateToTargets(feed, activity, targets);
 	}
 
 	@Override
