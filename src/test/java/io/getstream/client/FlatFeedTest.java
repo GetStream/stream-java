@@ -45,12 +45,11 @@ class FlatFeedTest {
                     .build();
 
             Data user = client.user("john-doe").getOrCreate(new Data().set("hey", "now")).join();
-            CollectionData collectionItem = client.collections().add(user.getID(), "source-of-richness", new CollectionData("wealth").set("inner", "calm")).join();
             FlatFeed feed = client.flatFeed("flat", "rich");
             feed.addActivity(Activity.builder()
                     .actor(createUserReference(user.getID()))
                     .verb("found")
-                    .object(createCollectionReference(collectionItem.getCollection(), collectionItem.getID()))
+                    .object(createCollectionReference("source-of-richness", "wealth"))
                     .build()).join();
 
             result[0] = feed.getEnrichedActivities().join();
