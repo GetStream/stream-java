@@ -26,7 +26,11 @@ public final class DataDeserializer extends StdDeserializer<Data> {
         for (Map.Entry<String, JsonNode> field : iterate(node.fields())) {
             if (field.getKey().equals("id"))
                 continue;
-            data.set(field.getKey(), parser.getCodec().treeToValue(field.getValue(), Object.class));
+            if (field.getKey().equals("data")) {
+                data.from(field.getValue());
+            } else {
+                data.set(field.getKey(), parser.getCodec().treeToValue(field.getValue(), Object.class));
+            }
         }
         return data;
     }

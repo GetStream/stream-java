@@ -45,10 +45,15 @@ public final class StreamCollections {
         checkNotNull(item, "Collection data can't be null");
 
         try {
-            final byte[] payload = toJSON(new Object() {
-                public final String user_id = firstNonNull(userID, "");
-                public final Map<String, Object> data = item.getData();
-            });
+            ImmutableMap.Builder builder = new ImmutableMap.Builder<String, Object>()
+                    .put("data", item.getData());
+            if (userID != null) {
+                builder.put("user_id", userID);
+            }
+            if (item.getID() != null) {
+                builder.put("id", item.getID());
+            }
+            final byte[] payload = toJSON(builder.build());
             final URL url = buildCollectionsURL(baseURL, collection + '/');
             return httpClient.execute(buildPost(url, key, token, payload))
                     .thenApply(response -> {
@@ -69,10 +74,12 @@ public final class StreamCollections {
         checkNotNull(item, "Collection data can't be null");
 
         try {
-            final byte[] payload = toJSON(new Object() {
-                public final String user_id = firstNonNull(userID, "");
-                public final Map<String, Object> data = item.getData();
-            });
+            ImmutableMap.Builder builder = new ImmutableMap.Builder<String, Object>()
+                    .put("data", item.getData());
+            if (userID != null) {
+                builder.put("user_id", userID);
+            }
+            final byte[] payload = toJSON(builder.build());
             final URL url = buildCollectionsURL(baseURL, collection + '/' + item.getID() + '/');
             return httpClient.execute(buildPut(url, key, token, payload))
                     .thenApply(response -> {

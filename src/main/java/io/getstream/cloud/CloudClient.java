@@ -177,6 +177,10 @@ public class CloudClient {
         return new CloudUser(this, userID);
     }
 
+    public CloudAnalyticsClient analytics() {
+        return new CloudAnalyticsClient(token, stream.analytics());
+    }
+
     public CloudCollectionsClient collections() {
         return new CloudCollectionsClient(token, userID, stream.collections());
     }

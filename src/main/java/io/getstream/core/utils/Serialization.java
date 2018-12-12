@@ -13,6 +13,7 @@ import io.getstream.core.http.Response;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PushbackInputStream;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -123,9 +124,13 @@ public final class Serialization {
 
     private static StreamAPIException deserializeException(Response response) throws IOException {
         //XXX: a hack to avoid reading empty stream
-        if (response.getCode() == 409) {
-            return new StreamAPIException(null, 0, 409, "Conflict");
+        try (PushbackInputStream wrapper = new PushbackInputStream(response.getBody())) {
+            int read = wrapper.read();
+            if (read == -1) {
+                return new StreamAPIException(null, 0, response.getCode(), "API Error");
+            }
+            wrapper.unread(read);
+            return fromJSON(wrapper, StreamAPIException.class);
         }
-        return fromJSON(response.getBody(), StreamAPIException.class);
     }
 }

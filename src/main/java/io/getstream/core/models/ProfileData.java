@@ -1,9 +1,6 @@
 package io.getstream.core.models;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.google.common.base.MoreObjects;
 
 import java.util.Map;
@@ -12,7 +9,6 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ProfileData {
     private final String id;
     private final int followingCount;
@@ -58,6 +54,16 @@ public class ProfileData {
 
     public <T> T get(String key) {
         return (T) data.get(checkNotNull(key, "Key can't be null"));
+    }
+
+    @JsonAnySetter
+    public <T> ProfileData set(String key, T value) {
+        checkArgument(!"id".equals(key), "Key can't be named 'id'");
+        checkNotNull(key, "Key can't be null");
+        checkNotNull(value, "Value can't be null");
+
+        data.put(key, value);
+        return this;
     }
 
     @Override

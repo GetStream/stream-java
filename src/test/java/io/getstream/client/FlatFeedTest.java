@@ -5,6 +5,8 @@ import io.getstream.client.entities.Match;
 import io.getstream.client.entities.VolleyballMatch;
 import io.getstream.core.http.OKHTTPClientAdapter;
 import io.getstream.core.models.Activity;
+import io.getstream.core.models.CollectionData;
+import io.getstream.core.models.Data;
 import io.getstream.core.models.EnrichedActivity;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Test;
@@ -12,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.concurrent.CompletionException;
 
+import static io.getstream.core.utils.Enrichment.createCollectionReference;
+import static io.getstream.core.utils.Enrichment.createUserReference;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -40,7 +44,15 @@ class FlatFeedTest {
                     .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
                     .build();
 
-            FlatFeed feed = client.flatFeed("flat", "1");
+            Data user = client.user("john-doe").getOrCreate(new Data().set("hey", "now")).join();
+            CollectionData collectionItem = client.collections().add(user.getID(), "source-of-richness", new CollectionData("wealth").set("inner", "calm")).join();
+            FlatFeed feed = client.flatFeed("flat", "rich");
+            feed.addActivity(Activity.builder()
+                    .actor(createUserReference(user.getID()))
+                    .verb("found")
+                    .object(createCollectionReference(collectionItem.getCollection(), collectionItem.getID()))
+                    .build()).join();
+
             result[0] = feed.getEnrichedActivities().join();
         });
     }

@@ -320,7 +320,73 @@ class Example {
                 .build();
 
         /* -------------------------------------------------------- */
+        Reaction like = new Reaction.Builder()
+                .kind("like")
+                .activityID(activity.getID())
+                .build();
 
+        // add a like reaction to the activity with id activityId
+        like = client.reactions().add("john-doe", like).join();
 
+        Reaction comment = new Reaction.Builder()
+                .kind("comment")
+                .activityID(activity.getID())
+                .extraField("text", "awesome post!")
+                .build();
+
+        // adds a comment reaction to the activity with id activityId
+        comment = client.reactions().add("john-doe", comment).join();
+
+        /* -------------------------------------------------------- */
+
+        // first let's read current user's timeline feed and pick one activity
+        response = client.flatFeed("timeline", "mike").getActivities().join();
+        activity = response.get(0);
+
+        // then let's add a like reaction to that activity
+        client.reactions().add("john-doe", Reaction.builder()
+                .kind("like")
+                .activityID(activity.getID())
+                .build());
+
+        /* -------------------------------------------------------- */
+
+        comment = new Reaction.Builder()
+                .kind("comment")
+                .activityID(activity.getID())
+                .extraField("text", "awesome post!")
+                .build();
+
+        // adds a comment reaction to the activity and notify Thierry's notification feed
+        client.reactions().add("john-doe", comment, new FeedID("notification:thierry"));
+
+        /* -------------------------------------------------------- */
+
+        // create a new user, if the user already exist an error is returned
+        client.user("john-doe").create(new Data("")
+                .set("name", "John Doe")
+                .set("occupation", "Software Engineer")
+                .set("gender", "male"));
+
+        // get or create a new user, if the user already exist the user is returned
+        client.user("john-doe").getOrCreate(new Data("")
+                .set("name", "John Doe")
+                .set("occupation", "Software Engineer")
+                .set("gender", "male"));
+
+        /* -------------------------------------------------------- */
+
+        client.user("123").get();
+
+        /* -------------------------------------------------------- */
+
+        client.user("123").delete();
+
+        /* -------------------------------------------------------- */
+
+        client.user("123").update(new Data("")
+                .set("name", "John Doe")
+                .set("occupation", "Software Engineer")
+                .set("gender", "male"));
     }
 }

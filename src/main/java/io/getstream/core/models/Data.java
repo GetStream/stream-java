@@ -23,6 +23,10 @@ public class Data {
         this.id = checkNotNull(id, "ID required");
     }
 
+    public Data() {
+        this("");
+    }
+
     public static <T> Data buildFrom(T data) {
         return convert(data, Data.class);
     }
