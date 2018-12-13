@@ -61,27 +61,27 @@ public final class CollectionsClient {
         return collections.update(token, userID, collection, item);
     }
 
-    public <T> CompletableFuture<Void> upsertManyCustom(String collection, Iterable<T> items) throws StreamException {
+    public <T> CompletableFuture<Void> upsertCustom(String collection, Iterable<T> items) throws StreamException {
         final CollectionData[] custom = Streams.stream(items)
                 .map(item -> CollectionData.buildFrom(item))
                 .toArray(CollectionData[]::new);
-        return upsertMany(collection, custom);
+        return upsert(collection, custom);
     }
 
-    public <T> CompletableFuture<Void> upsertManyCustom(String collection, T... items) throws StreamException {
+    public <T> CompletableFuture<Void> upsertCustom(String collection, T... items) throws StreamException {
         final CollectionData[] custom = Arrays.stream(items)
                 .map(item -> CollectionData.buildFrom(item))
                 .toArray(CollectionData[]::new);
-        return upsertMany(collection, custom);
+        return upsert(collection, custom);
     }
 
-    public CompletableFuture<Void> upsertMany(String collection, Iterable<CollectionData> items) throws StreamException {
-        return upsertMany(collection, Iterables.toArray(items, CollectionData.class));
+    public CompletableFuture<Void> upsert(String collection, Iterable<CollectionData> items) throws StreamException {
+        return upsert(collection, Iterables.toArray(items, CollectionData.class));
     }
 
-    public CompletableFuture<Void> upsertMany(String collection, CollectionData... items) throws StreamException {
+    public CompletableFuture<Void> upsert(String collection, CollectionData... items) throws StreamException {
         final Token token = buildCollectionsToken(secret, TokenAction.WRITE);
-        return collections.upsertMany(token, collection, items);
+        return collections.upsert(token, collection, items);
     }
 
     public <T> CompletableFuture<List<T>> customItems(Class<T> type, String collection) throws StreamException {
@@ -105,22 +105,22 @@ public final class CollectionsClient {
         return collections.get(token, collection, id);
     }
 
-    public <T> CompletableFuture<List<T>> getManyCustom(Class<T> type, String collection, Iterable<String> ids) throws StreamException {
-        return getManyCustom(type, collection, Iterables.toArray(ids, String.class));
+    public <T> CompletableFuture<List<T>> selectCustom(Class<T> type, String collection, Iterable<String> ids) throws StreamException {
+        return selectCustom(type, collection, Iterables.toArray(ids, String.class));
     }
 
-    public <T> CompletableFuture<List<T>> getManyCustom(Class<T> type, String collection, String... ids) throws StreamException {
-        return getMany(collection, ids)
+    public <T> CompletableFuture<List<T>> selectCustom(Class<T> type, String collection, String... ids) throws StreamException {
+        return select(collection, ids)
                 .thenApply(data -> data.stream().map(item -> convert(item, type)).collect(Collectors.toList()));
     }
 
-    public CompletableFuture<List<CollectionData>> getMany(String collection, Iterable<String> ids) throws StreamException {
-        return getMany(collection, Iterables.toArray(ids, String.class));
+    public CompletableFuture<List<CollectionData>> select(String collection, Iterable<String> ids) throws StreamException {
+        return select(collection, Iterables.toArray(ids, String.class));
     }
 
-    public CompletableFuture<List<CollectionData>> getMany(String collection, String... ids) throws StreamException {
+    public CompletableFuture<List<CollectionData>> select(String collection, String... ids) throws StreamException {
         final Token token = buildCollectionsToken(secret, TokenAction.READ);
-        return collections.getMany(token, collection, ids);
+        return collections.select(token, collection, ids);
     }
 
     public CompletableFuture<Void> delete(String collection, String id) throws StreamException {

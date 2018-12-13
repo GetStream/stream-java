@@ -6,6 +6,7 @@ import io.getstream.core.models.EnrichedActivity;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.NotificationGroup;
 import io.getstream.core.options.ActivityMarker;
+import io.getstream.core.options.EnrichmentFlags;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Pagination;
 import io.getstream.core.utils.DefaultOptions;
@@ -53,12 +54,7 @@ public final class NotificationFeed extends AggregatedFeed {
     }
 
     @Override
-    public CompletableFuture<List<NotificationGroup<Activity>>> getActivities(Pagination pagination, Filter filter) throws StreamException {
-        return getActivities(pagination, filter, DefaultOptions.DEFAULT_MARKER);
-    }
-
-    @Override
-    public CompletableFuture<List<NotificationGroup<Activity>>> getActivities(Pagination pagination, Filter filter, ActivityMarker marker) throws StreamException {
+    CompletableFuture<List<NotificationGroup<Activity>>> getActivities(Pagination pagination, Filter filter, ActivityMarker marker) throws StreamException {
         return getClient()
                 .getActivities(getID(), pagination, filter, marker)
                 .thenApply(response -> {
@@ -101,12 +97,7 @@ public final class NotificationFeed extends AggregatedFeed {
     }
 
     @Override
-    public <T> CompletableFuture<List<NotificationGroup<T>>> getCustomActivities(Class<T> type, Pagination pagination, Filter filter) throws StreamException {
-        return getCustomActivities(type, pagination, filter, DefaultOptions.DEFAULT_MARKER);
-    }
-
-    @Override
-    public <T> CompletableFuture<List<NotificationGroup<T>>> getCustomActivities(Class<T> type, Pagination pagination, Filter filter, ActivityMarker marker) throws StreamException {
+    <T> CompletableFuture<List<NotificationGroup<T>>> getCustomActivities(Class<T> type, Pagination pagination, Filter filter, ActivityMarker marker) throws StreamException {
         return getClient()
                 .getActivities(getID(), pagination, filter, marker)
                 .thenApply(response -> {
@@ -120,43 +111,68 @@ public final class NotificationFeed extends AggregatedFeed {
 
     @Override
     public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities() throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_MARKER);
+        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_MARKER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
+    }
+
+    @Override
+    public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(EnrichmentFlags flags) throws StreamException {
+        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_MARKER, flags);
     }
 
     @Override
     public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(Pagination pagination) throws StreamException {
-        return getEnrichedActivities(pagination, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_MARKER);
+        return getEnrichedActivities(pagination, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_MARKER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
+    }
+
+    @Override
+    public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(Pagination pagination, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedActivities(pagination, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_MARKER, flags);
     }
 
     @Override
     public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(Filter filter) throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, filter, DefaultOptions.DEFAULT_MARKER);
+        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, filter, DefaultOptions.DEFAULT_MARKER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
+    }
+
+    @Override
+    public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(Filter filter, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, filter, DefaultOptions.DEFAULT_MARKER, flags);
     }
 
     @Override
     public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(ActivityMarker marker) throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, marker);
+        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, marker, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
+    }
+
+    @Override
+    public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(ActivityMarker marker, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, marker, flags);
     }
 
     @Override
     public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(Filter filter, ActivityMarker marker) throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, filter, marker);
+        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, filter, marker, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
+    }
+
+    @Override
+    public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(Filter filter, ActivityMarker marker, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, filter, marker, flags);
     }
 
     @Override
     public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(Pagination pagination, ActivityMarker marker) throws StreamException {
-        return getEnrichedActivities(pagination, DefaultOptions.DEFAULT_FILTER, marker);
+        return getEnrichedActivities(pagination, DefaultOptions.DEFAULT_FILTER, marker, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
     }
 
     @Override
-    public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(Pagination pagination, Filter filter) throws StreamException {
-        return getEnrichedActivities(pagination, filter, DefaultOptions.DEFAULT_MARKER);
+    public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(Pagination pagination, ActivityMarker marker, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedActivities(pagination, DefaultOptions.DEFAULT_FILTER, marker, flags);
     }
 
     @Override
-    public CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(Pagination pagination, Filter filter, ActivityMarker marker) throws StreamException {
+    CompletableFuture<List<NotificationGroup<EnrichedActivity>>> getEnrichedActivities(Pagination pagination, Filter filter, ActivityMarker marker, EnrichmentFlags flags) throws StreamException {
         return getClient()
-                .getEnrichedActivities(getID(), pagination, filter, marker)
+                .getEnrichedActivities(getID(), pagination, filter, marker, flags)
                 .thenApply(response -> {
                     try {
                         return deserializeContainer(response, NotificationGroup.class, EnrichedActivity.class);
@@ -168,43 +184,68 @@ public final class NotificationFeed extends AggregatedFeed {
 
     @Override
     public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type) throws StreamException {
-        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_MARKER);
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_MARKER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
+    }
+
+    @Override
+    public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_MARKER, flags);
     }
 
     @Override
     public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, Pagination pagination) throws StreamException {
-        return getEnrichedCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_MARKER);
+        return getEnrichedCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_MARKER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
+    }
+
+    @Override
+    public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_MARKER, flags);
     }
 
     @Override
     public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, Filter filter) throws StreamException {
-        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, DefaultOptions.DEFAULT_MARKER);
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, DefaultOptions.DEFAULT_MARKER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
+    }
+
+    @Override
+    public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, Filter filter, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, DefaultOptions.DEFAULT_MARKER, flags);
     }
 
     @Override
     public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, ActivityMarker marker) throws StreamException {
-        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, marker);
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, marker, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
+    }
+
+    @Override
+    public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, ActivityMarker marker, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, marker, flags);
     }
 
     @Override
     public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, Filter filter, ActivityMarker marker) throws StreamException {
-        return getCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, marker);
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, marker, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
+    }
+
+    @Override
+    public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, Filter filter, ActivityMarker marker, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, marker, flags);
     }
 
     @Override
     public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, ActivityMarker marker) throws StreamException {
-        return getEnrichedCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, marker);
+        return getEnrichedCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, marker, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
     }
 
     @Override
-    public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, Filter filter) throws StreamException {
-        return getEnrichedCustomActivities(type, pagination, filter, DefaultOptions.DEFAULT_MARKER);
+    public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, ActivityMarker marker, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, marker, flags);
     }
 
     @Override
-    public <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, Filter filter, ActivityMarker marker) throws StreamException {
+    <T> CompletableFuture<List<NotificationGroup<T>>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, Filter filter, ActivityMarker marker, EnrichmentFlags flags) throws StreamException {
         return getClient()
-                .getEnrichedActivities(getID(), pagination, filter, marker)
+                .getEnrichedActivities(getID(), pagination, filter, marker, flags)
                 .thenApply(response -> {
                     try {
                         return deserializeContainer(response, NotificationGroup.class, type);

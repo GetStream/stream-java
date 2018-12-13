@@ -6,9 +6,11 @@ import io.getstream.client.Client;
 import io.getstream.client.FlatFeed;
 import io.getstream.client.NotificationFeed;
 import io.getstream.core.KeepHistory;
+import io.getstream.core.LookupKind;
 import io.getstream.core.Region;
 import io.getstream.core.models.*;
 import io.getstream.core.options.ActivityMarker;
+import io.getstream.core.options.EnrichmentFlags;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Pagination;
 
@@ -16,6 +18,9 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import static io.getstream.core.utils.Enrichment.createCollectionReference;
+import static io.getstream.core.utils.Enrichment.createUserReference;
 
 //TODO: move this to an appropriate place
 class Example {
@@ -167,7 +172,7 @@ class Example {
         /* -------------------------------------------------------- */
 
         // Get 5 activities with id less than the given UUID (Faster - Recommended!)
-        response = userFeed.getActivities(new Pagination().limit(5), new Filter().idLessThan("e561de8f-00f1-11e4-b400-0cc47a024be0")).join();
+        response = userFeed.getActivities(new Filter().idLessThan("e561de8f-00f1-11e4-b400-0cc47a024be0").limit(5)).join();
         // Get activities from 5 to 10 (Pagination-based - Slower)
         response = userFeed.getActivities(new Pagination().offset(0).limit(5)).join();
         // Get activities sorted by rank (Ranked Feeds Enabled):
@@ -362,14 +367,153 @@ class Example {
 
         /* -------------------------------------------------------- */
 
+        // read bob's timeline and include most recent reactions to all activities and their total count
+        client.flatFeed("timeline", "bob")
+                .getEnrichedActivities(new EnrichmentFlags()
+                        .withRecentReactions()
+                        .withReactionCounts());
+
+        // read bob's timeline and include most recent reactions to all activities and her own reactions
+        client.flatFeed("timeline", "bob")
+                .getEnrichedActivities(new EnrichmentFlags()
+                        .withOwnReactions()
+                        .withRecentReactions()
+                        .withReactionCounts());
+
+        /* -------------------------------------------------------- */
+
+        // retrieve all kind of reactions for an activity
+        List<Reaction> reactions = client.reactions().filter(LookupKind.ACTIVITY, "ed2837a6-0a3b-4679-adc1-778a1704852d").join();
+
+        // retrieve first 10 likes for an activity
+        reactions = client.reactions()
+                .filter(LookupKind.ACTIVITY,
+                        "ed2837a6-0a3b-4679-adc1-778a1704852d",
+                        new Filter().limit(10),
+                        "like").join();
+
+        // retrieve the next 10 likes using the id_lt param
+        reactions = client.reactions()
+                .filter(LookupKind.ACTIVITY,
+                        "ed2837a6-0a3b-4679-adc1-778a1704852d",
+                        new Filter().idLessThan("e561de8f-00f1-11e4-b400-0cc47a024be0"),
+                        "like").join();
+
+        /* -------------------------------------------------------- */
+
+        // adds a like to the previously created comment
+        Reaction reaction = client.reactions().addChild("john-doe", comment.getId(), Reaction.builder().kind("like").build()).join();
+
+        /* -------------------------------------------------------- */
+
+        client.reactions().update(Reaction.builder()
+                .id(reaction.getId())
+                .extraField("text", "love it!")
+                .build());
+
+        /* -------------------------------------------------------- */
+
+        client.reactions().delete(reaction.getId());
+
+        /* -------------------------------------------------------- */
+
+        client.collections().add("food", new CollectionData("cheese-burger")
+                .set("name", "Cheese Burger")
+                .set("rating", "4 stars"));
+
+        // if you don't have an id on your side, just use null as the ID and Stream will generate a unique ID
+        client.collections().add("food", new CollectionData()
+                .set("name", "Cheese Burger")
+                .set("rating", "4 stars"));
+
+        /* -------------------------------------------------------- */
+
+        CollectionData collection = client.collections().get("food", "cheese-burger").join();
+
+        /* -------------------------------------------------------- */
+
+        client.collections().delete("food", "cheese-burger");
+
+        /* -------------------------------------------------------- */
+
+        client.collections().update("food", new CollectionData("cheese-burger")
+                .set("name", "Cheese Burger")
+                .set("rating", "1 star"));
+
+        /* -------------------------------------------------------- */
+
+        client.collections().upsert("visitor",
+                new CollectionData("123")
+                        .set("name", "John")
+                        .set("favorite_color", "blue"),
+                new CollectionData("124")
+                        .set("name", "Jane")
+                        .set("favorite_color", "purple")
+                        .set("interests", Lists.newArrayList("fashion", "jazz")));
+
+        /* -------------------------------------------------------- */
+
+        // select the entries with ID 123 and 124 from items collection
+        List<CollectionData> objects = client.collections().select("items", "123", "124").join();
+
+        /* -------------------------------------------------------- */
+
+        // delete the entries with ID 123 and 124 from visitor collection
+        client.collections().deleteMany("visitor", "123", "124");
+
+        /* -------------------------------------------------------- */
+
+        // first we add our object to the food collection
+        CollectionData cheeseBurger = client.collections().add("food", new CollectionData("123")
+                .set("name", "Cheese Burger")
+                .set("ingredients", Lists.newArrayList("cheese", "burger", "bread", "lettuce", "tomato"))).join();
+
+        // the object returned by .add can be embedded directly inside of an activity
+        userFeed.addActivity(Activity.builder()
+                .actor(createUserReference("john-doe"))
+                .verb("grill")
+                .object(createCollectionReference(cheeseBurger.getCollection(), cheeseBurger.getID()))
+                .build());
+
+        // if we now read the feed, the activity we just added will include the entire full object
+        userFeed.getEnrichedActivities();
+
+        // we can then update the object and Stream will propagate the change to all activities
+        client.collections().update(cheeseBurger.getCollection(), cheeseBurger
+                        .set("name", "Amazing Cheese Burger")
+                        .set("ingredients", Lists.newArrayList("cheese", "burger", "bread", "lettuce", "tomato"))).join();
+
+        /* -------------------------------------------------------- */
+
+        // First create a collection entry with upsert api
+        client.collections().upsert("food", new CollectionData().set("name", "Cheese Burger"));
+
+        // Then create a user
+        client.user("john-doe").create(new Data()
+                .set("name", "John Doe")
+                .set("occupation", "Software Engineer")
+                .set("gender", "male"));
+
+        // Since we know their IDs we can create references to both without reading from APIs
+        String cheeseBurgerRef = createCollectionReference("food", "cheese-burger");
+        String johnDoeRef = createUserReference("john-doe");
+
+        client.flatFeed("user", "john").addActivity(Activity.builder()
+                .actor(johnDoeRef)
+                .verb("eat")
+                .object(cheeseBurgerRef)
+                .build());
+
+        /* -------------------------------------------------------- */
+
         // create a new user, if the user already exist an error is returned
-        client.user("john-doe").create(new Data("")
+        client.user("john-doe").create(new Data()
                 .set("name", "John Doe")
                 .set("occupation", "Software Engineer")
                 .set("gender", "male"));
 
         // get or create a new user, if the user already exist the user is returned
-        client.user("john-doe").getOrCreate(new Data("")
+        client.user("john-doe").getOrCreate(new Data()
                 .set("name", "John Doe")
                 .set("occupation", "Software Engineer")
                 .set("gender", "male"));

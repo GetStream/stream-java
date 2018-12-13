@@ -35,10 +35,6 @@ public final class FlatFeed extends Feed {
         return getActivities(pagination, DefaultOptions.DEFAULT_FILTER, null);
     }
 
-    public CompletableFuture<List<Activity>> getActivities(Pagination pagination, Filter filter) throws StreamException {
-        return getActivities(pagination, filter, null);
-    }
-
     public CompletableFuture<List<Activity>> getActivities(Filter filter, String ranking) throws StreamException {
         return getActivities(DefaultOptions.DEFAULT_PAGINATION, filter, ranking);
     }
@@ -47,7 +43,7 @@ public final class FlatFeed extends Feed {
         return getActivities(pagination, DefaultOptions.DEFAULT_FILTER, ranking);
     }
 
-    public CompletableFuture<List<Activity>> getActivities(Pagination pagination, Filter filter, String ranking) throws StreamException {
+    CompletableFuture<List<Activity>> getActivities(Pagination pagination, Filter filter, String ranking) throws StreamException {
         final RequestOption[] options = ranking == null
                 ? new RequestOption[] { pagination, filter, DefaultOptions.DEFAULT_MARKER }
                 : new RequestOption[] { pagination, filter, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking) };
@@ -82,15 +78,11 @@ public final class FlatFeed extends Feed {
         return getCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, ranking);
     }
 
-    public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, Pagination pagination, Filter filter) throws StreamException {
-        return getCustomActivities(type, pagination, filter, null);
-    }
-
     public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, Filter filter, String ranking) throws StreamException {
         return getCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, ranking);
     }
 
-    public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, Pagination pagination, Filter filter, String ranking) throws StreamException {
+    <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, Pagination pagination, Filter filter, String ranking) throws StreamException {
         final RequestOption[] options = ranking == null
                 ? new RequestOption[] { pagination, filter, DefaultOptions.DEFAULT_MARKER }
                 : new RequestOption[] { pagination, filter, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking) };
@@ -137,14 +129,6 @@ public final class FlatFeed extends Feed {
         return getEnrichedActivities(pagination, DefaultOptions.DEFAULT_FILTER, flags, null);
     }
 
-    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Pagination pagination, Filter filter) throws StreamException {
-        return getEnrichedActivities(pagination, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
-    }
-
-    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Pagination pagination, Filter filter, EnrichmentFlags flags) throws StreamException {
-        return getEnrichedActivities(pagination, filter, flags, null);
-    }
-
     public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Filter filter, String ranking) throws StreamException {
         return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
     }
@@ -161,11 +145,7 @@ public final class FlatFeed extends Feed {
         return getEnrichedActivities(pagination, DefaultOptions.DEFAULT_FILTER, flags, ranking);
     }
 
-    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Pagination pagination, Filter filter, String ranking) throws StreamException {
-        return getEnrichedActivities(pagination, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
-    }
-
-    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Pagination pagination, Filter filter, EnrichmentFlags flags, String ranking) throws StreamException {
+    CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Pagination pagination, Filter filter, EnrichmentFlags flags, String ranking) throws StreamException {
         final RequestOption[] options = ranking == null
                 ? new RequestOption[] { pagination, filter, flags, DefaultOptions.DEFAULT_MARKER }
                 : new RequestOption[] { pagination, filter, flags, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking) };
@@ -220,14 +200,6 @@ public final class FlatFeed extends Feed {
         return getEnrichedCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, flags, ranking);
     }
 
-    public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, Filter filter) throws StreamException {
-        return getEnrichedCustomActivities(type, pagination, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
-    }
-
-    public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, Filter filter, EnrichmentFlags flags) throws StreamException {
-        return getEnrichedCustomActivities(type, pagination, filter, flags, null);
-    }
-
     public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Filter filter, String ranking) throws StreamException {
         return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
     }
@@ -236,11 +208,7 @@ public final class FlatFeed extends Feed {
         return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, flags, ranking);
     }
 
-    public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, Filter filter, String ranking) throws StreamException {
-        return getEnrichedCustomActivities(type, pagination, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
-    }
-
-    public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, Filter filter, EnrichmentFlags flags, String ranking) throws StreamException {
+    <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, Filter filter, EnrichmentFlags flags, String ranking) throws StreamException {
         final RequestOption[] options = ranking == null
                 ? new RequestOption[] { pagination, filter, flags, DefaultOptions.DEFAULT_MARKER }
                 : new RequestOption[] { pagination, filter, flags, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking) };

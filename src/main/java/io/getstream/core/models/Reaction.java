@@ -20,6 +20,7 @@ public class Reaction {
     private final String kind;
     private final String userID;
     private final String activityID;
+    private final String parentID;
     private final Map<String, Object> extra;
 
     private Reaction(Builder builder) {
@@ -28,6 +29,7 @@ public class Reaction {
         kind = builder.kind;
         userID = builder.userID;
         activityID = builder.activityID;
+        parentID = builder.parentID;
         extra = builder.extra;
     }
 
@@ -49,6 +51,11 @@ public class Reaction {
         return activityID;
     }
 
+    @JsonProperty("parent_id")
+    public String getParentID() {
+        return parentID;
+    }
+
     @JsonAnyGetter
     public Map<String, Object> getExtra() {
         return  extra;
@@ -64,12 +71,13 @@ public class Reaction {
                 Objects.equals(kind, reaction.kind) &&
                 Objects.equals(userID, reaction.userID) &&
                 Objects.equals(activityID, reaction.activityID) &&
+                Objects.equals(parentID, reaction.parentID) &&
                 Objects.equals(extra, reaction.extra);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, appID, kind, userID, activityID, extra);
+        return Objects.hash(id, appID, kind, userID, activityID, parentID, extra);
     }
 
     @Override
@@ -80,6 +88,7 @@ public class Reaction {
                 .add("kind", this.kind)
                 .add("userID", this.userID)
                 .add("activityID", this.activityID)
+                .add("parentID", this.parentID)
                 .add("extra", this.extra)
                 .toString();
     }
@@ -95,6 +104,7 @@ public class Reaction {
         private String kind;
         private String userID;
         private String activityID;
+        private String parentID;
         private Map<String, Object> extra;
 
         public Builder id(String id) {
@@ -122,6 +132,11 @@ public class Reaction {
             return this;
         }
 
+        public Builder parentID(String parentID) {
+            this.parentID = parentID;
+            return this;
+        }
+
         @JsonAnySetter
         public Builder extraField(String key, Object value) {
             if (extra == null) {
@@ -144,6 +159,7 @@ public class Reaction {
             this.kind = reaction.kind;
             this.userID = reaction.userID;
             this.activityID = reaction.activityID;
+            this.parentID = reaction.parentID;
             this.extra = reaction.extra;
             return this;
         }

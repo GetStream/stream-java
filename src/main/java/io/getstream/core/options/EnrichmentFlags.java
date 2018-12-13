@@ -38,23 +38,23 @@ public final class EnrichmentFlags implements RequestOption {
 
     private final List<OpEntry> ops = Lists.newArrayList();
 
-    public EnrichmentFlags withOwnReactions(boolean value) {
-        ops.add(new OpEntry(OpType.OWN_REACTIONS, value));
+    public EnrichmentFlags withOwnReactions() {
+        ops.add(new OpEntry(OpType.OWN_REACTIONS, true));
         return this;
     }
 
-    public EnrichmentFlags withRecentReactions(boolean value) {
-        ops.add(new OpEntry(OpType.RECENT_REACTIONS, value));
+    public EnrichmentFlags withRecentReactions() {
+        ops.add(new OpEntry(OpType.RECENT_REACTIONS, true));
         return this;
     }
 
-    public EnrichmentFlags withReactionCounts(boolean value) {
-        ops.add(new OpEntry(OpType.REACTION_COUNTS, value));
+    public EnrichmentFlags withReactionCounts() {
+        ops.add(new OpEntry(OpType.REACTION_COUNTS, true));
         return this;
     }
 
-    public EnrichmentFlags withOwnChildren(boolean value) {
-        ops.add(new OpEntry(OpType.OWN_CHILDREN, value));
+    public EnrichmentFlags withOwnChildren() {
+        ops.add(new OpEntry(OpType.OWN_CHILDREN, true));
         return this;
     }
 

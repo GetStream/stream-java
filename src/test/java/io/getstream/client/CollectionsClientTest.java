@@ -108,7 +108,7 @@ class CollectionsClientTest {
                     .build()
                     .collections();
 
-            client.upsertManyCustom("upsert_many_custom_collection", new Object() {
+            client.upsertCustom("upsert_many_custom_collection", new Object() {
                 public final String id = "id_5";
                 public final String key = "value";
                 public final Map<String, Object> extra = ImmutableMap.of("test", "test");
@@ -131,7 +131,7 @@ class CollectionsClientTest {
                 public final String key = "value";
                 public final Map<String, Object> extra = ImmutableMap.of("test", "test");
             });
-            client.upsertMany("upsert_many_collection", data, custom).join();
+            client.upsert("upsert_many_collection", data, custom).join();
         });
     }
 
@@ -190,9 +190,9 @@ class CollectionsClientTest {
             CollectionData data = new CollectionData("id_10")
                     .set("key", "value")
                     .set("extra", ImmutableMap.of("test", "test"));
-            client.upsertMany("get_many_custom_collection", data).join();
+            client.upsert("get_many_custom_collection", data).join();
 
-            result[0] = client.getManyCustom(CustomType.class, "get_many_custom_collection", "id_10").join();
+            result[0] = client.selectCustom(CustomType.class, "get_many_custom_collection", "id_10").join();
         });
     }
 
@@ -207,8 +207,8 @@ class CollectionsClientTest {
             CollectionData data = new CollectionData("id_11")
                     .set("key", "value")
                     .set("extra", ImmutableMap.of("test", "test"));
-            client.upsertMany("get_many_custom_collection", data).join();
-            result[0] = client.getMany("get_many_collection", "id_11").join();
+            client.upsert("get_many_custom_collection", data).join();
+            result[0] = client.select("get_many_collection", "id_11").join();
         });
     }
 

@@ -94,7 +94,7 @@ public final class StreamCollections {
         }
     }
 
-    public CompletableFuture<Void> upsertMany(Token token, String collection, CollectionData... items) throws StreamException {
+    public CompletableFuture<Void> upsert(Token token, String collection, CollectionData... items) throws StreamException {
         checkNotNull(collection, "Collection name can't be null");
         checkArgument(!collection.isEmpty(), "Collection name can't be empty");
         checkArgument(items.length > 0, "Collection data can't be empty");
@@ -157,7 +157,7 @@ public final class StreamCollections {
         }
     }
 
-    public CompletableFuture<List<CollectionData>> getMany(Token token, String collection, String... ids) throws StreamException {
+    public CompletableFuture<List<CollectionData>> select(Token token, String collection, String... ids) throws StreamException {
         checkNotNull(collection, "Collection name can't be null");
         checkArgument(!collection.isEmpty(), "Collection name can't be empty");
         checkArgument(ids.length > 0, "Collection ids can't be empty");
