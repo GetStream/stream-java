@@ -1,1 +1,14 @@
-/target/
+*.class
+*.jar
+*.war
+*.ear
+.gradle/
+.idea/
+.syntastic_javac_config
+build/
+gradle.properties
+gradle/
+gradlew
+gradlew.bat
+out/
+target/
