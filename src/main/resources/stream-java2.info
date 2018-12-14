@@ -1,0 +1,3 @@
+artifactId=${project.name}
+groupId=${project.group}
+version=${project.version}
