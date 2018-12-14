@@ -1,9 +1,0 @@
-io.getstream.client
-io.getstream.cloud
-io.getstream.core
-io.getstream.core.exceptions
-io.getstream.core.http
-io.getstream.core.models
-io.getstream.core.models.serialization
-io.getstream.core.options
-io.getstream.core.utils
