@@ -1,10 +1,10 @@
 package io.getstream.client;
 
+import io.getstream.core.Region;
 import io.getstream.core.http.HTTPClient;
 import io.getstream.core.http.Request;
 import io.getstream.core.http.Response;
 import io.getstream.core.options.Pagination;
-import io.getstream.core.Region;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;

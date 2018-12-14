@@ -1,11 +1,14 @@
 package io.getstream.client;
 
+import io.getstream.core.LookupKind;
+import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.Reaction;
-import io.getstream.core.LookupKind;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class ReactionsClientTest {
     private static final String apiKey = "gp6e8sxxzud6";
@@ -13,6 +16,7 @@ class ReactionsClientTest {
 
     @Test
     void get() {
+        Reaction[] result = new Reaction[1];
         assertDoesNotThrow(() -> {
             Client client = Client.builder(apiKey, secret).build();
 
@@ -21,16 +25,25 @@ class ReactionsClientTest {
                     .kind("like")
                     .build();
             Reaction reply = client.reactions().add("user-id", data, new FeedID("flat", "1")).join();
-            client.reactions().get(reply.getId()).join();
+            result[0] = client.reactions().get(reply.getId()).join();
         });
     }
 
     @Test
     void filter() {
+        List<Reaction>[] result = new List[1];
         assertDoesNotThrow(() -> {
             Client client = Client.builder(apiKey, secret).build();
 
-            client.reactions().filter(LookupKind.ACTIVITY, "e28893d6-fc7f-11e8-8eb2-f2801f1b9fd1").join();
+            Activity activity = client.flatFeed("flat", "reactor").addActivity(Activity.builder()
+                    .actor("this")
+                    .verb("done")
+                    .object("that")
+                    .build()).join();
+
+            client.reactions().add("john-doe", "like", activity.getID()).join();
+
+            result[0] = client.reactions().filter(LookupKind.ACTIVITY_WITH_DATA, activity.getID()).join();
         });
     }
 
@@ -44,6 +57,20 @@ class ReactionsClientTest {
                     .kind("like")
                     .build();
             client.reactions().add("user-id", data, new FeedID("flat", "1")).join();
+        });
+    }
+
+    @Test
+    void addChild() {
+        assertDoesNotThrow(() -> {
+            Client client = Client.builder(apiKey, secret).build();
+
+            Reaction data = Reaction.builder()
+                    .activityID("ed2837a6-0a3b-4679-adc1-778a1704852d")
+                    .kind("like")
+                    .build();
+            data = client.reactions().add("user-id", data, new FeedID("flat", "1")).join();
+            Reaction child = client.reactions().addChild("user-id", "like", data.getId()).join();
         });
     }
 

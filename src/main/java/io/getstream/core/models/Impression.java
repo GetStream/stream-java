@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.common.base.MoreObjects;
+import com.google.common.collect.Lists;
 
 import java.util.Date;
 import java.util.List;
@@ -136,9 +137,21 @@ public class Impression {
             return this;
         }
 
-        @JsonProperty("user_data")
+        @JsonProperty("content_list")
         public Builder contentList(List<Content> contentList) {
             this.contentList = contentList;
+            return this;
+        }
+
+        @JsonIgnore
+        public Builder contentList(Iterable<Content> contentList) {
+            this.contentList = Lists.newArrayList(contentList);
+            return this;
+        }
+
+        @JsonIgnore
+        public Builder contentList(Content... contentList) {
+            this.contentList = Lists.newArrayList(contentList);
             return this;
         }
 

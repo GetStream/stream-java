@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import static io.getstream.core.utils.Serialization.convert;
 
-public class CloudCollectionsClient {
+public final class CloudCollectionsClient {
     private final Token token;
     private final String userID;
     private final StreamCollections collections;

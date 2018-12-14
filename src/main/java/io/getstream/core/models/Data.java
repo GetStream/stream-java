@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Serialization.convert;
 
 @JsonDeserialize(using = DataDeserializer.class)
-public class Data {
+public final class Data {
     private final String id;
     private final Map<String, Object> data = Maps.newHashMap();
 

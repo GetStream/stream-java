@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.net.URL;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class OGTest {
     private static final String apiKey = "gp6e8sxxzud6";

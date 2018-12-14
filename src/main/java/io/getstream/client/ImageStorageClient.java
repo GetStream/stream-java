@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static io.getstream.core.utils.Auth.buildFilesToken;
 
-public class ImageStorageClient {
+public final class ImageStorageClient {
     private final String secret;
     private final StreamImages images;
 

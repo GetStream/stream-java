@@ -6,7 +6,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class RequestBody {
+public final class RequestBody {
     public enum Type {
         JSON("application/json"),
         MULTI_PART("multipart/form-data");

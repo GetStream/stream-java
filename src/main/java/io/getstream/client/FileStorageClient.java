@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 
 import static io.getstream.core.utils.Auth.buildFilesToken;
 
-public class FileStorageClient {
+public final class FileStorageClient {
     private final String secret;
     private final StreamFiles files;
 

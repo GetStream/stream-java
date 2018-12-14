@@ -16,9 +16,7 @@ import java.util.concurrent.CompletionException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static io.getstream.core.utils.Request.buildDelete;
-import static io.getstream.core.utils.Request.buildGet;
-import static io.getstream.core.utils.Request.buildMultiPartPost;
+import static io.getstream.core.utils.Request.*;
 import static io.getstream.core.utils.Routes.buildImagesURL;
 import static io.getstream.core.utils.Serialization.deserialize;
 import static io.getstream.core.utils.Serialization.deserializeError;

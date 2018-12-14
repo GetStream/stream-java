@@ -5,9 +5,10 @@ import io.getstream.client.entities.Match;
 import io.getstream.client.entities.VolleyballMatch;
 import io.getstream.core.http.OKHTTPClientAdapter;
 import io.getstream.core.models.Activity;
-import io.getstream.core.models.CollectionData;
 import io.getstream.core.models.Data;
 import io.getstream.core.models.EnrichedActivity;
+import io.getstream.core.models.Reaction;
+import io.getstream.core.options.EnrichmentFlags;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Test;
 
@@ -46,13 +47,20 @@ class FlatFeedTest {
 
             Data user = client.user("john-doe").getOrCreate(new Data().set("hey", "now")).join();
             FlatFeed feed = client.flatFeed("flat", "rich");
-            feed.addActivity(Activity.builder()
+            Activity activity = feed.addActivity(Activity.builder()
                     .actor(createUserReference(user.getID()))
                     .verb("found")
                     .object(createCollectionReference("source-of-richness", "wealth"))
                     .build()).join();
 
-            result[0] = feed.getEnrichedActivities().join();
+            Reaction reaction = client.reactions().add(user.getID(), "like", activity.getID()).join();
+            client.reactions().addChild(user.getID(), "like", reaction.getId()).join();
+
+            result[0] = feed.getEnrichedActivities(new EnrichmentFlags()
+                    .withOwnChildren()
+                    .withOwnReactions()
+                    .withReactionCounts()
+                    .withRecentReactions()).join();
         });
     }
 

@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Serialization.deserialize;
 import static io.getstream.core.utils.Serialization.deserializeError;
 
-public class User {
+public final class User {
     private final Client client;
     private final String id;
 

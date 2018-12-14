@@ -5,7 +5,7 @@ import io.getstream.core.http.Request;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class Resize implements RequestOption {
+public final class Resize implements RequestOption {
     public enum Type {
         CLIP("clip"),
         CROP("crop"),

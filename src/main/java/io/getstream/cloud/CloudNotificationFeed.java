@@ -10,7 +10,6 @@ import io.getstream.core.options.EnrichmentFlags;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Pagination;
 import io.getstream.core.utils.DefaultOptions;
-import io.getstream.core.utils.Enrichment;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.concurrent.CompletionException;
 
 import static io.getstream.core.utils.Serialization.deserializeContainer;
 
-public class CloudNotificationFeed extends CloudAggregatedFeed {
+public final class CloudNotificationFeed extends CloudAggregatedFeed {
     CloudNotificationFeed(CloudClient client, FeedID id) {
         super(client, id);
     }

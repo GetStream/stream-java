@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'io.getstream.client'
-version = '3.0.0-BETA2'
+version = '3.0.0-RC1'
 
 dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.3.1'

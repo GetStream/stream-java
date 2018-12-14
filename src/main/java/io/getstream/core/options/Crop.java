@@ -7,7 +7,7 @@ import java.util.Arrays;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class Crop implements RequestOption {
+public final class Crop implements RequestOption {
     public enum Type {
         TOP("top"),
         BOTTOM("bottom"),

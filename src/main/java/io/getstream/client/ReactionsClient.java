@@ -72,22 +72,22 @@ public final class ReactionsClient {
     }
 
     public CompletableFuture<Reaction> addChild(String userID, String kind, String parentID, Iterable<FeedID> targetFeeds) throws StreamException {
-        Reaction child = Reaction.builder().kind(kind).parentID(parentID).build();
+        Reaction child = Reaction.builder().kind(kind).parent(parentID).build();
         return add(userID, child, targetFeeds);
     }
 
-    public CompletableFuture<Reaction> addChild(String userID, String kind, String parentID, Iterable<FeedID> targetFeed, FeedID... targetFeeds) throws StreamException {
-        Reaction child = Reaction.builder().kind(kind).parentID(parentID).build();
+    public CompletableFuture<Reaction> addChild(String userID, String kind, String parentID, FeedID... targetFeeds) throws StreamException {
+        Reaction child = Reaction.builder().kind(kind).parent(parentID).build();
         return add(userID, child, targetFeeds);
     }
 
     public CompletableFuture<Reaction> addChild(String userID, String parentID, Reaction reaction, Iterable<FeedID> targetFeeds) throws StreamException {
-        Reaction child = Reaction.builder().fromReaction(reaction).parentID(parentID).build();
+        Reaction child = Reaction.builder().fromReaction(reaction).parent(parentID).build();
         return add(userID, child, targetFeeds);
     }
 
     public CompletableFuture<Reaction> addChild(String userID, String parentID, Reaction reaction, FeedID... targetFeeds) throws StreamException {
-        Reaction child = Reaction.builder().fromReaction(reaction).parentID(parentID).build();
+        Reaction child = Reaction.builder().fromReaction(reaction).parent(parentID).build();
         return add(userID, child, targetFeeds);
     }
 

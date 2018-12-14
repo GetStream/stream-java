@@ -9,6 +9,7 @@ import io.getstream.core.models.FeedID;
 import io.getstream.core.models.Reaction;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.Filter;
+import io.getstream.core.options.RequestOption;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -59,14 +60,16 @@ public final class StreamReactions {
 
     public CompletableFuture<List<Reaction>> filter(Token token, LookupKind lookup, String id, Filter filter, String kind) throws StreamException {
         checkNotNull(lookup, "Lookup kind can't be null");
-        checkNotNull(id, "Reaction id can't be null");
-        checkArgument(!id.isEmpty(), "Reaction id can't be empty");
+        checkNotNull(id, "Reaction ID can't be null");
+        checkArgument(!id.isEmpty(), "Reaction ID can't be empty");
         checkNotNull(filter, "Filter can't be null");
         checkNotNull(kind, "Kind can't be null");
 
         try {
             final URL url = buildReactionsURL(baseURL, lookup.getKind() + '/' + id + '/');
-            return httpClient.execute(buildGet(url, key, token, filter, new CustomQueryParameter("kind", kind)))
+            RequestOption reactionType = new CustomQueryParameter("kind", kind);
+            RequestOption withActivityData = new CustomQueryParameter("with_activity_data", Boolean.toString(lookup == LookupKind.ACTIVITY_WITH_DATA));
+            return httpClient.execute(buildGet(url, key, token, filter, reactionType, withActivityData))
                     .thenApply(response -> {
                         try {
                             return deserializeContainer(response, Reaction.class);
@@ -81,8 +84,14 @@ public final class StreamReactions {
 
     public CompletableFuture<Reaction> add(Token token, String userID, Reaction reaction, FeedID... targetFeeds) throws StreamException {
         checkNotNull(reaction, "Reaction can't be null");
-        checkNotNull(reaction.getActivityID(), "Reaction activity id can't be null");
-        checkArgument(!reaction.getActivityID().isEmpty(), "Reaction activity id can't be empty");
+        checkArgument(reaction.getActivityID() != null || reaction.getParent() != null, "Reaction has to either have and activity ID or parent");
+        checkArgument(reaction.getActivityID() == null || reaction.getParent() == null, "Reaction can't have both activity ID and parent");
+        if (reaction.getActivityID() != null) {
+            checkArgument(!reaction.getActivityID().isEmpty(), "Reaction activity ID can't be empty");
+        }
+        if (reaction.getParent() != null) {
+            checkArgument(!reaction.getParent().isEmpty(), "Reaction parent can't be empty");
+        }
         checkNotNull(reaction.getKind(), "Reaction kind can't be null");
         checkArgument(!reaction.getKind().isEmpty(), "Reaction kind can't be empty");
 
@@ -92,11 +101,16 @@ public final class StreamReactions {
 
         try {
             ImmutableMap.Builder<String, Object> payloadBuilder = ImmutableMap.builder();
-            payloadBuilder.put("activity_id", reaction.getActivityID());
             payloadBuilder.put("kind", reaction.getKind());
             payloadBuilder.put("target_feeds", targetFeedIDs);
+            if (reaction.getActivityID() != null) {
+                payloadBuilder.put("activity_id", reaction.getActivityID());
+            }
             if (userID != null || reaction.getUserID() != null) {
                 payloadBuilder.put("user_id", firstNonNull(userID, reaction.getUserID()));
+            }
+            if (reaction.getParent() != null) {
+                payloadBuilder.put("parent", reaction.getParent());
             }
             if (reaction.getId() != null) {
                 payloadBuilder.put("id", reaction.getId());

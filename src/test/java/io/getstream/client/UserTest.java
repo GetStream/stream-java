@@ -4,7 +4,7 @@ import io.getstream.core.models.Data;
 import io.getstream.core.models.ProfileData;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class UserTest {
     private static final String apiKey = "gp6e8sxxzud6";

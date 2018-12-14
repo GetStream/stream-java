@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class BatchClientTest {
     private static final String apiKey = "gp6e8sxxzud6";

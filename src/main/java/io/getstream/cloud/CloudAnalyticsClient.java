@@ -6,13 +6,8 @@ import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.Engagement;
 import io.getstream.core.models.Impression;
-import io.getstream.core.utils.Auth.TokenAction;
 
-import java.net.URL;
 import java.util.concurrent.CompletableFuture;
-
-import static io.getstream.core.utils.Auth.buildAnalyticsRedirectToken;
-import static io.getstream.core.utils.Auth.buildAnalyticsToken;
 
 public final class CloudAnalyticsClient {
     private final Token token;

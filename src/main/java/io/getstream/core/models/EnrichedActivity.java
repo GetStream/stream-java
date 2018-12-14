@@ -30,6 +30,9 @@ public class EnrichedActivity {
     private final Data origin;
     private final List<FeedID> to;
     private final Double score;
+    private final Map<String, Number> reactionCounts;
+    private final Map<String, List<Reaction>> ownReactions;
+    private final Map<String, List<Reaction>> latestReactions;
     private final Map<String, Object> extra;
 
     private EnrichedActivity(Builder builder) {
@@ -43,6 +46,9 @@ public class EnrichedActivity {
         origin = builder.origin;
         to = builder.to;
         score = builder.score;
+        reactionCounts = builder.reactionCounts;
+        ownReactions = builder.ownReactions;
+        latestReactions = builder.latestReactions;
         extra = builder.extra;
     }
 
@@ -129,6 +135,9 @@ public class EnrichedActivity {
                 .add("origin", this.origin)
                 .add("to", this.to)
                 .add("score", this.score)
+                .add("ownReactions", this.ownReactions)
+                .add("latestReactions", this.latestReactions)
+                .add("reactionCounts", this.reactionCounts)
                 .add("extra", this.extra)
                 .toString();
     }
@@ -149,6 +158,9 @@ public class EnrichedActivity {
         private Data origin;
         private List<FeedID> to;
         private Double score;
+        private Map<String, Number> reactionCounts;
+        private Map<String, List<Reaction>> ownReactions;
+        private Map<String, List<Reaction>> latestReactions;
         private Map<String, Object> extra;
 
         public Builder id(String id) {
@@ -251,6 +263,24 @@ public class EnrichedActivity {
             return this;
         }
 
+        @JsonProperty("own_reactions")
+        public Builder ownReactions(Map<String, List<Reaction>> ownReactions) {
+            this.ownReactions = ownReactions;
+            return this;
+        }
+
+        @JsonProperty("latest_reactions")
+        public Builder latestReactions(Map<String, List<Reaction>> latestReactions) {
+            this.latestReactions = latestReactions;
+            return this;
+        }
+
+        @JsonProperty("reaction_counts")
+        public Builder reactionCounts(Map<String, Number> reactionCounts) {
+            this.reactionCounts = reactionCounts;
+            return this;
+        }
+
         @JsonAnySetter
         public Builder extraField(String key, Object value) {
             if (extra == null) {
@@ -280,6 +310,9 @@ public class EnrichedActivity {
             this.origin = activity.origin;
             this.to = activity.to;
             this.score = activity.score;
+            this.ownReactions = activity.ownReactions;
+            this.latestReactions = activity.latestReactions;
+            this.reactionCounts = activity.reactionCounts;
             this.extra = activity.extra;
             return this;
         }

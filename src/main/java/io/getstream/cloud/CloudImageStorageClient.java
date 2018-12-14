@@ -10,7 +10,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 
-public class CloudImageStorageClient {
+public final class CloudImageStorageClient {
     private final Token token;
     private final StreamImages images;
 

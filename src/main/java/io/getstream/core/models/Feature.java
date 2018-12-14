@@ -6,7 +6,7 @@ import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
 
-public class Feature {
+public final class Feature {
     private final String group;
     private final String value;
 

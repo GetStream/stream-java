@@ -14,7 +14,7 @@ import java.util.concurrent.CompletionException;
 
 import static io.getstream.core.utils.Serialization.deserializeContainer;
 
-public class CloudFlatFeed extends CloudFeed {
+public final class CloudFlatFeed extends CloudFeed {
     CloudFlatFeed(CloudClient client, FeedID id) {
         super(client, id);
     }

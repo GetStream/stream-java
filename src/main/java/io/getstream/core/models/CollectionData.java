@@ -13,7 +13,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Serialization.convert;
 
-public class CollectionData {
+public final class CollectionData {
     private final String id;
     private final String collection;
     private final Map<String, Object> data;

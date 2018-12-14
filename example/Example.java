@@ -9,11 +9,10 @@ import io.getstream.core.KeepHistory;
 import io.getstream.core.LookupKind;
 import io.getstream.core.Region;
 import io.getstream.core.models.*;
-import io.getstream.core.options.ActivityMarker;
-import io.getstream.core.options.EnrichmentFlags;
-import io.getstream.core.options.Filter;
-import io.getstream.core.options.Pagination;
+import io.getstream.core.options.*;
 
+import java.io.File;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
@@ -22,7 +21,6 @@ import java.util.Map;
 import static io.getstream.core.utils.Enrichment.createCollectionReference;
 import static io.getstream.core.utils.Enrichment.createUserReference;
 
-//TODO: move this to an appropriate place
 class Example {
     private static final String apiKey = "gp6e8sxxzud6";
     private static final String secret = "7j7exnksc4nxy399fdxvjqyqsqdahax3nfgtp27pumpc7sfm9um688pzpxjpjbf2";
@@ -528,9 +526,103 @@ class Example {
 
         /* -------------------------------------------------------- */
 
-        client.user("123").update(new Data("")
-                .set("name", "John Doe")
+        client.user("123").update(new Data()
+                .set("name", "Jane Doe")
                 .set("occupation", "Software Engineer")
-                .set("gender", "male"));
+                .set("gender", "female"));
+
+        /* -------------------------------------------------------- */
+
+        // Read the personalization feed for a given user
+        client.personalization().get("personalized_feed", new ImmutableMap.Builder<String, Object>()
+                .put("user_id", 123)
+                .put("feed_slug", "timeline")
+                .build());
+
+        // Our data science team will typically tell you which endpoint to use
+        client.personalization().get("discovery_feed", new ImmutableMap.Builder<String, Object>()
+                .put("user_id", 123)
+                .put("source_feed_slug", "timeline")
+                .put("target_feed_slug", "user")
+                .build());
+
+        /* -------------------------------------------------------- */
+
+        client.analytics().trackEngagement(Engagement.builder()
+                .feedID("user:thierry")
+                .content(new Content("message:34349698")
+                        .set("verb", "share")
+                        .set("actor", ImmutableMap.of("1", "user1")))
+                .boost(2)
+                .location("profile_page")
+                .position(3)
+                .build());
+
+        /* -------------------------------------------------------- */
+
+        client.analytics().trackImpression(Impression.builder()
+                .contentList(new Content("tweet:34349698")
+                        .set("verb", "share")
+                        .set("actor", ImmutableMap.of("1", "user1")),
+                        new Content("tweet:34349699"),
+                        new Content("tweet:34349700"))
+                .feedID("flat:tommaso")
+                .location("android-app")
+                .build());
+
+        /* -------------------------------------------------------- */
+
+        // the URL to direct to
+        URL targetURL = new URL("http://mysite.com/detail");
+
+        // track the impressions and a click
+        List<Impression> impressions = Lists.newArrayList(Impression.builder()
+                .contentList(new Content("tweet:1"),
+                        new Content("tweet:2"),
+                        new Content("tweet:3"))
+                .userData(new UserData("tommaso", null))
+                .location("email")
+                .feedID("user:global")
+                .build());
+        List<Engagement> engagements = Lists.newArrayList(Engagement.builder()
+                .content(new Content("tweet:2"))
+                .label("click")
+                .position(1)
+                .userData(new UserData("tommaso", null))
+                .location("email")
+                .feedID("user:global")
+                .build());
+
+        // when the user opens the tracking URL in their browser gets redirected to the target URL
+        // the events are added to our analytics platform
+        URL trackingURL = client.analytics().createRedirectURL(targetURL, impressions, engagements);
+
+        /* -------------------------------------------------------- */
+
+        File image = new File("...");
+        URL imageURL = client.images().upload(image).join();
+
+        File file = new File("...");
+        URL fileURL = client.files().upload(file).join();
+
+        /* -------------------------------------------------------- */
+
+        // deleting an image using the url returned by the APIs
+        client.images().delete(imageURL);
+
+        // deleting a file using the url returned by the APIs
+        client.files().delete(fileURL);
+
+        /* -------------------------------------------------------- */
+
+        // create a 50x50 thumbnail and crop from center
+        client.images().process(imageURL, new Resize(50, 50, Resize.Type.CROP));
+
+        // create a 50x50 thumbnail using clipping (keeps aspect ratio)
+        client.images().process(imageURL, new Resize(50, 50, Resize.Type.CLIP));
+
+        /* -------------------------------------------------------- */
+
+        OGData urlPreview = client.openGraph(new URL("http://www.imdb.com/title/tt0117500/")).join();
     }
 }

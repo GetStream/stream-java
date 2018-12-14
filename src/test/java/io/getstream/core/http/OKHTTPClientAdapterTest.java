@@ -1,16 +1,14 @@
 package io.getstream.core.http;
 
-import org.junit.jupiter.api.Test;
-
-import okhttp3.OkHttpClient;
-
-import io.getstream.core.models.Activity;
 import io.getstream.client.Client;
 import io.getstream.client.FlatFeed;
+import io.getstream.core.models.Activity;
+import okhttp3.OkHttpClient;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class OKHTTPClientAdapterTest {
     private static final String apiKey = "gp6e8sxxzud6";

@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Serialization.convert;
 
-public class Content {
+public final class Content {
     private final String foreignID;
     private final Map<String, Object> data = Maps.newHashMap();
 

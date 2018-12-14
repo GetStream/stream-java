@@ -8,7 +8,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.concurrent.CompletableFuture;
 
-public class CloudFileStorageClient {
+public final class CloudFileStorageClient {
     private final Token token;
     private final StreamFiles files;
 
