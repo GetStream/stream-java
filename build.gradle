@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'io.getstream.client'
-version = '3.0.0-RC1'
+version = '3.0.0'
 
 dependencies {
     testCompile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
@@ -88,11 +88,6 @@ publishing {
                     license {
                         name = 'The 3-Clause BSD License'
                         url = 'https://opensource.org/licenses/BSD-3-Clause'
-                        distribution = 'repo'
-                    }
-                    license {
-                        name = 'The Apache Software License, Version 2.0'
-                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
                         distribution = 'repo'
                     }
                 }
