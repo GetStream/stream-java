@@ -94,6 +94,21 @@ public class EnrichedActivity {
         return score;
     }
 
+    @JsonIgnore
+    public Map<String, Number> getReactionCounts() {
+        return reactionCounts;
+    }
+
+    @JsonIgnore
+    public Map<String, List<Reaction>> getOwnReactions() {
+        return ownReactions;
+    }
+
+    @JsonIgnore
+    public Map<String, List<Reaction>> getLatestReactions() {
+        return latestReactions;
+    }
+
     @JsonAnyGetter
     public Map<String, Object> getExtra() {
         return extra;

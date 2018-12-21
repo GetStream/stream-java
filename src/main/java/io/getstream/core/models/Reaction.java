@@ -66,27 +66,27 @@ public class Reaction {
         return parent;
     }
 
-    @JsonProperty("own_children")
+    @JsonIgnore
     public Map<String, List<Reaction>> getOwnChildren() {
         return ownChildren;
     }
 
-    @JsonProperty("latest_children")
+    @JsonIgnore
     public Map<String, List<Reaction>> getLatestChildren() {
         return latestChildren;
     }
 
-    @JsonProperty("children_counts")
+    @JsonIgnore
     public Map<String, Number> getChildrenCounts() {
         return childrenCounts;
     }
 
-    @JsonProperty("user")
+    @JsonIgnore
     public Data getUserData() {
         return userData;
     }
 
-    @JsonProperty("data")
+    @JsonIgnore
     public Map<String, Object> getActivityData() {
         return activityData;
     }
