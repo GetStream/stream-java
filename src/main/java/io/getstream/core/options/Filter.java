@@ -40,22 +40,22 @@ public final class Filter implements RequestOption {
     private final List<OpEntry> ops = Lists.newArrayList();
 
     public Filter idGreaterThan(String id) {
-        ops.add(new OpEntry(OpType.ID_GREATER_THEN_OR_EQUAL, id));
-        return this;
-    }
-
-    public Filter idGreaterThanEqual(String id) {
         ops.add(new OpEntry(OpType.ID_GREATER_THEN, id));
         return this;
     }
 
+    public Filter idGreaterThanEqual(String id) {
+        ops.add(new OpEntry(OpType.ID_GREATER_THEN_OR_EQUAL, id));
+        return this;
+    }
+
     public Filter idLessThan(String id) {
-        ops.add(new OpEntry(OpType.ID_LESS_THEN_OR_EQUAL, id));
+        ops.add(new OpEntry(OpType.ID_LESS_THEN, id));
         return this;
     }
 
     public Filter idLessThanEqual(String id) {
-        ops.add(new OpEntry(OpType.ID_LESS_THEN, id));
+        ops.add(new OpEntry(OpType.ID_LESS_THEN_OR_EQUAL, id));
         return this;
     }
 
