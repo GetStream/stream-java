@@ -6,11 +6,12 @@ import com.pholser.junit.quickcheck.generator.Generator;
 import com.pholser.junit.quickcheck.generator.java.lang.DoubleGenerator;
 import com.pholser.junit.quickcheck.generator.java.lang.StringGenerator;
 import com.pholser.junit.quickcheck.generator.java.util.ArrayListGenerator;
-import com.pholser.junit.quickcheck.generator.java.util.DateGenerator;
 import com.pholser.junit.quickcheck.generator.java.util.HashMapGenerator;
 import com.pholser.junit.quickcheck.random.SourceOfRandomness;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
+
+import java.util.Date;
 
 public class ActivityGenerator extends Generator<Activity> {
     private static final class FeedIDGenerator extends Generator<FeedID> {
@@ -30,6 +31,20 @@ public class ActivityGenerator extends Generator<Activity> {
                 userID = stringGen.generate(r, status);
             }
             return new FeedID(slug, userID);
+        }
+    }
+
+    private static final class DateGenerator extends Generator<Date> {
+        private Date min = new Date(Integer.MIN_VALUE);
+        private Date max = new Date(8099, 0, 1);
+
+        public DateGenerator() {
+            super(Date.class);
+        }
+
+        @Override
+        public Date generate(SourceOfRandomness random, GenerationStatus status) {
+            return new Date(random.nextLong(min.getTime(), max.getTime()));
         }
     }
 

@@ -47,7 +47,7 @@ public final class BatchClient {
     }
 
     public CompletableFuture<Void> unfollowMany(FollowRelation... follows) throws StreamException {
-        final Token token = buildFollowToken(secret, TokenAction.DELETE);
+        final Token token = buildFollowToken(secret, TokenAction.WRITE);
         return batch.unfollowMany(token, follows);
     }
 

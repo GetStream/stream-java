@@ -33,7 +33,7 @@ class SomeCustomType {
 class SerializationTest {
     @Test
     void activitySerialization() throws ParseException {
-        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         String[] result = new String[1];
@@ -42,13 +42,13 @@ class SerializationTest {
                 .verb("test")
                 .object("test")
                 .to(new FeedID("hey:now"))
-                .time(isoFormat.parse("2001-09-11T00:01:02.000000"))
+                .time(isoFormat.parse("2001-09-11T00:01:02.000"))
                 .build();
 
         assertDoesNotThrow(() -> {
             result[0] = new String(toJSON(activity), Charset.forName("UTF-8"));
         });
-        assertEquals(result[0], "{\"actor\":\"test\",\"verb\":\"test\",\"object\":\"test\",\"time\":\"2001-09-11T00:01:02.0\",\"to\":[\"hey:now\"]}");
+        assertEquals(result[0], "{\"actor\":\"test\",\"verb\":\"test\",\"object\":\"test\",\"time\":\"2001-09-11T00:01:02.000\",\"to\":[\"hey:now\"]}");
     }
 
     @Test

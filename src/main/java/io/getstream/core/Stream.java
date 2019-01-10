@@ -85,7 +85,7 @@ public final class Stream {
                 public final Map<String, Object> set = propertiesToSet;
                 public final String[] unset = propertiesToUnset;
             });
-            final URL url = new URL(baseURL, "activity/");
+            final URL url = buildActivityUpdateURL(baseURL);
             return httpClient.execute(buildPost(url, key, token, payload))
                     .thenApply(response -> {
                         try {
@@ -116,7 +116,7 @@ public final class Stream {
                 public final Map<String, Object> set = propertiesToSet;
                 public final String[] unset = propertiesToUnset;
             });
-            final URL url = new URL(baseURL, "activity/");
+            final URL url = buildActivityUpdateURL(baseURL);
             return httpClient.execute(buildPost(url, key, token, payload))
                     .thenApply(response -> {
                         try {

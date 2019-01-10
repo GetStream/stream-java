@@ -14,6 +14,10 @@ public final class Routes {
     private static final String analyticsSubdomain = "analytics";
     private static final String personalizationSubdomain = "personalization";
     private static final String activitiesPath = "activities/";
+    private static final String activityUpdatePath = "activity/";
+    private static final String addToManyPath = "feed/add_to_many/";
+    private static final String followManyPath = "follow_many/";
+    private static final String unfollowManyPath = "unfollow_many/";
     private static final String collectionsPath = "collections/";
     private static final String filesPath = "files/";
     private static final String imagesPath = "images/";
@@ -82,6 +86,22 @@ public final class Routes {
 
     public static URL buildAnalyticsURL(URL baseURL, String path) throws MalformedURLException {
         return buildSubdomainPath(baseURL, analyticsSubdomain, analyticsPath, path);
+    }
+
+    public static URL buildActivityUpdateURL(URL baseURL) throws MalformedURLException {
+        return new URL(baseURL, basePath + activityUpdatePath);
+    }
+
+    public static URL buildAddToManyURL(URL baseURL) throws MalformedURLException {
+        return new URL(baseURL, basePath + addToManyPath);
+    }
+
+    public static URL buildFollowManyURL(URL baseURL) throws MalformedURLException {
+        return new URL(baseURL, basePath + followManyPath);
+    }
+
+    public static URL buildUnfollowManyURL(URL baseURL) throws MalformedURLException {
+        return new URL(baseURL, basePath + unfollowManyPath);
     }
 
     private static URL buildSubdomainPath(URL baseURL, String subdomain, String apiPath, String path) throws MalformedURLException {

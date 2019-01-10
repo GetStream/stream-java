@@ -10,8 +10,10 @@ import io.getstream.core.models.FeedID;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Test;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -27,10 +29,16 @@ class FeedTest {
                     .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
                     .build();
 
+            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
+            isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date time = isoFormat.parse("2001-09-11T00:01:02.000000");
+
             Activity activity = Activity.builder()
                     .actor("test")
                     .verb("test")
                     .object("test")
+                    .foreignID("foreignID")
+                    .time(time)
                     .build();
             FlatFeed feed = client.flatFeed("flat", "1");
             result[0] = feed.addActivity(activity).join();

@@ -18,6 +18,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
@@ -25,12 +26,10 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Request.buildGet;
 import static io.getstream.core.utils.Request.buildPost;
-import static io.getstream.core.utils.Routes.buildActivitiesURL;
+import static io.getstream.core.utils.Routes.*;
 import static io.getstream.core.utils.Serialization.*;
 
 public final class StreamBatch {
-    private static final SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd");
-
     private final String key;
     private final URL baseURL;
     private final HTTPClient httpClient;
@@ -52,9 +51,9 @@ public final class StreamBatch {
         try {
             final byte[] payload = toJSON(new Object() {
                 public final Activity activity = data;
-                public final String[] feed_ids = feedIDs;
+                public final String[] feeds = feedIDs;
             });
-            final URL url = new URL(baseURL, "feed/add_to_many/");
+            final URL url = buildAddToManyURL(baseURL);
             return httpClient.execute(buildPost(url, key, token, payload))
                     .thenApply(response -> {
                         try {
@@ -75,7 +74,7 @@ public final class StreamBatch {
 
         try {
             final byte[] payload = toJSON(follows);
-            final URL url = new URL(baseURL, "follow_many/");
+            final URL url = buildFollowManyURL(baseURL);
             return httpClient.execute(buildPost(url, key, token, payload, new CustomQueryParameter("activity_copy_limit", Integer.toString(activityCopyLimit))))
                     .thenApply(response -> {
                         try {
@@ -95,7 +94,7 @@ public final class StreamBatch {
 
         try {
             final byte[] payload = toJSON(follows);
-            final URL url = new URL(baseURL, "unfollow_many/");
+            final URL url = buildUnfollowManyURL(baseURL);
             return httpClient.execute(buildPost(url, key, token, payload))
                     .thenApply(response -> {
                         try {
@@ -131,6 +130,10 @@ public final class StreamBatch {
     public CompletableFuture<List<Activity>> getActivitiesByForeignID(Token token, ForeignIDTimePair... activityIDTimePairs) throws StreamException {
         checkNotNull(activityIDTimePairs, "No activities to get");
         checkArgument(activityIDTimePairs.length > 0, "No activities to get");
+
+        SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        timestampFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        timestampFormat.setLenient(false);
 
         String[] foreignIDs = Arrays.stream(activityIDTimePairs)
                 .map(pair -> pair.getForeignID())

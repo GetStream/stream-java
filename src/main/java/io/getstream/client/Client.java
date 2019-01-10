@@ -39,7 +39,7 @@ public final class Client {
     }
 
     public CompletableFuture<Activity> updateActivityByID(String id, Map<String, Object> set, String[] unset) throws StreamException {
-        final Token token = buildFeedToken(secret, TokenAction.WRITE);
+        final Token token = buildActivityToken(secret, TokenAction.WRITE);
         return stream.updateActivityByID(token, id, set, unset);
     }
 

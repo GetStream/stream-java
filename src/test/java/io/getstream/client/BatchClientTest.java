@@ -1,5 +1,6 @@
 package io.getstream.client;
 
+import com.google.common.collect.ImmutableMap;
 import io.getstream.core.http.OKHTTPClientAdapter;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
@@ -8,7 +9,8 @@ import io.getstream.core.models.ForeignIDTimePair;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -19,84 +21,105 @@ class BatchClientTest {
     @Test
     void addToMany() {
         assertDoesNotThrow(() -> {
-            Client client = Client.builder(apiKey, secret)
-                    .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-                    .build();
+            Client client = Client.builder(apiKey, secret).build();
 
             Activity activity = Activity.builder()
                     .actor("test")
                     .verb("test")
                     .object("test")
                     .build();
+
             client.batch().addToMany(activity, new FeedID[]{
                     new FeedID("flat", "1"),
                     new FeedID("flat", "2")
-            });
+            }).join();
         });
     }
 
     @Test
     void followMany() {
         assertDoesNotThrow(() -> {
-            BatchClient client = Client.builder(apiKey, secret)
-                    .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-                    .build()
-                    .batch();
+            BatchClient client = Client.builder(apiKey, secret).build().batch();
 
-            client.followMany(0, new FollowRelation("flat:1", "flat:2"), new FollowRelation("aggregated:1", "flat:1"));
+            client.followMany(0, new FollowRelation[]{
+                    new FollowRelation("flat:1", "flat:2"),
+                    new FollowRelation("aggregated:1", "flat:1")
+            }).join();
         });
     }
 
     @Test
     void unfollowMany() {
         assertDoesNotThrow(() -> {
-            BatchClient client = Client.builder(apiKey, secret)
-                    .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-                    .build()
-                    .batch();
+            BatchClient client = Client.builder(apiKey, secret).build().batch();
 
-            client.unfollowMany(new FollowRelation("flat:1", "flat:2"), new FollowRelation("aggregated:1", "flat:1"));
+            client.unfollowMany(new FollowRelation[]{
+                    new FollowRelation("flat:1", "flat:2"),
+                    new FollowRelation("aggregated:1", "flat:1")
+            }).join();
         });
     }
 
     @Test
     void updateActivities() {
         assertDoesNotThrow(() -> {
-            BatchClient client = Client.builder(apiKey, secret)
-                    .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-                    .build()
-                    .batch();
+            BatchClient client = Client.builder(apiKey, secret).build().batch();
 
             client.updateActivities(Activity.builder()
-                    .id("54a60c1e-4ee3-494b-a1e3-50c06acb5ed4")
                     .actor("test")
                     .verb("test")
                     .object("test")
-                    .build());
+                    .foreignID("foreignID")
+                    .time(new Date())
+                    .build()).join();
+        });
+    }
+
+    @Test
+    void partiallyUpdateActivityByID() {
+        Activity[] result = new Activity[1];
+        assertDoesNotThrow(() -> {
+            Client client = Client.builder(apiKey, secret).build();
+
+            Map<String, Object> set = ImmutableMap.of("value", "message");
+            Iterable<String> unset = Collections.emptyList();
+            result[0] = client.updateActivityByID("1657b300-a648-11d5-8080-800020fde6c3", set, unset).join();
+        });
+    }
+
+    @Test
+    void partiallyUpdateActivityByForeignID() {
+        Activity[] result = new Activity[1];
+        assertDoesNotThrow(() -> {
+            Client client = Client.builder(apiKey, secret).build();
+
+            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
+            isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date time = isoFormat.parse("2001-09-11T00:01:02.000000");
+
+            Map<String, Object> set = ImmutableMap.of("value", "message");
+            Iterable<String> unset = Collections.emptyList();
+            result[0] = client.updateActivityByForeignID(new ForeignIDTimePair("foreignID", time), set, unset).join();
         });
     }
 
     @Test
     void getActivitiesByID() {
+        List<Activity>[] result = new List[1];
         assertDoesNotThrow(() -> {
-            BatchClient client = Client.builder(apiKey, secret)
-                    .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-                    .build()
-                    .batch();
+            BatchClient client = Client.builder(apiKey, secret).build().batch();
 
-            client.getActivitiesByID("54a60c1e-4ee3-494b-a1e3-50c06acb5ed4");
+            result[0] = client.getActivitiesByID("1657b300-a648-11d5-8080-800020fde6c3").join();
         });
     }
 
     @Test
     void getActivitiesByForeignID() {
+        List<Activity>[] result = new List[1];
         assertDoesNotThrow(() -> {
-            BatchClient client = Client.builder(apiKey, secret)
-                    .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-                    .build()
-                    .batch();
+            BatchClient client = Client.builder(apiKey, secret).build().batch();
 
-            client.getActivitiesByForeignID(new ForeignIDTimePair("foreignID", new Date()));
+            result[0] = client.getActivitiesByForeignID(new ForeignIDTimePair("foreignID", new Date())).join();
         });
     }
 }
