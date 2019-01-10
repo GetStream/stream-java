@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import io.getstream.core.models.serialization.DateDeserializer;
 
 import java.util.Date;
 import java.util.List;
@@ -71,7 +72,7 @@ public class Activity {
         return target;
     }
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.S", timezone = "UTC")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", lenient = OptBoolean.FALSE, timezone = "UTC")
     public Date getTime() {
         return time;
     }
@@ -182,7 +183,7 @@ public class Activity {
             return this;
         }
 
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.S", timezone = "UTC")
+        @JsonDeserialize(using = DateDeserializer.class)
         public Builder time(Date time) {
             this.time = time;
             return this;

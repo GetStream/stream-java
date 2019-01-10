@@ -143,11 +143,11 @@ class SerializationTest {
 
     @Test
     void activityDeserialization() throws ParseException {
-        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
+        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         Activity[] result = new Activity[1];
-        String activity = "{\"actor\":\"test\",\"verb\":\"test\",\"object\":\"test\",\"time\":\"2001-09-11T00:01:02.000000\",\"to\":[\"hey:now\"]}";
+        String activity = "{\"actor\":\"test\",\"verb\":\"test\",\"object\":\"test\",\"time\":\"2019-01-10T15:08:53.442419\",\"to\":[\"hey:now\"]}";
 
         assertDoesNotThrow(() -> {
             result[0] = fromJSON(new ByteArrayInputStream(activity.getBytes(Charset.forName("UTF-8"))), Activity.class);
@@ -156,7 +156,7 @@ class SerializationTest {
         assertEquals(result[0].getVerb(), "test");
         assertEquals(result[0].getObject(), "test");
         assertEquals(result[0].getTo(), Lists.newArrayList(new FeedID("hey:now")));
-        assertEquals(result[0].getTime(), isoFormat.parse("2001-09-11T00:01:02.000000"));
+        assertEquals(result[0].getTime(), isoFormat.parse("2019-01-10T15:08:53.442"));
     }
 
     @Test

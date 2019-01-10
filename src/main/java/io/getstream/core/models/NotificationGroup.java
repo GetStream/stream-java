@@ -1,10 +1,11 @@
 package io.getstream.core.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.google.common.base.MoreObjects;
+import io.getstream.core.models.serialization.DateDeserializer;
 
 import java.util.Date;
 import java.util.List;
@@ -24,10 +25,10 @@ public class NotificationGroup<T> extends Group<T> {
             @JsonProperty("actor_count")
                     int actorCount,
             @JsonProperty("created_at")
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.S", timezone = "UTC")
+            @JsonDeserialize(using = DateDeserializer.class)
                     Date createdAt,
             @JsonProperty("updated_at")
-            @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.S", timezone = "UTC")
+            @JsonDeserialize(using = DateDeserializer.class)
                     Date updatedAt,
             @JsonProperty("is_seen")
                     boolean isSeen,

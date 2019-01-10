@@ -1,6 +1,7 @@
 package io.getstream.core;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.OptBoolean;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.HTTPClient;
@@ -110,7 +111,7 @@ public final class Stream {
             String[] propertiesToUnset = unset;
             final byte[] payload = toJSON(new Object() {
                 public final String foreign_id = foreignID;
-                @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.S", timezone = "UTC")
+                @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", lenient = OptBoolean.FALSE, timezone = "UTC")
                 public final Date time = timestamp;
                 public final Map<String, Object> set = propertiesToSet;
                 public final String[] unset = propertiesToUnset;
@@ -297,7 +298,7 @@ public final class Stream {
         try {
             final byte[] payload = toJSON(new Object() {
                 public String foreign_id = activity.getForeignID();
-                @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.S", timezone = "UTC")
+                @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS", lenient = OptBoolean.FALSE, timezone = "UTC")
                 public Date time = activity.getTime();
                 public String[] added_targets = addedTargets;
                 public String[] removed_targets = removedTargets;
