@@ -11,6 +11,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 public final class Request {
+    private Request() { /* nothing to see here */ }
+
     public static Builder buildRequest(URL url, String apiKey, Token token, RequestOption... options) throws URISyntaxException, MalformedURLException {
         final Builder builder = HTTPClient.requestBuilder()
                 .url(url)

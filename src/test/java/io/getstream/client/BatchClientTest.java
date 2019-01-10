@@ -28,7 +28,7 @@ class BatchClientTest {
                     .verb("test")
                     .object("test")
                     .build();
-            client.batch().addToMany(activity, new FeedID[] {
+            client.batch().addToMany(activity, new FeedID[]{
                     new FeedID("flat", "1"),
                     new FeedID("flat", "2")
             });

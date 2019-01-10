@@ -100,7 +100,7 @@ public final class OKHTTPClientAdapter extends HTTPClient {
             @Override
             public void onResponse(Call call, okhttp3.Response response) {
                 io.getstream.core.http.Response httpResponse = buildResponse(response);
-                try (InputStream ignored = httpResponse.getBody()){
+                try (InputStream ignored = httpResponse.getBody()) {
                     result.complete(httpResponse);
                 } catch (Exception e) {
                     result.completeExceptionally(e);

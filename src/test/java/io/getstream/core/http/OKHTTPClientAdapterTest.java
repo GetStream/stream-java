@@ -26,8 +26,8 @@ public class OKHTTPClientAdapterTest {
         List<Activity>[] result = new List[1];
         assertDoesNotThrow(() -> {
             Client client = Client.builder(apiKey, secret)
-                .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-                .build();
+                    .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+                    .build();
 
             FlatFeed feed = client.flatFeed("flat", "1");
             result[0] = feed.getActivities().join();
@@ -39,14 +39,14 @@ public class OKHTTPClientAdapterTest {
         Activity[] result = new Activity[1];
         assertDoesNotThrow(() -> {
             Client client = Client.builder(apiKey, secret)
-                .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-                .build();
+                    .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+                    .build();
 
             Activity activity = Activity.builder()
-                .actor("test")
-                .verb("test")
-                .object("test")
-                .build();
+                    .actor("test")
+                    .verb("test")
+                    .object("test")
+                    .build();
             FlatFeed feed = client.flatFeed("flat", "1");
             result[0] = feed.addActivity(activity).join();
         });
@@ -56,8 +56,8 @@ public class OKHTTPClientAdapterTest {
     void deleteRequest() {
         assertDoesNotThrow(() -> {
             Client client = Client.builder(apiKey, secret)
-                .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-                .build();
+                    .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+                    .build();
 
             FlatFeed feed = client.flatFeed("flat", "1");
             feed.removeActivityByID("654e333e-d146-11e8-bd18-1231d51167b4").join();

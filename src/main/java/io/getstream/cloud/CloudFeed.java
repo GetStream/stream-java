@@ -7,7 +7,8 @@ import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.FollowRelation;
 import io.getstream.core.options.CustomQueryParameter;
-import io.getstream.core.options.Pagination;
+import io.getstream.core.options.Limit;
+import io.getstream.core.options.Offset;
 import io.getstream.core.options.RequestOption;
 import io.getstream.core.utils.DefaultOptions;
 
@@ -86,7 +87,7 @@ public class CloudFeed {
                 .addActivities(id, custom)
                 .thenApply(response -> {
                     try {
-                        Class<T> element = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()) .getActualTypeArguments()[0];
+                        Class<T> element = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
                         return deserializeContainer(response, "activities", element);
                     } catch (StreamException | IOException e) {
                         throw new CompletionException(e);
@@ -165,26 +166,42 @@ public class CloudFeed {
     }
 
     public final CompletableFuture<List<FollowRelation>> getFollowers(Iterable<FeedID> feedIDs) throws StreamException {
-        return getFollowers(DefaultOptions.DEFAULT_PAGINATION, Iterables.toArray(feedIDs, FeedID.class));
+        return getFollowers(DefaultOptions.DEFAULT_LIMIT, DefaultOptions.DEFAULT_OFFSET, Iterables.toArray(feedIDs, FeedID.class));
     }
 
     public final CompletableFuture<List<FollowRelation>> getFollowers(FeedID... feedIDs) throws StreamException {
-        return getFollowers(DefaultOptions.DEFAULT_PAGINATION, feedIDs);
+        return getFollowers(DefaultOptions.DEFAULT_LIMIT, DefaultOptions.DEFAULT_OFFSET, feedIDs);
     }
 
-    public final CompletableFuture<List<FollowRelation>> getFollowers(Pagination pagination, Iterable<FeedID> feedIDs) throws StreamException {
-        return getFollowers(pagination, Iterables.toArray(feedIDs, FeedID.class));
+    public final CompletableFuture<List<FollowRelation>> getFollowers(Limit limit, Iterable<FeedID> feedIDs) throws StreamException {
+        return getFollowers(limit, DefaultOptions.DEFAULT_OFFSET, Iterables.toArray(feedIDs, FeedID.class));
     }
 
-    public final CompletableFuture<List<FollowRelation>> getFollowers(Pagination pagination, FeedID... feeds) throws StreamException {
+    public final CompletableFuture<List<FollowRelation>> getFollowers(Limit limit, FeedID... feedIDs) throws StreamException {
+        return getFollowers(limit, DefaultOptions.DEFAULT_OFFSET, feedIDs);
+    }
+
+    public final CompletableFuture<List<FollowRelation>> getFollowers(Offset offset, Iterable<FeedID> feedIDs) throws StreamException {
+        return getFollowers(DefaultOptions.DEFAULT_LIMIT, offset, Iterables.toArray(feedIDs, FeedID.class));
+    }
+
+    public final CompletableFuture<List<FollowRelation>> getFollowers(Offset offset, FeedID... feedIDs) throws StreamException {
+        return getFollowers(DefaultOptions.DEFAULT_LIMIT, offset, feedIDs);
+    }
+
+    public final CompletableFuture<List<FollowRelation>> getFollowers(Limit limit, Offset offset, Iterable<FeedID> feedIDs) throws StreamException {
+        return getFollowers(limit, offset, Iterables.toArray(feedIDs, FeedID.class));
+    }
+
+    public final CompletableFuture<List<FollowRelation>> getFollowers(Limit limit, Offset offset, FeedID... feeds) throws StreamException {
         checkNotNull(feeds, "No feed ids to filter on");
 
         final String[] feedIDs = Arrays.stream(feeds)
                 .map(id -> id.toString())
                 .toArray(String[]::new);
         final RequestOption[] options = feedIDs.length == 0
-                ? new RequestOption[] { pagination }
-                : new RequestOption[] { pagination, new CustomQueryParameter("filter", String.join(",", feedIDs)) };
+                ? new RequestOption[]{limit, offset}
+                : new RequestOption[]{limit, offset, new CustomQueryParameter("filter", String.join(",", feedIDs))};
         return client
                 .getFollowers(id, options)
                 .thenApply(response -> {
@@ -197,26 +214,42 @@ public class CloudFeed {
     }
 
     public final CompletableFuture<List<FollowRelation>> getFollowed(Iterable<FeedID> feedIDs) throws StreamException {
-        return getFollowed(DefaultOptions.DEFAULT_PAGINATION, Iterables.toArray(feedIDs, FeedID.class));
+        return getFollowed(DefaultOptions.DEFAULT_LIMIT, DefaultOptions.DEFAULT_OFFSET, Iterables.toArray(feedIDs, FeedID.class));
     }
 
     public final CompletableFuture<List<FollowRelation>> getFollowed(FeedID... feedIDs) throws StreamException {
-        return getFollowed(DefaultOptions.DEFAULT_PAGINATION, feedIDs);
+        return getFollowed(DefaultOptions.DEFAULT_LIMIT, DefaultOptions.DEFAULT_OFFSET, feedIDs);
     }
 
-    public final CompletableFuture<List<FollowRelation>> getFollowed(Pagination pagination, Iterable<FeedID> feedIDs) throws StreamException {
-        return getFollowed(pagination, Iterables.toArray(feedIDs, FeedID.class));
+    public final CompletableFuture<List<FollowRelation>> getFollowed(Limit limit, Iterable<FeedID> feedIDs) throws StreamException {
+        return getFollowed(limit, DefaultOptions.DEFAULT_OFFSET, Iterables.toArray(feedIDs, FeedID.class));
     }
 
-    public final CompletableFuture<List<FollowRelation>> getFollowed(Pagination pagination, FeedID... feeds) throws StreamException {
+    public final CompletableFuture<List<FollowRelation>> getFollowed(Limit limit, FeedID... feedIDs) throws StreamException {
+        return getFollowed(limit, DefaultOptions.DEFAULT_OFFSET, feedIDs);
+    }
+
+    public final CompletableFuture<List<FollowRelation>> getFollowed(Offset offset, Iterable<FeedID> feedIDs) throws StreamException {
+        return getFollowed(DefaultOptions.DEFAULT_LIMIT, offset, Iterables.toArray(feedIDs, FeedID.class));
+    }
+
+    public final CompletableFuture<List<FollowRelation>> getFollowed(Offset offset, FeedID... feedIDs) throws StreamException {
+        return getFollowed(DefaultOptions.DEFAULT_LIMIT, offset, feedIDs);
+    }
+
+    public final CompletableFuture<List<FollowRelation>> getFollowed(Limit limit, Offset offset, Iterable<FeedID> feedIDs) throws StreamException {
+        return getFollowed(limit, offset, Iterables.toArray(feedIDs, FeedID.class));
+    }
+
+    public final CompletableFuture<List<FollowRelation>> getFollowed(Limit limit, Offset offset, FeedID... feeds) throws StreamException {
         checkNotNull(feeds, "No feed ids to filter on");
 
         final String[] feedIDs = Arrays.stream(feeds)
                 .map(id -> id.toString())
                 .toArray(String[]::new);
         final RequestOption[] options = feedIDs.length == 0
-                ? new RequestOption[] { pagination }
-                : new RequestOption[] { pagination, new CustomQueryParameter("filter", String.join(",", feedIDs)) };
+                ? new RequestOption[]{limit, offset}
+                : new RequestOption[]{limit, offset, new CustomQueryParameter("filter", String.join(",", feedIDs))};
         return client
                 .getFollowed(id, options)
                 .thenApply(response -> {

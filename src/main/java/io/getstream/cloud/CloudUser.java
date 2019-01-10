@@ -52,6 +52,10 @@ public final class CloudUser {
                 });
     }
 
+    public CompletableFuture<Data> getOrCreate() throws StreamException {
+        return getOrCreate(new Data());
+    }
+
     public CompletableFuture<Data> getOrCreate(Data data) throws StreamException {
         return client.getOrCreateUser(id, data)
                 .thenApply(response -> {

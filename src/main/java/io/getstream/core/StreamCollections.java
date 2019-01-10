@@ -207,7 +207,7 @@ public final class StreamCollections {
 
         try {
             final URL url = buildBatchCollectionsURL(baseURL);
-            final RequestOption[] options = new RequestOption[] {
+            final RequestOption[] options = new RequestOption[]{
                     new CustomQueryParameter("collection_name", collection),
                     new CustomQueryParameter("ids", String.join(",", ids))
             };

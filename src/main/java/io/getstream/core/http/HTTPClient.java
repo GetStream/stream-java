@@ -8,5 +8,6 @@ public abstract class HTTPClient {
     }
 
     public abstract <T> T getImplementation();
+
     public abstract CompletableFuture<Response> execute(Request request);
 }

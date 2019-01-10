@@ -29,7 +29,7 @@ public final class Serialization {
         this.mapper = checkNotNull(mapper, "Missing object mapper");
     }
 
-    private Serialization() {}
+    private Serialization() { /* nothing to see here */ }
 
     public static <T> byte[] toJSON(T obj) throws JsonProcessingException {
         return mapper.writeValueAsBytes(obj);

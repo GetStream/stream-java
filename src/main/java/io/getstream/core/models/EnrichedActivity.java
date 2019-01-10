@@ -16,12 +16,13 @@ import java.util.Objects;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Serialization.convert;
 
+//TODO: check which fields could actually be enriched
 @JsonInclude(Include.NON_NULL)
 @JsonDeserialize(builder = EnrichedActivity.Builder.class)
 public class EnrichedActivity {
     private final String id;
     private final Data actor;
-    private final Data verb;
+    private final String verb;
     private final Data object;
     private final String foreignID;
     private final Data target;
@@ -60,7 +61,7 @@ public class EnrichedActivity {
         return actor;
     }
 
-    public Data getVerb() {
+    public String getVerb() {
         return verb;
     }
 
@@ -165,7 +166,7 @@ public class EnrichedActivity {
     public static final class Builder {
         private String id;
         private Data actor;
-        private Data verb;
+        private String verb;
         private Data object;
         private String foreignID;
         private Data target;
@@ -195,14 +196,7 @@ public class EnrichedActivity {
             return this;
         }
 
-        @JsonIgnore
         public Builder verb(String verb) {
-            this.verb = new Data(verb);
-            return this;
-        }
-
-        @JsonProperty("verb")
-        public Builder verb(Data verb) {
             this.verb = verb;
             return this;
         }

@@ -20,33 +20,33 @@ public final class CloudFlatFeed extends CloudFeed {
     }
 
     public CompletableFuture<List<Activity>> getActivities() throws StreamException {
-        return getActivities(DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, null);
+        return getActivities(DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, null);
     }
 
     public CompletableFuture<List<Activity>> getActivities(String ranking) throws StreamException {
-        return getActivities(DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, ranking);
+        return getActivities(DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, ranking);
     }
 
     public CompletableFuture<List<Activity>> getActivities(Filter filter) throws StreamException {
-        return getActivities(DefaultOptions.DEFAULT_PAGINATION, filter, null);
+        return getActivities(DefaultOptions.DEFAULT_OFFSET, filter, null);
     }
 
-    public CompletableFuture<List<Activity>> getActivities(Pagination pagination) throws StreamException {
-        return getActivities(pagination, DefaultOptions.DEFAULT_FILTER, null);
+    public CompletableFuture<List<Activity>> getActivities(Offset offset) throws StreamException {
+        return getActivities(offset, DefaultOptions.DEFAULT_FILTER, null);
     }
 
     public CompletableFuture<List<Activity>> getActivities(Filter filter, String ranking) throws StreamException {
-        return getActivities(DefaultOptions.DEFAULT_PAGINATION, filter, ranking);
+        return getActivities(DefaultOptions.DEFAULT_OFFSET, filter, ranking);
     }
 
-    public CompletableFuture<List<Activity>> getActivities(Pagination pagination, String ranking) throws StreamException {
-        return getActivities(pagination, DefaultOptions.DEFAULT_FILTER, ranking);
+    public CompletableFuture<List<Activity>> getActivities(Offset offset, String ranking) throws StreamException {
+        return getActivities(offset, DefaultOptions.DEFAULT_FILTER, ranking);
     }
 
-    CompletableFuture<List<Activity>> getActivities(Pagination pagination, Filter filter, String ranking) throws StreamException {
+    CompletableFuture<List<Activity>> getActivities(Offset offset, Filter filter, String ranking) throws StreamException {
         final RequestOption[] options = ranking == null
-                ? new RequestOption[] { pagination, filter, DefaultOptions.DEFAULT_MARKER }
-                : new RequestOption[] { pagination, filter, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking) };
+                ? new RequestOption[]{offset, filter, DefaultOptions.DEFAULT_MARKER}
+                : new RequestOption[]{offset, filter, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking)};
         return getClient()
                 .getActivities(getID(), options)
                 .thenApply(response -> {
@@ -59,33 +59,33 @@ public final class CloudFlatFeed extends CloudFeed {
     }
 
     public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type) throws StreamException {
-        return getCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, null);
+        return getCustomActivities(type, DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, null);
     }
 
     public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, String ranking) throws StreamException {
-        return getCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, ranking);
+        return getCustomActivities(type, DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, ranking);
     }
 
     public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, Filter filter) throws StreamException {
-        return getCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, null);
+        return getCustomActivities(type, DefaultOptions.DEFAULT_OFFSET, filter, null);
     }
 
-    public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, Pagination pagination) throws StreamException {
-        return getCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, null);
+    public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, Offset offset) throws StreamException {
+        return getCustomActivities(type, offset, DefaultOptions.DEFAULT_FILTER, null);
     }
 
-    public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, Pagination pagination, String ranking) throws StreamException {
-        return getCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, ranking);
+    public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, Offset offset, String ranking) throws StreamException {
+        return getCustomActivities(type, offset, DefaultOptions.DEFAULT_FILTER, ranking);
     }
 
     public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, Filter filter, String ranking) throws StreamException {
-        return getCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, ranking);
+        return getCustomActivities(type, DefaultOptions.DEFAULT_OFFSET, filter, ranking);
     }
 
-    <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, Pagination pagination, Filter filter, String ranking) throws StreamException {
+    <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type, Offset offset, Filter filter, String ranking) throws StreamException {
         final RequestOption[] options = ranking == null
-                ? new RequestOption[] { pagination, filter, DefaultOptions.DEFAULT_MARKER }
-                : new RequestOption[] { pagination, filter, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking) };
+                ? new RequestOption[]{offset, filter, DefaultOptions.DEFAULT_MARKER}
+                : new RequestOption[]{offset, filter, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking)};
         return getClient()
                 .getActivities(getID(), options)
                 .thenApply(response -> {
@@ -98,57 +98,57 @@ public final class CloudFlatFeed extends CloudFeed {
     }
 
     public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities() throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
+        return getEnrichedActivities(DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
     }
 
     public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(String ranking) throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
+        return getEnrichedActivities(DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
     }
 
     public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Filter filter) throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
+        return getEnrichedActivities(DefaultOptions.DEFAULT_OFFSET, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
     }
 
-    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Pagination pagination) throws StreamException {
-        return getEnrichedActivities(pagination, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
+    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Offset offset) throws StreamException {
+        return getEnrichedActivities(offset, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
     }
 
     public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(EnrichmentFlags flags) throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, flags, null);
+        return getEnrichedActivities(DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, flags, null);
     }
 
     public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(EnrichmentFlags flags, String ranking) throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, flags, ranking);
+        return getEnrichedActivities(DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, flags, ranking);
     }
 
     public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Filter filter, EnrichmentFlags flags) throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, filter, flags, null);
+        return getEnrichedActivities(DefaultOptions.DEFAULT_OFFSET, filter, flags, null);
     }
 
-    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Pagination pagination, EnrichmentFlags flags) throws StreamException {
-        return getEnrichedActivities(pagination, DefaultOptions.DEFAULT_FILTER, flags, null);
+    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Offset offset, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedActivities(offset, DefaultOptions.DEFAULT_FILTER, flags, null);
     }
 
     public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Filter filter, String ranking) throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
+        return getEnrichedActivities(DefaultOptions.DEFAULT_OFFSET, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
     }
 
-    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Pagination pagination, String ranking) throws StreamException {
-        return getEnrichedActivities(pagination, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
+    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Offset offset, String ranking) throws StreamException {
+        return getEnrichedActivities(offset, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
     }
 
     public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Filter filter, EnrichmentFlags flags, String ranking) throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_PAGINATION, filter, flags, ranking);
+        return getEnrichedActivities(DefaultOptions.DEFAULT_OFFSET, filter, flags, ranking);
     }
 
-    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Pagination pagination, EnrichmentFlags flags, String ranking) throws StreamException {
-        return getEnrichedActivities(pagination, DefaultOptions.DEFAULT_FILTER, flags, ranking);
+    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Offset offset, EnrichmentFlags flags, String ranking) throws StreamException {
+        return getEnrichedActivities(offset, DefaultOptions.DEFAULT_FILTER, flags, ranking);
     }
 
-    CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Pagination pagination, Filter filter, EnrichmentFlags flags, String ranking) throws StreamException {
+    CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(Offset offset, Filter filter, EnrichmentFlags flags, String ranking) throws StreamException {
         final RequestOption[] options = ranking == null
-                ? new RequestOption[] { pagination, filter, flags, DefaultOptions.DEFAULT_MARKER }
-                : new RequestOption[] { pagination, filter, flags, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking) };
+                ? new RequestOption[]{offset, filter, flags, DefaultOptions.DEFAULT_MARKER}
+                : new RequestOption[]{offset, filter, flags, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking)};
         return getClient()
                 .getEnrichedActivities(getID(), options)
                 .thenApply(response -> {
@@ -161,57 +161,57 @@ public final class CloudFlatFeed extends CloudFeed {
     }
 
     public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type) throws StreamException {
-        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
     }
 
     public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, EnrichmentFlags flags) throws StreamException {
-        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, flags, null);
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, flags, null);
     }
 
     public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, String ranking) throws StreamException {
-        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
     }
 
     public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, EnrichmentFlags flags, String ranking) throws StreamException {
-        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, DefaultOptions.DEFAULT_FILTER, flags, ranking);
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, flags, ranking);
     }
 
     public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Filter filter) throws StreamException {
-        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_OFFSET, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
     }
 
     public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Filter filter, EnrichmentFlags flags) throws StreamException {
-        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, flags, null);
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_OFFSET, filter, flags, null);
     }
 
-    public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Pagination pagination) throws StreamException {
-        return getEnrichedCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
+    public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Offset offset) throws StreamException {
+        return getEnrichedCustomActivities(type, offset, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, null);
     }
 
-    public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, EnrichmentFlags flags) throws StreamException {
-        return getEnrichedCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, flags, null);
+    public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Offset offset, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedCustomActivities(type, offset, DefaultOptions.DEFAULT_FILTER, flags, null);
     }
 
-    public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, String ranking) throws StreamException {
-        return getEnrichedCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
+    public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Offset offset, String ranking) throws StreamException {
+        return getEnrichedCustomActivities(type, offset, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
     }
 
-    public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, EnrichmentFlags flags, String ranking) throws StreamException {
-        return getEnrichedCustomActivities(type, pagination, DefaultOptions.DEFAULT_FILTER, flags, ranking);
+    public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Offset offset, EnrichmentFlags flags, String ranking) throws StreamException {
+        return getEnrichedCustomActivities(type, offset, DefaultOptions.DEFAULT_FILTER, flags, ranking);
     }
 
     public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Filter filter, String ranking) throws StreamException {
-        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_OFFSET, filter, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, ranking);
     }
 
     public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Filter filter, EnrichmentFlags flags, String ranking) throws StreamException {
-        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_PAGINATION, filter, flags, ranking);
+        return getEnrichedCustomActivities(type, DefaultOptions.DEFAULT_OFFSET, filter, flags, ranking);
     }
 
-    <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Pagination pagination, Filter filter, EnrichmentFlags flags, String ranking) throws StreamException {
+    <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type, Offset offset, Filter filter, EnrichmentFlags flags, String ranking) throws StreamException {
         final RequestOption[] options = ranking == null
-                ? new RequestOption[] { pagination, filter, flags, DefaultOptions.DEFAULT_MARKER }
-                : new RequestOption[] { pagination, filter, flags, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking) };
+                ? new RequestOption[]{offset, filter, flags, DefaultOptions.DEFAULT_MARKER}
+                : new RequestOption[]{offset, filter, flags, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking)};
         return getClient()
                 .getActivities(getID(), options)
                 .thenApply(response -> {

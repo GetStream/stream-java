@@ -52,6 +52,10 @@ public final class User {
                 });
     }
 
+    public CompletableFuture<Data> getOrCreate() throws StreamException {
+        return getOrCreate(new Data());
+    }
+
     public CompletableFuture<Data> getOrCreate(Data data) throws StreamException {
         return client.getOrCreateUser(id, data)
                 .thenApply(response -> {
@@ -61,6 +65,10 @@ public final class User {
                         throw new CompletionException(e);
                     }
                 });
+    }
+
+    public CompletableFuture<Data> create() throws StreamException {
+        return create(new Data());
     }
 
     public CompletableFuture<Data> create(Data data) throws StreamException {

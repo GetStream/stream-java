@@ -25,7 +25,7 @@ public final class CollectionData {
             @JsonProperty("id")
                     String id,
             @JsonProperty("data")
-                Map<String, Object> data) {
+                    Map<String, Object> data) {
         this.collection = collection;
         this.data = firstNonNull(data, Maps.newHashMap());
         this.id = checkNotNull(id, "ID required");

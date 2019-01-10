@@ -1,13 +1,12 @@
 package io.getstream.core.utils;
 
-import io.getstream.core.options.ActivityMarker;
-import io.getstream.core.options.EnrichmentFlags;
-import io.getstream.core.options.Filter;
-import io.getstream.core.options.Pagination;
+import io.getstream.core.options.*;
 
 public final class DefaultOptions {
-    static final int DEFAULT_LIMIT = 25;
-    public static final Pagination DEFAULT_PAGINATION = new Pagination().limit(DEFAULT_LIMIT);
+    private DefaultOptions() { /* nothing to see here */ }
+
+    public static final Limit DEFAULT_LIMIT = new Limit(25);
+    public static final Offset DEFAULT_OFFSET = new Offset(0);
     public static final Filter DEFAULT_FILTER = new Filter();
     public static final ActivityMarker DEFAULT_MARKER = new ActivityMarker();
     public static final EnrichmentFlags DEFAULT_ENRICHMENT_FLAGS = new EnrichmentFlags();

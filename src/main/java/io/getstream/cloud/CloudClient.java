@@ -25,14 +25,18 @@ public final class CloudClient {
     private final String userID;
     private final Stream stream;
 
-    private CloudClient(String key, String token, String userID, URL baseURL, HTTPClient httpClient) {
-        this.token = new Token(token);
+    private CloudClient(String key, Token token, String userID, URL baseURL, HTTPClient httpClient) {
+        this.token = token;
         this.userID = userID;
         this.stream = new Stream(key, baseURL, httpClient);
     }
 
-    public static Builder builder(String apiKey, String secret, String userID) {
-        return new Builder(apiKey, secret, userID);
+    public static Builder builder(String apiKey, String token, String userID) {
+        return new Builder(apiKey, new Token(token), userID);
+    }
+
+    public static Builder builder(String apiKey, Token token, String userID) {
+        return new Builder(apiKey, token, userID);
     }
 
     public CompletableFuture<OGData> openGraph(URL url) throws StreamException {
@@ -43,7 +47,7 @@ public final class CloudClient {
         private static final String DEFAULT_HOST = "stream-io-api.com";
 
         private final String apiKey;
-        private final String token;
+        private final Token token;
         private final String userID;
         private HTTPClient httpClient;
 
@@ -52,12 +56,11 @@ public final class CloudClient {
         private String host = DEFAULT_HOST;
         private int port = 443;
 
-        public Builder(String apiKey, String token, String userID) {
+        public Builder(String apiKey, Token token, String userID) {
             checkNotNull(apiKey, "API key can't be null");
             checkNotNull(token, "Token can't be null");
             checkNotNull(userID, "User ID can't be null");
             checkArgument(!apiKey.isEmpty(), "API key can't be empty");
-            checkArgument(!token.isEmpty(), "Token can't be empty");
             checkArgument(!userID.isEmpty(), "User ID can't be empty");
             this.apiKey = apiKey;
             this.token = token;

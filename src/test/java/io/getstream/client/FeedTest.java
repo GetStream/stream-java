@@ -173,7 +173,7 @@ class FeedTest {
                     .time(new Date())
                     .to(Lists.newArrayList(new FeedID("feed:2")))
                     .build();
-            feed.updateActivityToTargets(activity, new FeedID[] { new FeedID("feed:3") }, new FeedID[] { new FeedID("feed:2") });
+            feed.updateActivityToTargets(activity, new FeedID[]{new FeedID("feed:3")}, new FeedID[]{new FeedID("feed:2")});
         });
     }
 

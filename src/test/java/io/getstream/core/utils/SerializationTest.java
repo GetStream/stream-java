@@ -168,7 +168,7 @@ class SerializationTest {
             result[0] = fromJSON(new ByteArrayInputStream(activity.getBytes(Charset.forName("UTF-8"))), EnrichedActivity.class);
         });
         assertEquals(result[0].getActor().getID(), "tester");
-        assertEquals(result[0].getVerb().getID(), "tests");
+        assertEquals(result[0].getVerb(), "tests");
         assertEquals(result[0].getObject().getID(), "test");
     }
 

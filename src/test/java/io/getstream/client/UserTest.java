@@ -19,12 +19,7 @@ class UserTest {
 
             String userID = "get-user";
             User user = client.user(userID);
-            try {
-                user.create(new Data(userID)).join();
-            } catch (Exception ignored) {
-                //XXX: do nothing
-                System.out.println(ignored);
-            }
+            user.getOrCreate().join();
             result[0] = user.get().join();
         });
     }
@@ -37,13 +32,7 @@ class UserTest {
 
             String userID = "delete-user";
             User user = client.user(userID);
-            Data data = new Data(userID);
-            try {
-                user.create(data).join();
-            } catch (Exception ignored) {
-                //XXX: do nothing
-                System.out.println(ignored);
-            }
+            user.getOrCreate().join();
             user.delete().join();
         });
     }
@@ -57,14 +46,13 @@ class UserTest {
 
             String userID = "get-or-create-user";
             User user = client.user(userID);
-            Data data = new Data(userID);
             try {
                 user.delete().join();
             } catch (Exception ignored) {
                 //XXX: do nothing
                 System.out.println(ignored);
             }
-            result[0] = user.getOrCreate(data).join();
+            result[0] = user.getOrCreate().join();
         });
     }
 
@@ -77,14 +65,13 @@ class UserTest {
 
             String userID = "create-user";
             User user = client.user(userID);
-            Data data = new Data(userID);
             try {
                 user.delete().join();
             } catch (Exception ignored) {
                 //XXX: do nothing
                 System.out.println(ignored);
             }
-            result[0] = user.create(data).join();
+            result[0] = user.create().join();
         });
     }
 
@@ -97,14 +84,8 @@ class UserTest {
 
             String userID = "update-user";
             User user = client.user(userID);
-            Data data = new Data(userID);
-            try {
-                user.create(data).join();
-            } catch (Exception ignored) {
-                //XXX: do nothing
-                System.out.println(ignored);
-            }
-            result[0] = user.update(data.set("key", "value")).join();
+            user.getOrCreate().join();
+            result[0] = user.update(new Data().set("key", "value")).join();
         });
     }
 
@@ -115,14 +96,9 @@ class UserTest {
             Client client = Client.builder(apiKey, secret)
                     .build();
 
-            String userID = "profile-user";
+            String userID = "new-profile-user";
             User user = client.user(userID);
-            try {
-                user.create(new Data(userID)).join();
-            } catch (Exception ignored) {
-                //XXX: do nothing
-                System.out.println(ignored);
-            }
+            user.getOrCreate().join();
             result[0] = user.profile().join();
         });
     }

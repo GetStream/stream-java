@@ -41,9 +41,18 @@ public final class EnrichmentFlags implements RequestOption {
     }
 
     private final List<OpEntry> ops = Lists.newArrayList();
+    private String userID;
 
     public EnrichmentFlags withOwnReactions() {
         ops.add(new OpEntry(OpType.OWN_REACTIONS, "true"));
+        return this;
+    }
+
+    public EnrichmentFlags withUserReactions(String userID) {
+        checkNotNull(userID, "No user ID");
+        checkArgument(!userID.isEmpty(), "No user ID");
+        ops.add(new OpEntry(OpType.OWN_REACTIONS, "true"));
+        this.userID = userID;
         return this;
     }
 
@@ -76,10 +85,21 @@ public final class EnrichmentFlags implements RequestOption {
         return this;
     }
 
+    public EnrichmentFlags withUserChildren(String userID) {
+        checkNotNull(userID, "No user ID");
+        checkArgument(!userID.isEmpty(), "No user ID");
+        ops.add(new OpEntry(OpType.OWN_CHILDREN, "true"));
+        this.userID = userID;
+        return this;
+    }
+
     @Override
     public void apply(Request.Builder builder) {
         for (OpEntry op : ops) {
             builder.addQueryParameter(op.type, op.value);
+        }
+        if (userID != null) {
+            builder.addQueryParameter("user_id", userID);
         }
     }
 }

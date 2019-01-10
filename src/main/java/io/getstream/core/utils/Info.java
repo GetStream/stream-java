@@ -11,6 +11,8 @@ public final class Info {
 
     public static final String VERSION = "version";
 
+    private Info() { /* nothing to see here */ }
+
     public static Properties getProperties() {
         Properties properties = new Properties();
         try (InputStream inputStream = Resources.asByteSource(Info.class.getResource(STREAM_JAVA_INFO)).openStream()) {

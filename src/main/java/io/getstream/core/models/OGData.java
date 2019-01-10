@@ -109,7 +109,7 @@ public class OGData {
             return secureURL;
         }
 
-        public String getURL(){
+        public String getURL() {
             return url;
         }
 
@@ -160,7 +160,7 @@ public class OGData {
             return secureURL;
         }
 
-        public String getURL(){
+        public String getURL() {
             return url;
         }
 

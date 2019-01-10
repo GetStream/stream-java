@@ -58,7 +58,7 @@ class FlatFeedTest {
 
             result[0] = feed.getEnrichedActivities(new EnrichmentFlags()
                     .withOwnChildren()
-                    .withOwnReactions()
+                    .withUserReactions("some-user")
                     .withReactionCounts()
                     .withRecentReactions()).join();
         });

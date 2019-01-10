@@ -54,7 +54,7 @@ public final class Auth {
         }
     }
 
-    private Auth() {}
+    private Auth() { /* nothing to see here */ }
 
     public static Token buildFeedToken(String secret, FeedID feed, TokenAction action) {
         return buildBackendToken(secret, TokenResource.FEED, action, feed.getSlug() + feed.getUserID());

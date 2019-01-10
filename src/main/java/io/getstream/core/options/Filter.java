@@ -5,15 +5,12 @@ import io.getstream.core.http.Request;
 
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkArgument;
-
 public final class Filter implements RequestOption {
     enum OpType {
         ID_GREATER_THEN_OR_EQUAL("id_gte"),
         ID_GREATER_THEN("id_gt"),
         ID_LESS_THEN_OR_EQUAL("id_lte"),
-        ID_LESS_THEN("id_lt"),
-        LIMIT("limit");
+        ID_LESS_THEN("id_lt");
 
         private String operator;
 
@@ -56,12 +53,6 @@ public final class Filter implements RequestOption {
 
     public Filter idLessThanEqual(String id) {
         ops.add(new OpEntry(OpType.ID_LESS_THEN_OR_EQUAL, id));
-        return this;
-    }
-
-    public Filter limit(int value) {
-        checkArgument(value >= 0, "limit can't be negative");
-        ops.add(new OpEntry(OpType.LIMIT, Integer.toString(value)));
         return this;
     }
 
