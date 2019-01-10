@@ -78,6 +78,10 @@ public final class CloudUser {
                 });
     }
 
+    public CompletableFuture<Data> create() throws StreamException {
+        return create(new Data());
+    }
+
     public CompletableFuture<Data> update(Data data) throws StreamException {
         return client.updateUser(id, data)
                 .thenApply(response -> {
