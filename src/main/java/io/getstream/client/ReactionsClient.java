@@ -8,6 +8,7 @@ import io.getstream.core.http.Token;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.Reaction;
 import io.getstream.core.options.Filter;
+import io.getstream.core.options.Limit;
 import io.getstream.core.utils.Auth.TokenAction;
 import io.getstream.core.utils.DefaultOptions;
 
@@ -33,20 +34,32 @@ public final class ReactionsClient {
     }
 
     public CompletableFuture<List<Reaction>> filter(LookupKind lookup, String id) throws StreamException {
-        return filter(lookup, id, "");
+        return filter(lookup, id, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_LIMIT, "");
+    }
+
+    public CompletableFuture<List<Reaction>> filter(LookupKind lookup, String id, Limit limit) throws StreamException {
+        return filter(lookup, id, DefaultOptions.DEFAULT_FILTER, limit, "");
     }
 
     public CompletableFuture<List<Reaction>> filter(LookupKind lookup, String id, Filter filter) throws StreamException {
-        return filter(lookup, id, filter, "");
+        return filter(lookup, id, filter, DefaultOptions.DEFAULT_LIMIT, "");
     }
 
     public CompletableFuture<List<Reaction>> filter(LookupKind lookup, String id, String kind) throws StreamException {
-        return filter(lookup, id, DefaultOptions.DEFAULT_FILTER, kind);
+        return filter(lookup, id, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_LIMIT, kind);
     }
 
-    public CompletableFuture<List<Reaction>> filter(LookupKind lookup, String id, Filter filter, String kind) throws StreamException {
+    public CompletableFuture<List<Reaction>> filter(LookupKind lookup, String id, Filter filter, Limit limit) throws StreamException {
+        return filter(lookup, id, filter, limit, "");
+    }
+
+    public CompletableFuture<List<Reaction>> filter(LookupKind lookup, String id, Limit limit, String kind) throws StreamException {
+        return filter(lookup, id, DefaultOptions.DEFAULT_FILTER, limit, kind);
+    }
+
+    public CompletableFuture<List<Reaction>> filter(LookupKind lookup, String id, Filter filter, Limit limit, String kind) throws StreamException {
         final Token token = buildReactionsToken(secret, TokenAction.READ);
-        return reactions.filter(token, lookup, id, filter, kind);
+        return reactions.filter(token, lookup, id, filter, limit, kind);
     }
 
     public CompletableFuture<Reaction> add(String userID, String kind, String activityID, Iterable<FeedID> targetFeeds) throws StreamException {

@@ -9,6 +9,7 @@ import io.getstream.core.models.FeedID;
 import io.getstream.core.models.Reaction;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.Filter;
+import io.getstream.core.options.Limit;
 import io.getstream.core.options.RequestOption;
 
 import java.io.IOException;
@@ -58,7 +59,7 @@ public final class StreamReactions {
         }
     }
 
-    public CompletableFuture<List<Reaction>> filter(Token token, LookupKind lookup, String id, Filter filter, String kind) throws StreamException {
+    public CompletableFuture<List<Reaction>> filter(Token token, LookupKind lookup, String id, Filter filter, Limit limit, String kind) throws StreamException {
         checkNotNull(lookup, "Lookup kind can't be null");
         checkNotNull(id, "Reaction ID can't be null");
         checkArgument(!id.isEmpty(), "Reaction ID can't be empty");
@@ -69,7 +70,7 @@ public final class StreamReactions {
             final URL url = buildReactionsURL(baseURL, lookup.getKind() + '/' + id + '/');
             RequestOption reactionType = new CustomQueryParameter("kind", kind);
             RequestOption withActivityData = new CustomQueryParameter("with_activity_data", Boolean.toString(lookup == LookupKind.ACTIVITY_WITH_DATA));
-            return httpClient.execute(buildGet(url, key, token, filter, reactionType, withActivityData))
+            return httpClient.execute(buildGet(url, key, token, filter, limit, reactionType, withActivityData))
                     .thenApply(response -> {
                         try {
                             return deserializeContainer(response, Reaction.class);
