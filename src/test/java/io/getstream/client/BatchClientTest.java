@@ -2,10 +2,7 @@ package io.getstream.client;
 
 import com.google.common.collect.ImmutableMap;
 import io.getstream.core.http.OKHTTPClientAdapter;
-import io.getstream.core.models.Activity;
-import io.getstream.core.models.FeedID;
-import io.getstream.core.models.FollowRelation;
-import io.getstream.core.models.ForeignIDTimePair;
+import io.getstream.core.models.*;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Test;
 
@@ -100,6 +97,42 @@ class BatchClientTest {
             Map<String, Object> set = ImmutableMap.of("value", "message");
             Iterable<String> unset = Collections.emptyList();
             result[0] = client.updateActivityByForeignID(new ForeignIDTimePair("foreignID", time), set, unset).join();
+        });
+    }
+
+    @Test
+    void partiallyUpdateActivitiesByID() {
+        List<Activity>[] result = new List[1];
+        assertDoesNotThrow(() -> {
+            Client client = Client.builder(apiKey, secret).build();
+
+            ActivityUpdate update = ActivityUpdate.builder()
+                    .id("1657b300-a648-11d5-8080-800020fde6c3")
+                    .set(ImmutableMap.of("value", "message"))
+                    .unset(Collections.emptyList())
+                    .build();
+
+            result[0] = client.updateActivitiesByID(update).join();
+        });
+    }
+
+    @Test
+    void partiallyUpdateActivitiesByForeignID() {
+        List<Activity>[] result = new List[1];
+        assertDoesNotThrow(() -> {
+            Client client = Client.builder(apiKey, secret).build();
+
+            SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
+            isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+            ActivityUpdate update = ActivityUpdate.builder()
+                    .foreignID("foreignID")
+                    .time(isoFormat.parse("2001-09-11T00:01:02.000000"))
+                    .set(ImmutableMap.of("value", "message"))
+                    .unset(Collections.emptyList())
+                    .build();
+
+            result[0] = client.updateActivitiesByForeignID(update).join();
         });
     }
 

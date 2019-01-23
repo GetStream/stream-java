@@ -14,6 +14,7 @@ import io.getstream.core.options.RequestOption;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -38,6 +39,10 @@ public final class Client {
         return updateActivityByID(id, set, Iterables.toArray(unset, String.class));
     }
 
+    public CompletableFuture<Activity> updateActivityByID(ActivityUpdate update) throws StreamException {
+        return updateActivityByID(update.getID(), update.getSet(), update.getUnset());
+    }
+
     public CompletableFuture<Activity> updateActivityByID(String id, Map<String, Object> set, String[] unset) throws StreamException {
         final Token token = buildActivityToken(secret, TokenAction.WRITE);
         return stream.updateActivityByID(token, id, set, unset);
@@ -57,6 +62,10 @@ public final class Client {
         return updateActivityByForeignID(foreignID, timestamp, set, Iterables.toArray(unset, String.class));
     }
 
+    public CompletableFuture<Activity> updateActivityByForeignID(ActivityUpdate update) throws StreamException {
+        return updateActivityByForeignID(update.getForeignID(), update.getTime(), update.getSet(), update.getUnset());
+    }
+
     public CompletableFuture<Activity> updateActivityByForeignID(String foreignID, Date timestamp, Map<String, Object> set, String[] unset) throws StreamException {
         final Token token = buildActivityToken(secret, TokenAction.WRITE);
         return stream.updateActivityByForeignID(token, foreignID, timestamp, set, unset);
@@ -65,6 +74,24 @@ public final class Client {
     public CompletableFuture<OGData> openGraph(URL url) throws StreamException {
         final Token token = buildOpenGraphToken(secret);
         return stream.openGraph(token, url);
+    }
+
+    public CompletableFuture<List<Activity>> updateActivitiesByID(Iterable<ActivityUpdate> updates) throws StreamException {
+        return updateActivitiesByID(Iterables.toArray(updates, ActivityUpdate.class));
+    }
+
+    public CompletableFuture<List<Activity>> updateActivitiesByID(ActivityUpdate... updates) throws StreamException {
+        final Token token = buildActivityToken(secret, TokenAction.WRITE);
+        return stream.updateActivitiesByID(token, updates);
+    }
+
+    public CompletableFuture<List<Activity>> updateActivitiesByForeignID(Iterable<ActivityUpdate> updates) throws StreamException {
+        return updateActivitiesByForeignID(Iterables.toArray(updates, ActivityUpdate.class));
+    }
+
+    public CompletableFuture<List<Activity>> updateActivitiesByForeignID(ActivityUpdate... updates) throws StreamException {
+        final Token token = buildActivityToken(secret, TokenAction.WRITE);
+        return stream.updateActivitiesByForeignID(token, updates);
     }
 
     public static final class Builder {

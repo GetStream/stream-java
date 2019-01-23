@@ -7,10 +7,7 @@ import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.HTTPClient;
 import io.getstream.core.http.Response;
 import io.getstream.core.http.Token;
-import io.getstream.core.models.Activity;
-import io.getstream.core.models.Data;
-import io.getstream.core.models.FeedID;
-import io.getstream.core.models.OGData;
+import io.getstream.core.models.*;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.RequestOption;
 
@@ -20,6 +17,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -28,8 +26,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Request.*;
 import static io.getstream.core.utils.Routes.*;
-import static io.getstream.core.utils.Serialization.deserialize;
-import static io.getstream.core.utils.Serialization.toJSON;
+import static io.getstream.core.utils.Serialization.*;
 
 public final class Stream {
     private final String key;
@@ -70,6 +67,33 @@ public final class Stream {
         return new StreamImages(key, baseURL, httpClient);
     }
 
+    public CompletableFuture<List<Activity>> updateActivitiesByID(Token token, ActivityUpdate[] updates) throws StreamException {
+        checkNotNull(updates, "No updates");
+        checkArgument(updates.length > 0, "No updates");
+        for (ActivityUpdate update : updates) {
+            checkNotNull(update.getID(), "No activity to update");
+            checkNotNull(update.getSet(), "No activity properties to set");
+            checkNotNull(update.getUnset(), "No activity properties to unset");
+        }
+
+        try {
+            final byte[] payload = toJSON(new Object() {
+                public final ActivityUpdate[] changes = updates;
+            });
+            final URL url = buildActivityUpdateURL(baseURL);
+            return httpClient.execute(buildPost(url, key, token, payload))
+                    .thenApply(response -> {
+                        try {
+                            return deserializeContainer(response, "activities", Activity.class);
+                        } catch (StreamException | IOException e) {
+                            throw new CompletionException(e);
+                        }
+                    });
+        } catch (JsonProcessingException | MalformedURLException | URISyntaxException e) {
+            throw new StreamException(e);
+        }
+    }
+
     public CompletableFuture<Activity> updateActivityByID(Token token, String id, Map<String, Object> set, String[] unset) throws StreamException {
         checkNotNull(id, "No activity to update");
         checkNotNull(set, "No activity properties to set");
@@ -90,6 +114,34 @@ public final class Stream {
                     .thenApply(response -> {
                         try {
                             return deserialize(response, Activity.class);
+                        } catch (StreamException | IOException e) {
+                            throw new CompletionException(e);
+                        }
+                    });
+        } catch (JsonProcessingException | MalformedURLException | URISyntaxException e) {
+            throw new StreamException(e);
+        }
+    }
+
+    public CompletableFuture<List<Activity>> updateActivitiesByForeignID(Token token, ActivityUpdate[] updates) throws StreamException {
+        checkNotNull(updates, "No updates");
+        checkArgument(updates.length > 0, "No updates");
+        for (ActivityUpdate update : updates) {
+            checkNotNull(update.getForeignID(), "No activity to update");
+            checkNotNull(update.getTime(), "Missing timestamp");
+            checkNotNull(update.getSet(), "No activity properties to set");
+            checkNotNull(update.getUnset(), "No activity properties to unset");
+        }
+
+        try {
+            final byte[] payload = toJSON(new Object() {
+                public final ActivityUpdate[] changes = updates;
+            });
+            final URL url = buildActivityUpdateURL(baseURL);
+            return httpClient.execute(buildPost(url, key, token, payload))
+                    .thenApply(response -> {
+                        try {
+                            return deserializeContainer(response, "activities", Activity.class);
                         } catch (StreamException | IOException e) {
                             throw new CompletionException(e);
                         }
