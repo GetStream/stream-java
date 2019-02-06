@@ -67,10 +67,9 @@ public final class StreamReactions {
         checkNotNull(kind, "Kind can't be null");
 
         try {
-            final URL url = buildReactionsURL(baseURL, lookup.getKind() + '/' + id + '/');
-            RequestOption reactionType = new CustomQueryParameter("kind", kind);
+            final URL url = buildReactionsURL(baseURL, lookup.getKind() + '/' + id + '/' + kind);
             RequestOption withActivityData = new CustomQueryParameter("with_activity_data", Boolean.toString(lookup == LookupKind.ACTIVITY_WITH_DATA));
-            return httpClient.execute(buildGet(url, key, token, filter, limit, reactionType, withActivityData))
+            return httpClient.execute(buildGet(url, key, token, filter, limit, withActivityData))
                     .thenApply(response -> {
                         try {
                             return deserializeContainer(response, Reaction.class);

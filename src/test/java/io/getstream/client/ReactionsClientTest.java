@@ -43,7 +43,9 @@ class ReactionsClientTest {
 
             client.reactions().add("john-doe", "like", activity.getID()).join();
 
-            result[0] = client.reactions().filter(LookupKind.ACTIVITY_WITH_DATA, activity.getID()).join();
+            client.reactions().filter(LookupKind.ACTIVITY, activity.getID()).join();
+
+            result[0] = client.reactions().filter(LookupKind.ACTIVITY_WITH_DATA, activity.getID(), "comment").join();
         });
     }
 
