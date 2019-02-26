@@ -207,7 +207,7 @@ class CollectionsClientTest {
             CollectionData data = new CollectionData("id_11")
                     .set("key", "value")
                     .set("extra", ImmutableMap.of("test", "test"));
-            client.upsert("get_many_custom_collection", data).join();
+            client.upsert("get_many_collection", data).join();
             result[0] = client.select("get_many_collection", "id_11").join();
         });
     }

@@ -97,6 +97,26 @@ public final class CloudReactionsClient {
         return reactions.add(token, userID, reaction, targetFeeds);
     }
 
+    public CompletableFuture<Reaction> addChild(String userID, String kind, String parentID, Iterable<FeedID> targetFeeds) throws StreamException {
+        Reaction child = Reaction.builder().kind(kind).parent(parentID).build();
+        return add(userID, child, targetFeeds);
+    }
+
+    public CompletableFuture<Reaction> addChild(String userID, String kind, String parentID, FeedID... targetFeeds) throws StreamException {
+        Reaction child = Reaction.builder().kind(kind).parent(parentID).build();
+        return add(userID, child, targetFeeds);
+    }
+
+    public CompletableFuture<Reaction> addChild(String userID, String parentID, Reaction reaction, Iterable<FeedID> targetFeeds) throws StreamException {
+        Reaction child = Reaction.builder().fromReaction(reaction).parent(parentID).build();
+        return add(userID, child, targetFeeds);
+    }
+
+    public CompletableFuture<Reaction> addChild(String userID, String parentID, Reaction reaction, FeedID... targetFeeds) throws StreamException {
+        Reaction child = Reaction.builder().fromReaction(reaction).parent(parentID).build();
+        return add(userID, child, targetFeeds);
+    }
+
     public CompletableFuture<Void> update(String id, Iterable<FeedID> targetFeeds) throws StreamException {
         return update(id, Iterables.toArray(targetFeeds, FeedID.class));
     }

@@ -43,7 +43,6 @@ public final class Data {
     public <T> Data set(String key, T value) {
         checkArgument(!"id".equals(key), "Key can't be named 'id'");
         checkNotNull(key, "Key can't be null");
-        checkNotNull(value, "Value can't be null");
 
         data.put(key, value);
         return this;

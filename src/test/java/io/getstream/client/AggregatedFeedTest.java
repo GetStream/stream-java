@@ -24,9 +24,7 @@ class AggregatedFeedTest {
     void getActivityGroups() {
         List<? extends Group<Activity>>[] result = new List[1];
         assertDoesNotThrow(() -> {
-            Client client = Client.builder(apiKey, secret)
-                    .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-                    .build();
+            Client client = Client.builder(apiKey, secret).build();
 
             AggregatedFeed feed = client.aggregatedFeed("aggregated", "1");
             result[0] = feed.getActivities().join();
@@ -50,9 +48,7 @@ class AggregatedFeedTest {
     void getCustomActivityGroups() {
         List<? extends Group<Match>>[] result = new List[1];
         assertDoesNotThrow(() -> {
-            Client client = Client.builder(apiKey, secret)
-                    .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-                    .build();
+            Client client = Client.builder(apiKey, secret).build();
 
             AggregatedFeed feed = client.aggregatedFeed("aggregated", "777");
 
@@ -80,9 +76,7 @@ class AggregatedFeedTest {
     void invalidFeedType() {
         List<? extends Group<Activity>>[] result = new List[1];
         assertThrows(CompletionException.class, () -> {
-            Client client = Client.builder(apiKey, secret)
-                    .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-                    .build();
+            Client client = Client.builder(apiKey, secret).build();
 
             AggregatedFeed feed = client.aggregatedFeed("flat", "1");
             result[0] = feed.getActivities().join();

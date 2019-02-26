@@ -116,25 +116,6 @@ public final class StreamCollections {
         }
     }
 
-    public CompletableFuture<List<CollectionData>> items(Token token, String collection) throws StreamException {
-        checkNotNull(collection, "Collection name can't be null");
-        checkArgument(!collection.isEmpty(), "Collection name can't be empty");
-
-        try {
-            final URL url = buildCollectionsURL(baseURL, collection + '/');
-            return httpClient.execute(buildGet(url, key, token))
-                    .thenApply(response -> {
-                        try {
-                            return deserializeContainer(response, CollectionData.class);
-                        } catch (StreamException | IOException e) {
-                            throw new CompletionException(e);
-                        }
-                    });
-        } catch (MalformedURLException | URISyntaxException e) {
-            throw new StreamException(e);
-        }
-    }
-
     public CompletableFuture<CollectionData> get(Token token, String collection, String id) throws StreamException {
         checkNotNull(collection, "Collection name can't be null");
         checkArgument(!collection.isEmpty(), "Collection name can't be empty");

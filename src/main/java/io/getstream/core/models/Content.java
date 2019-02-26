@@ -42,7 +42,6 @@ public final class Content {
     public <T> Content set(String key, T value) {
         checkArgument(!"foreignID".equals(key), "Key can't be named 'foreignID'");
         checkNotNull(key, "Key can't be null");
-        checkNotNull(value, "Value can't be null");
 
         data.put(key, value);
         return this;

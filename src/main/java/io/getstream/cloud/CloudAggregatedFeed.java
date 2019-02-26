@@ -130,7 +130,7 @@ public class CloudAggregatedFeed extends CloudFeed {
 
     <T> CompletableFuture<? extends List<? extends Group<T>>> getCustomActivities(Class<T> type, Limit limit, Offset offset, Filter filter, ActivityMarker marker) throws StreamException {
         return getClient()
-                .getActivities(getID(), offset, filter, marker)
+                .getActivities(getID(), limit, offset, filter, marker)
                 .thenApply(response -> {
                     try {
                         return deserializeContainer(response, Group.class, type);
@@ -188,16 +188,16 @@ public class CloudAggregatedFeed extends CloudFeed {
         return getEnrichedActivities(DefaultOptions.DEFAULT_LIMIT, DefaultOptions.DEFAULT_OFFSET, filter, DefaultOptions.DEFAULT_MARKER, flags);
     }
 
-    public CompletableFuture<? extends List<? extends Group<EnrichedActivity>>> getEnrichedActivities(ActivityMarker marker, EnrichmentFlags flags) throws StreamException {
-        return getEnrichedActivities(DefaultOptions.DEFAULT_LIMIT, DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, marker, flags);
-    }
-
     public CompletableFuture<? extends List<? extends Group<EnrichedActivity>>> getEnrichedActivities(Filter filter, ActivityMarker marker) throws StreamException {
         return getEnrichedActivities(DefaultOptions.DEFAULT_LIMIT, DefaultOptions.DEFAULT_OFFSET, filter, marker, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
     }
 
     public CompletableFuture<? extends List<? extends Group<EnrichedActivity>>> getEnrichedActivities(Offset offset, ActivityMarker marker) throws StreamException {
         return getEnrichedActivities(DefaultOptions.DEFAULT_LIMIT, offset, DefaultOptions.DEFAULT_FILTER, marker, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
+    }
+
+    public CompletableFuture<? extends List<? extends Group<EnrichedActivity>>> getEnrichedActivities(ActivityMarker marker, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedActivities(DefaultOptions.DEFAULT_LIMIT, DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, marker, flags);
     }
 
     public CompletableFuture<? extends List<? extends Group<EnrichedActivity>>> getEnrichedActivities(Limit limit, Offset offset, EnrichmentFlags flags) throws StreamException {
@@ -208,16 +208,16 @@ public class CloudAggregatedFeed extends CloudFeed {
         return getEnrichedActivities(limit, DefaultOptions.DEFAULT_OFFSET, filter, DefaultOptions.DEFAULT_MARKER, flags);
     }
 
-    public CompletableFuture<? extends List<? extends Group<EnrichedActivity>>> getEnrichedActivities(Limit limit, ActivityMarker marker, EnrichmentFlags flags) throws StreamException {
-        return getEnrichedActivities(limit, DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, marker, flags);
-    }
-
     public CompletableFuture<? extends List<? extends Group<EnrichedActivity>>> getEnrichedActivities(Limit limit, Filter filter, ActivityMarker marker) throws StreamException {
         return getEnrichedActivities(limit, DefaultOptions.DEFAULT_OFFSET, filter, marker, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
     }
 
     public CompletableFuture<? extends List<? extends Group<EnrichedActivity>>> getEnrichedActivities(Limit limit, Offset offset, ActivityMarker marker) throws StreamException {
         return getEnrichedActivities(limit, offset, DefaultOptions.DEFAULT_FILTER, marker, DefaultOptions.DEFAULT_ENRICHMENT_FLAGS);
+    }
+
+    public CompletableFuture<? extends List<? extends Group<EnrichedActivity>>> getEnrichedActivities(Limit limit, ActivityMarker marker, EnrichmentFlags flags) throws StreamException {
+        return getEnrichedActivities(limit, DefaultOptions.DEFAULT_OFFSET, DefaultOptions.DEFAULT_FILTER, marker, flags);
     }
 
     public CompletableFuture<? extends List<? extends Group<EnrichedActivity>>> getEnrichedActivities(Filter filter, ActivityMarker marker, EnrichmentFlags flags) throws StreamException {

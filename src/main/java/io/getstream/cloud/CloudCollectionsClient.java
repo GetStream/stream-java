@@ -56,17 +56,6 @@ public final class CloudCollectionsClient {
         return collections.update(token, userID, collection, item);
     }
 
-    public <T> CompletableFuture<List<T>> customItems(Class<T> type, String collection) throws StreamException {
-        return items(collection)
-                .thenApply(result -> result.stream()
-                        .map(item -> convert(item, type))
-                        .collect(Collectors.toList()));
-    }
-
-    public CompletableFuture<List<CollectionData>> items(String collection) throws StreamException {
-        return collections.items(token, collection);
-    }
-
     public <T> CompletableFuture<T> getCustom(Class<T> type, String collection, String id) throws StreamException {
         return get(collection, id).thenApply(data -> convert(data, type));
     }
