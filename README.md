@@ -12,14 +12,14 @@ Add the following dependency to your pom.xml:
 <dependency>
     <groupId>io.getstream.client</groupId>
     <artifactId>stream-java</artifactId>
-    <version>3.1.5</version>
+    <version>3.1.6</version>
 </dependency>
 ```
 
 or in your build.gradle:
 
 ```gradle
-compile 'io.getstream.client:stream-java:3.1.5'
+compile 'io.getstream.client:stream-java:3.1.6'
 ```
 
 In case you want to download the artifact and put it manually into your project,
@@ -43,7 +43,7 @@ Javadocs are available [here](https://getstream.github.io/stream-java/).
 
 ### Building & Testing
 
-Run `gradle wrapper --gradle-version 5.0` to generate gradle wrapper files
+Run `gradle wrapper --gradle-version 4.0` to generate gradle wrapper files
 
 Run `gradle test` to execute integration tests
 
