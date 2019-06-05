@@ -7,9 +7,9 @@ import io.getstream.core.http.Token;
 import io.getstream.core.models.Engagement;
 import io.getstream.core.models.Impression;
 import io.getstream.core.utils.Auth.TokenAction;
+import java8.util.concurrent.CompletableFuture;
 
 import java.net.URL;
-import java.util.concurrent.CompletableFuture;
 
 import static io.getstream.core.utils.Auth.buildAnalyticsRedirectToken;
 import static io.getstream.core.utils.Auth.buildAnalyticsToken;

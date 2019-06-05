@@ -5,9 +5,9 @@ import io.getstream.core.StreamPersonalization;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.Token;
 import io.getstream.core.utils.Auth.TokenAction;
+import java8.util.concurrent.CompletableFuture;
 
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import static io.getstream.core.utils.Auth.buildPersonalizationToken;
 

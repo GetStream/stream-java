@@ -1,4 +1,5 @@
 plugins {
+    id "me.tatarka.retrolambda" version "3.7.0"
     id 'java-library'
     id 'eclipse'
     id 'idea'
@@ -9,20 +10,24 @@ plugins {
 }
 
 group 'io.getstream.client'
-version = '3.1.5'
+version = '3.1.7'
 
 dependencies {
-    testCompile 'org.junit.jupiter:junit-jupiter-api:5.3.1'
-    testCompile 'org.junit.jupiter:junit-jupiter-params:5.3.1'
-    testRuntime 'org.junit.jupiter:junit-jupiter-engine:5.3.1'
-    testRuntime 'org.junit.vintage:junit-vintage-engine:5.3.1'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    testCompile 'junit:junit:4.12'
     testCompile 'com.pholser:junit-quickcheck-core:0.8.1'
     testCompile 'com.pholser:junit-quickcheck-generators:0.8.1'
+    testRuntime 'org.junit.vintage:junit-vintage-engine:5.2.0'
 
-    implementation 'com.google.guava:guava:26.0-jre'
+    implementation 'com.google.guava:guava:20.0'
 
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
 
+    compile 'net.sourceforge.streamsupport:streamsupport:1.7.0'
+    compile 'net.sourceforge.streamsupport:streamsupport-cfuture:1.7.0'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.6'
     compile 'com.fasterxml.jackson.core:jackson-core:2.9.6'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.6'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
@@ -30,15 +35,11 @@ dependencies {
     compile 'com.auth0:java-jwt:3.4.0'
 }
 
-compileJava {
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+retrolambda {
+    javaVersion JavaVersion.VERSION_1_7
 }
 
 test {
-    useJUnitPlatform {
-        includeEngines 'junit-jupiter', 'junit-vintage'
-    }
     testLogging {
         exceptionFormat = 'full'
         events 'standard_out', 'standard_error', "passed", "skipped", "failed"

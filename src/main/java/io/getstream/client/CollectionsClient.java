@@ -1,17 +1,18 @@
 package io.getstream.client;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Streams;
 import io.getstream.core.StreamCollections;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.CollectionData;
 import io.getstream.core.utils.Auth.TokenAction;
+import io.getstream.core.utils.Streams;
+import java8.util.J8Arrays;
+import java8.util.concurrent.CompletableFuture;
+import java8.util.stream.Collectors;
+import java8.util.stream.StreamSupport;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 import static io.getstream.core.utils.Auth.buildCollectionsToken;
 import static io.getstream.core.utils.Serialization.convert;
@@ -69,7 +70,7 @@ public final class CollectionsClient {
     }
 
     public <T> CompletableFuture<Void> upsertCustom(String collection, T... items) throws StreamException {
-        final CollectionData[] custom = Arrays.stream(items)
+        final CollectionData[] custom = J8Arrays.stream(items)
                 .map(item -> CollectionData.buildFrom(item))
                 .toArray(CollectionData[]::new);
         return upsert(collection, custom);
@@ -99,7 +100,9 @@ public final class CollectionsClient {
 
     public <T> CompletableFuture<List<T>> selectCustom(Class<T> type, String collection, String... ids) throws StreamException {
         return select(collection, ids)
-                .thenApply(data -> data.stream().map(item -> convert(item, type)).collect(Collectors.toList()));
+                .thenApply(data -> StreamSupport.stream(data)
+                        .map(item -> convert(item, type))
+                        .collect(Collectors.toList()));
     }
 
     public CompletableFuture<List<CollectionData>> select(String collection, Iterable<String> ids) throws StreamException {

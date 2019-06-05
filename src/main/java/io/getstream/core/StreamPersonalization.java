@@ -7,14 +7,15 @@ import io.getstream.core.http.HTTPClient;
 import io.getstream.core.http.Token;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.RequestOption;
+import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletionException;
+import java8.util.stream.StreamSupport;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -40,7 +41,7 @@ public final class StreamPersonalization {
 
         try {
             final URL url = buildPersonalizationURL(baseURL, resource + '/');
-            final RequestOption[] options = params.entrySet().stream()
+            final RequestOption[] options = StreamSupport.stream(params.entrySet())
                     .map(entry -> new CustomQueryParameter(entry.getKey(), entry.getValue().toString()))
                     .toArray(RequestOption[]::new);
             return httpClient.execute(buildGet(url, key, token, options))
@@ -67,7 +68,7 @@ public final class StreamPersonalization {
                 public final Map<String, Object> data = payload;
             });
             final URL url = buildPersonalizationURL(baseURL, resource + '/');
-            final RequestOption[] options = params.entrySet().stream()
+            final RequestOption[] options = StreamSupport.stream(params.entrySet())
                     .map(entry -> new CustomQueryParameter(entry.getKey(), entry.getValue().toString()))
                     .toArray(RequestOption[]::new);
             return httpClient.execute(buildPost(url, key, token, jsonPayload, options))

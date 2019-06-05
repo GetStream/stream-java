@@ -1,5 +1,6 @@
 package io.getstream.core.utils;
 
+import com.google.common.base.Joiner;
 import io.getstream.core.models.FeedID;
 
 import java.net.MalformedURLException;
@@ -116,7 +117,7 @@ public final class Routes {
 
             return new URI(baseURI.getScheme(),
                     baseURI.getUserInfo(),
-                    String.join(".", parts),
+                    Joiner.on(".").join(parts),
                     baseURI.getPort(),
                     baseURI.getPath() + apiPath + path,
                     baseURI.getQuery(),

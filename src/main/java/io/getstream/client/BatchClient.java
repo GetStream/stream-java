@@ -9,9 +9,9 @@ import io.getstream.core.models.FeedID;
 import io.getstream.core.models.FollowRelation;
 import io.getstream.core.models.ForeignIDTimePair;
 import io.getstream.core.utils.DefaultOptions;
+import java8.util.concurrent.CompletableFuture;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import static io.getstream.core.utils.Auth.*;
 

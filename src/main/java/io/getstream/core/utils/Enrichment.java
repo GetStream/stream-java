@@ -10,4 +10,8 @@ public final class Enrichment {
     public static String createUserReference(String id) {
         return String.format("SU:%s", id);
     }
+
+    public static String createActivityReference(String id) {
+        return String.format("SA:%s", id);
+    }
 }

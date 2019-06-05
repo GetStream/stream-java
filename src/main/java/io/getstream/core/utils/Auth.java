@@ -6,6 +6,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.FeedID;
 
+import java.util.Date;
+
 import static com.google.common.base.MoreObjects.firstNonNull;
 
 public final class Auth {
@@ -113,10 +115,16 @@ public final class Auth {
     }
 
     public static Token buildFrontendToken(String secret, String userID) {
+        return buildFrontendToken(secret, userID, null);
+    }
+
+    public static Token buildFrontendToken(String secret, String userID, Date expiresAt) {
         final Algorithm algorithm = Algorithm.HMAC256(secret);
-        return new Token(JWT.create()
-                .withClaim("user_id", userID)
-                .sign(algorithm));
+        JWTCreator.Builder builder = JWT.create().withClaim("user_id", userID);
+        if (expiresAt != null) {
+            builder = builder.withExpiresAt(expiresAt);
+        }
+        return new Token(builder.sign(algorithm));
     }
 
     public static Token buildBackendToken(String secret, TokenResource resource, TokenAction action, String feedID) {

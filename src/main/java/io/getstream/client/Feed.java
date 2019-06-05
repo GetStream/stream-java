@@ -1,7 +1,6 @@
 package io.getstream.client;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Streams;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
@@ -11,13 +10,14 @@ import io.getstream.core.options.Limit;
 import io.getstream.core.options.Offset;
 import io.getstream.core.options.RequestOption;
 import io.getstream.core.utils.DefaultOptions;
+import io.getstream.core.utils.Streams;
+import java8.util.J8Arrays;
+import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletionException;
 
 import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -108,7 +108,7 @@ public class Feed {
     }
 
     public final <T> CompletableFuture<List<T>> addCustomActivities(T... activities) throws StreamException {
-        final Activity[] custom = Arrays.stream(activities)
+        final Activity[] custom = J8Arrays.stream(activities)
                 .map(activity -> Activity.builder().fromCustomActivity(activity).build())
                 .toArray(Activity[]::new);
         return getClient()
@@ -196,7 +196,7 @@ public class Feed {
     public final CompletableFuture<List<FollowRelation>> getFollowers(Limit limit, Offset offset, FeedID... feeds) throws StreamException {
         checkNotNull(feeds, "No feed ids to filter on");
 
-        final String[] feedIDs = Arrays.stream(feeds)
+        final String[] feedIDs = J8Arrays.stream(feeds)
                 .map(id -> id.toString())
                 .toArray(String[]::new);
         final RequestOption[] options = feedIDs.length == 0
@@ -244,7 +244,7 @@ public class Feed {
     public final CompletableFuture<List<FollowRelation>> getFollowed(Limit limit, Offset offset, FeedID... feeds) throws StreamException {
         checkNotNull(feeds, "No feed ids to filter on");
 
-        final String[] feedIDs = Arrays.stream(feeds)
+        final String[] feedIDs = J8Arrays.stream(feeds)
                 .map(id -> id.toString())
                 .toArray(String[]::new);
         final RequestOption[] options = feedIDs.length == 0

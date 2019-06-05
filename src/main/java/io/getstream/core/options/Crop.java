@@ -1,8 +1,8 @@
 package io.getstream.core.options;
 
+import com.google.common.base.Joiner;
 import io.getstream.core.http.Request;
-
-import java.util.Arrays;
+import java8.util.J8Arrays;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -59,10 +59,10 @@ public final class Crop implements RequestOption {
 
     @Override
     public void apply(Request.Builder builder) {
-        String[] cropTypes = Arrays.stream(this.types)
+        String[] cropTypes = J8Arrays.stream(this.types)
                 .map(type -> type.toString())
                 .toArray(String[]::new);
-        String types = String.join(",", cropTypes);
+        String types = Joiner.on(",").join(cropTypes);
         builder.addQueryParameter("crop", types);
         builder.addQueryParameter("w", Integer.toString(width));
         builder.addQueryParameter("h", Integer.toString(height));

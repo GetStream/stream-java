@@ -10,9 +10,9 @@ import io.getstream.core.models.Reaction;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
 import io.getstream.core.utils.DefaultOptions;
+import java8.util.concurrent.CompletableFuture;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

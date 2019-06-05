@@ -4,14 +4,14 @@ import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.HTTPClient;
 import io.getstream.core.http.Token;
 import io.getstream.core.options.CustomQueryParameter;
+import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletionException;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

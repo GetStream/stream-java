@@ -1,12 +1,12 @@
 package io.getstream.core.http;
 
 import io.getstream.core.utils.Info;
+import java8.util.concurrent.CompletableFuture;
 import okhttp3.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLConnection;
-import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -104,6 +104,8 @@ public final class OKHTTPClientAdapter extends HTTPClient {
                     result.complete(httpResponse);
                 } catch (Exception e) {
                     result.completeExceptionally(e);
+                } finally {
+                    response.body().close();
                 }
             }
         });

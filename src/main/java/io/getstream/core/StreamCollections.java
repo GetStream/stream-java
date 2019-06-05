@@ -1,6 +1,7 @@
 package io.getstream.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.HTTPClient;
@@ -8,17 +9,17 @@ import io.getstream.core.http.Token;
 import io.getstream.core.models.CollectionData;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.RequestOption;
+import java8.util.J8Arrays;
+import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletionException;
+import java8.util.stream.Collectors;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -142,12 +143,12 @@ public final class StreamCollections {
         checkArgument(!collection.isEmpty(), "Collection name can't be empty");
         checkArgument(ids.length > 0, "Collection ids can't be empty");
 
-        List<String> foreignIDs = Arrays.stream(ids)
+        List<String> foreignIDs = J8Arrays.stream(ids)
                 .map(id -> String.format("%s:%s", collection, id))
                 .collect(Collectors.toList());
         try {
             final URL url = buildBatchCollectionsURL(baseURL);
-            return httpClient.execute(buildGet(url, key, token, new CustomQueryParameter("foreign_ids", String.join(",", foreignIDs))))
+            return httpClient.execute(buildGet(url, key, token, new CustomQueryParameter("foreign_ids", Joiner.on(",").join(foreignIDs))))
                     .thenApply(response -> {
                         try {
                             return deserializeContainer(response, "response.data", CollectionData.class);
@@ -190,7 +191,7 @@ public final class StreamCollections {
             final URL url = buildBatchCollectionsURL(baseURL);
             final RequestOption[] options = new RequestOption[]{
                     new CustomQueryParameter("collection_name", collection),
-                    new CustomQueryParameter("ids", String.join(",", ids))
+                    new CustomQueryParameter("ids", Joiner.on(",").join(ids))
             };
             return httpClient.execute(buildDelete(url, key, token, options))
                     .thenApply(response -> {

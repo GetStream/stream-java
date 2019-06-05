@@ -10,13 +10,13 @@ import io.getstream.core.http.Response;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.*;
 import io.getstream.core.options.RequestOption;
+import java8.util.concurrent.CompletableFuture;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -177,6 +177,10 @@ public final class Client {
 
     public Token frontendToken(String userID) {
         return buildFrontendToken(secret, userID);
+    }
+
+    public Token frontendToken(String userID, Date expiresAt) {
+        return buildFrontendToken(secret, userID, expiresAt);
     }
 
     public FlatFeed flatFeed(FeedID id) {

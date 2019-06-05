@@ -7,11 +7,11 @@ import io.getstream.core.models.FeedID;
 import io.getstream.core.models.NotificationGroup;
 import io.getstream.core.options.*;
 import io.getstream.core.utils.DefaultOptions;
+import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletionException;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static io.getstream.core.utils.Serialization.deserializeContainer;
 

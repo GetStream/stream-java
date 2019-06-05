@@ -1,6 +1,7 @@
 package io.getstream.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.google.common.base.Joiner;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.HTTPClient;
 import io.getstream.core.http.Token;
@@ -10,17 +11,17 @@ import io.getstream.core.models.FollowRelation;
 import io.getstream.core.models.ForeignIDTimePair;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.RequestOption;
+import java8.util.J8Arrays;
+import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletionException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -47,7 +48,7 @@ public final class StreamBatch {
 
         //XXX: renaming the variable so we can unambiguously name payload field 'activity'
         Activity data = activity;
-        String[] feedIDs = Arrays.stream(feeds).map(feed -> feed.toString()).toArray(String[]::new);
+        String[] feedIDs = J8Arrays.stream(feeds).map(feed -> feed.toString()).toArray(String[]::new);
         try {
             final byte[] payload = toJSON(new Object() {
                 public final Activity activity = data;
@@ -114,7 +115,7 @@ public final class StreamBatch {
 
         try {
             final URL url = buildActivitiesURL(baseURL);
-            return httpClient.execute(buildGet(url, key, token, new CustomQueryParameter("ids", String.join(",", activityIDs))))
+            return httpClient.execute(buildGet(url, key, token, new CustomQueryParameter("ids", Joiner.on(",").join(activityIDs))))
                     .thenApply(response -> {
                         try {
                             return deserializeContainer(response, Activity.class);
@@ -135,17 +136,17 @@ public final class StreamBatch {
         timestampFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         timestampFormat.setLenient(false);
 
-        String[] foreignIDs = Arrays.stream(activityIDTimePairs)
+        String[] foreignIDs = J8Arrays.stream(activityIDTimePairs)
                 .map(pair -> pair.getForeignID())
                 .toArray(String[]::new);
-        String[] timestamps = Arrays.stream(activityIDTimePairs)
+        String[] timestamps = J8Arrays.stream(activityIDTimePairs)
                 .map(pair -> timestampFormat.format(pair.getTime()))
                 .toArray(String[]::new);
         try {
             final URL url = buildActivitiesURL(baseURL);
             final RequestOption[] options = new RequestOption[]{
-                    new CustomQueryParameter("foreign_ids", String.join(",", foreignIDs)),
-                    new CustomQueryParameter("timestamps", String.join(",", timestamps))
+                    new CustomQueryParameter("foreign_ids", Joiner.on(",").join(foreignIDs)),
+                    new CustomQueryParameter("timestamps", Joiner.on(",").join(timestamps))
             };
             return httpClient.execute(buildGet(url, key, token, options))
                     .thenApply(response -> {

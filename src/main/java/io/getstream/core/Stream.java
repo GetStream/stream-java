@@ -10,17 +10,17 @@ import io.getstream.core.http.Token;
 import io.getstream.core.models.*;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.RequestOption;
+import java8.util.J8Arrays;
+import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletionException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -337,13 +337,13 @@ public final class Stream {
         boolean replacement = replace.length > 0 && add.length == 0 && remove.length == 0;
         checkArgument(modification || replacement, "Can't replace and modify activity to targets at the same time");
 
-        final String[] addedTargets = Arrays.stream(add)
+        final String[] addedTargets = J8Arrays.stream(add)
                 .map(id -> id.toString())
                 .toArray(String[]::new);
-        final String[] removedTargets = Arrays.stream(remove)
+        final String[] removedTargets = J8Arrays.stream(remove)
                 .map(id -> id.toString())
                 .toArray(String[]::new);
-        final String[] newTargets = Arrays.stream(replace)
+        final String[] newTargets = J8Arrays.stream(replace)
                 .map(id -> id.toString())
                 .toArray(String[]::new);
 

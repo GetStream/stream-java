@@ -6,8 +6,7 @@ import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.Engagement;
 import io.getstream.core.models.Impression;
-
-import java.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletableFuture;
 
 public final class CloudAnalyticsClient {
     private final Token token;

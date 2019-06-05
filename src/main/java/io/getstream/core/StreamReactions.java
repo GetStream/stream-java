@@ -11,16 +11,16 @@ import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
 import io.getstream.core.options.RequestOption;
+import java8.util.J8Arrays;
+import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletionException;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -95,7 +95,7 @@ public final class StreamReactions {
         checkNotNull(reaction.getKind(), "Reaction kind can't be null");
         checkArgument(!reaction.getKind().isEmpty(), "Reaction kind can't be empty");
 
-        String[] targetFeedIDs = Arrays.stream(targetFeeds)
+        String[] targetFeedIDs = J8Arrays.stream(targetFeeds)
                 .map(feed -> feed.toString())
                 .toArray(String[]::new);
 
@@ -138,7 +138,7 @@ public final class StreamReactions {
         checkNotNull(reaction.getId(), "Reaction id can't be null");
         checkArgument(!reaction.getId().isEmpty(), "Reaction id can't be empty");
 
-        String[] targetFeedIDs = Arrays.stream(targetFeeds)
+        String[] targetFeedIDs = J8Arrays.stream(targetFeeds)
                 .map(feed -> feed.toString())
                 .toArray(String[]::new);
 

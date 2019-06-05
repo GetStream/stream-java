@@ -3,10 +3,10 @@ package io.getstream.cloud;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.models.Data;
 import io.getstream.core.models.ProfileData;
+import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletionException;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

@@ -12,10 +12,10 @@ import io.getstream.core.models.Data;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.OGData;
 import io.getstream.core.options.RequestOption;
+import java8.util.concurrent.CompletableFuture;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.CompletableFuture;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;

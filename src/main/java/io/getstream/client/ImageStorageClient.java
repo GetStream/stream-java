@@ -6,10 +6,10 @@ import io.getstream.core.http.Token;
 import io.getstream.core.options.Crop;
 import io.getstream.core.options.Resize;
 import io.getstream.core.utils.Auth.TokenAction;
+import java8.util.concurrent.CompletableFuture;
 
 import java.io.File;
 import java.net.URL;
-import java.util.concurrent.CompletableFuture;
 
 import static io.getstream.core.utils.Auth.buildFilesToken;
 

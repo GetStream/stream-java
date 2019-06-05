@@ -8,13 +8,12 @@ import io.getstream.core.options.EnrichmentFlags;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
 import io.getstream.core.options.Offset;
-import org.junit.jupiter.api.Test;
+import java8.util.concurrent.CompletableFuture;
+import org.junit.Test;
 
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.CompletableFuture;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.*;
 
 class MockHTTPClient extends HTTPClient {
     public Request lastRequest;
@@ -39,24 +38,20 @@ public class ClientTest {
     private static final String secret = "7j7exnksc4nxy399fdxvjqyqsqdahax3nfgtp27pumpc7sfm9um688pzpxjpjbf2";
 
     @Test
-    void clientCreation() {
-        assertDoesNotThrow(() -> {
-            Client.builder(apiKey, secret).httpClient(new MockHTTPClient()).build();
-        });
+    public void clientCreation() throws Exception {
+        Client.builder(apiKey, secret).httpClient(new MockHTTPClient()).build();
     }
 
     @Test
-    void regionURL() throws MalformedURLException {
+    public void regionURL() throws Exception {
         for (Region region : Region.values()) {
             MockHTTPClient httpClient = new MockHTTPClient();
-            assertDoesNotThrow(() -> {
-                Client client = Client.builder(apiKey, secret)
-                        .region(region)
-                        .httpClient(httpClient)
-                        .build();
-                FlatFeed feed = client.flatFeed("flat", "1");
-                feed.getActivities();
-            });
+            Client client = Client.builder(apiKey, secret)
+                    .region(region)
+                    .httpClient(httpClient)
+                    .build();
+            FlatFeed feed = client.flatFeed("flat", "1");
+            feed.getActivities();
 
             assertNotNull(httpClient.lastRequest);
             URL feedURL = new URL("https://" + region + ".stream-io-api.com:443/api/v1.0/feed/flat/1/?api_key=" + apiKey + "&limit=25");
@@ -67,18 +62,16 @@ public class ClientTest {
     }
 
     @Test
-    void customURL() throws MalformedURLException {
+    public void customURL() throws Exception {
         MockHTTPClient httpClient = new MockHTTPClient();
-        assertDoesNotThrow(() -> {
-            Client client = Client.builder(apiKey, secret)
-                    .httpClient(httpClient)
-                    .scheme("http")
-                    .host("my.test.host.com")
-                    .port(1234)
-                    .build();
-            FlatFeed feed = client.flatFeed("flat", "1");
-            feed.getActivities();
-        });
+        Client client = Client.builder(apiKey, secret)
+                .httpClient(httpClient)
+                .scheme("http")
+                .host("my.test.host.com")
+                .port(1234)
+                .build();
+        FlatFeed feed = client.flatFeed("flat", "1");
+        feed.getActivities();
 
         assertNotNull(httpClient.lastRequest);
         URL feedURL = new URL("http://my.test.host.com:1234/api/v1.0/feed/flat/1/?api_key=" + apiKey + "&limit=25");
@@ -88,13 +81,11 @@ public class ClientTest {
     }
 
     @Test
-    void feedURL() throws MalformedURLException {
+    public void feedURL() throws Exception {
         MockHTTPClient httpClient = new MockHTTPClient();
-        assertDoesNotThrow(() -> {
-            Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
-            FlatFeed feed = client.flatFeed("flat", "1");
-            feed.getActivities(new Limit(69), new Offset(13));
-        });
+        Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
+        FlatFeed feed = client.flatFeed("flat", "1");
+        feed.getActivities(new Limit(69), new Offset(13));
 
         assertNotNull(httpClient.lastRequest);
         URL feedURL = new URL("https://us-east-api.stream-io-api.com:443/api/v1.0/feed/flat/1/?api_key=" + apiKey + "&limit=69&offset=13");
@@ -102,11 +93,7 @@ public class ClientTest {
         assertEquals(httpClient.lastRequest.getMethod(), Request.Method.GET);
         assertNull(httpClient.lastRequest.getBody());
 
-        assertDoesNotThrow(() -> {
-            Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
-            FlatFeed feed = client.flatFeed("flat", "1");
-            feed.getActivities(new Limit(69), new Filter().idGreaterThanEqual("123").idLessThanEqual("456"));
-        });
+        feed.getActivities(new Limit(69), new Filter().idGreaterThanEqual("123").idLessThanEqual("456"));
 
         assertNotNull(httpClient.lastRequest);
         feedURL = new URL("https://us-east-api.stream-io-api.com:443/api/v1.0/feed/flat/1/?api_key=" + apiKey + "&limit=69&id_gte=123&id_lte=456");
@@ -116,13 +103,11 @@ public class ClientTest {
     }
 
     @Test
-    void enrichedFeedURL() throws MalformedURLException {
+    public void enrichedFeedURL() throws Exception {
         MockHTTPClient httpClient = new MockHTTPClient();
-        assertDoesNotThrow(() -> {
-            Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
-            FlatFeed feed = client.flatFeed("flat", "1");
-            feed.getEnrichedActivities(new Limit(69), new Offset(13));
-        });
+        Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
+        FlatFeed feed = client.flatFeed("flat", "1");
+        feed.getEnrichedActivities(new Limit(69), new Offset(13));
 
         assertNotNull(httpClient.lastRequest);
         URL feedURL = new URL("https://us-east-api.stream-io-api.com:443/api/v1.0/enrich/feed/flat/1/?api_key=" + apiKey + "&limit=69&offset=13");
@@ -130,11 +115,7 @@ public class ClientTest {
         assertEquals(httpClient.lastRequest.getMethod(), Request.Method.GET);
         assertNull(httpClient.lastRequest.getBody());
 
-        assertDoesNotThrow(() -> {
-            Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
-            FlatFeed feed = client.flatFeed("flat", "1");
-            feed.getEnrichedActivities(new Limit(69), new Filter().idGreaterThanEqual("123").idLessThanEqual("456"), new EnrichmentFlags().withUserReactions("user1"));
-        });
+        feed.getEnrichedActivities(new Limit(69), new Filter().idGreaterThanEqual("123").idLessThanEqual("456"), new EnrichmentFlags().withUserReactions("user1"));
 
         assertNotNull(httpClient.lastRequest);
         feedURL = new URL("https://us-east-api.stream-io-api.com:443/api/v1.0/enrich/feed/flat/1/?api_key=" + apiKey + "&limit=69&id_gte=123&id_lte=456&with_own_reactions=true&user_id=user1");
@@ -144,13 +125,11 @@ public class ClientTest {
     }
 
     @Test
-    void feedFollowURL() throws MalformedURLException {
+    public void feedFollowURL() throws Exception {
         MockHTTPClient httpClient = new MockHTTPClient();
-        assertDoesNotThrow(() -> {
-            Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
-            FlatFeed feed = client.flatFeed("flat", "1");
-            feed.getFollowers();
-        });
+        Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
+        FlatFeed feed = client.flatFeed("flat", "1");
+        feed.getFollowers();
 
         assertNotNull(httpClient.lastRequest);
         URL followersURL = new URL("https://us-east-api.stream-io-api.com:443/api/v1.0/feed/flat/1/followers/?api_key=" + apiKey + "&limit=25");
@@ -160,14 +139,12 @@ public class ClientTest {
     }
 
     @Test
-    void feedFollowedURL() throws MalformedURLException {
+    public void feedFollowedURL() throws Exception {
         MockHTTPClient httpClient = new MockHTTPClient();
-        assertDoesNotThrow(() -> {
-            Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
+        Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
 
-            FlatFeed feed = client.flatFeed("flat", "1");
-            feed.getFollowed();
-        });
+        FlatFeed feed = client.flatFeed("flat", "1");
+        feed.getFollowed();
 
         assertNotNull(httpClient.lastRequest);
         URL followersURL = new URL("https://us-east-api.stream-io-api.com:443/api/v1.0/feed/flat/1/following/?api_key=" + apiKey + "&limit=25");

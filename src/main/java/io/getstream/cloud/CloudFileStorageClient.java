@@ -3,10 +3,10 @@ package io.getstream.cloud;
 import io.getstream.core.StreamFiles;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.Token;
+import java8.util.concurrent.CompletableFuture;
 
 import java.io.File;
 import java.net.URL;
-import java.util.concurrent.CompletableFuture;
 
 public final class CloudFileStorageClient {
     private final Token token;

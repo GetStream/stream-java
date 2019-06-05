@@ -12,14 +12,14 @@ Add the following dependency to your pom.xml:
 <dependency>
     <groupId>io.getstream.client</groupId>
     <artifactId>stream-java</artifactId>
-    <version>3.1.5</version>
+    <version>3.1.7</version>
 </dependency>
 ```
 
 or in your build.gradle:
 
 ```gradle
-compile 'io.getstream.client:stream-java:3.1.5'
+compile 'io.getstream.client:stream-java:3.1.7'
 ```
 
 In case you want to download the artifact and put it manually into your project,
@@ -29,7 +29,7 @@ Snapshots of the development version are available in [Sonatype](https://oss.son
 
 #### JDK / JVM version requirements
 
-This API Client project requires Java SE 8.
+This API Client project requires Java SE 7.
 
 ### Full documentation
 
@@ -43,7 +43,7 @@ Javadocs are available [here](https://getstream.github.io/stream-java/).
 
 ### Building & Testing
 
-Run `gradle wrapper --gradle-version 5.0` to generate gradle wrapper files
+Run `gradle wrapper --gradle-version 4.10.3` to generate gradle wrapper files
 
 Run `gradle test` to execute integration tests
 

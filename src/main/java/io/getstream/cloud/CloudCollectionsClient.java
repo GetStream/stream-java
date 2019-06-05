@@ -4,10 +4,7 @@ import io.getstream.core.StreamCollections;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.CollectionData;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+import java8.util.concurrent.CompletableFuture;
 
 import static io.getstream.core.utils.Serialization.convert;
 
