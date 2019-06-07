@@ -13,6 +13,7 @@ import java8.util.concurrent.CompletionException;
 import okhttp3.OkHttpClient;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,9 +49,11 @@ public class FlatFeedTest {
                 .withUserReactions("some-user")
                 .withReactionCounts()
                 .withRecentReactions()).join();
-        result.sort((a, b) -> {
-            int aLikes = a.getReactionCounts().getOrDefault("like", 0).intValue();
-            int bLikes = b.getReactionCounts().getOrDefault("like", 0).intValue();
+        Collections.sort(result, (a, b) -> {
+            Number aValue = a.getReactionCounts().get("like");
+            Number bValue = b.getReactionCounts().get("like");
+            int aLikes =  aValue == null ? 0 : aValue.intValue();
+            int bLikes =  bValue == null ? 0 : bValue.intValue();
             return aLikes - bLikes;
         });
     }
