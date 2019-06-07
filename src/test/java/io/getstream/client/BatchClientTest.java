@@ -1,6 +1,7 @@
 package io.getstream.client;
 
 import com.google.common.collect.ImmutableMap;
+import io.getstream.core.KeepHistory;
 import io.getstream.core.models.*;
 import org.junit.Test;
 
@@ -44,6 +45,16 @@ public class BatchClientTest {
         client.unfollowMany(new FollowRelation[]{
                 new FollowRelation("flat:1", "flat:2"),
                 new FollowRelation("aggregated:1", "flat:1")
+        }).join();
+
+        client.unfollowMany(KeepHistory.NO, new FollowRelation[]{
+                new FollowRelation("flat:1", "flat:2"),
+                new FollowRelation("aggregated:1", "flat:1")
+        }).join();
+
+        client.unfollowMany(new UnfollowOperation[]{
+                new UnfollowOperation("flat:1", "flat:2", KeepHistory.NO),
+                new UnfollowOperation("aggregated:1", "flat:1", KeepHistory.YES)
         }).join();
     }
 

@@ -5,10 +5,7 @@ import com.google.common.base.Joiner;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.HTTPClient;
 import io.getstream.core.http.Token;
-import io.getstream.core.models.Activity;
-import io.getstream.core.models.FeedID;
-import io.getstream.core.models.FollowRelation;
-import io.getstream.core.models.ForeignIDTimePair;
+import io.getstream.core.models.*;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.RequestOption;
 import java8.util.J8Arrays;
@@ -89,12 +86,12 @@ public final class StreamBatch {
         }
     }
 
-    public CompletableFuture<Void> unfollowMany(Token token, FollowRelation... follows) throws StreamException {
-        checkNotNull(follows, "No feeds to unfollow");
-        checkArgument(follows.length > 0, "No feeds to unfollow");
+    public CompletableFuture<Void> unfollowMany(Token token, UnfollowOperation... unfollows) throws StreamException {
+        checkNotNull(unfollows, "No feeds to unfollow");
+        checkArgument(unfollows.length > 0, "No feeds to unfollow");
 
         try {
-            final byte[] payload = toJSON(follows);
+            final byte[] payload = toJSON(unfollows);
             final URL url = buildUnfollowManyURL(baseURL);
             return httpClient.execute(buildPost(url, key, token, payload))
                     .thenApply(response -> {

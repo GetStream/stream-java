@@ -4,11 +4,10 @@ import com.google.common.collect.Iterables;
 import io.getstream.core.StreamBatch;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.Token;
-import io.getstream.core.models.Activity;
-import io.getstream.core.models.FeedID;
-import io.getstream.core.models.FollowRelation;
-import io.getstream.core.models.ForeignIDTimePair;
+import io.getstream.core.models.*;
+import io.getstream.core.KeepHistory;
 import io.getstream.core.utils.DefaultOptions;
+import java8.util.J8Arrays;
 import java8.util.concurrent.CompletableFuture;
 
 import java.util.List;
@@ -48,7 +47,23 @@ public final class BatchClient {
 
     public CompletableFuture<Void> unfollowMany(FollowRelation... follows) throws StreamException {
         final Token token = buildFollowToken(secret, TokenAction.WRITE);
-        return batch.unfollowMany(token, follows);
+        final UnfollowOperation[] ops = J8Arrays.stream(follows)
+                .map(follow -> new UnfollowOperation(follow, io.getstream.core.KeepHistory.YES))
+                .toArray(UnfollowOperation[]::new);
+        return batch.unfollowMany(token, ops);
+    }
+
+    public CompletableFuture<Void> unfollowMany(KeepHistory keepHistory, FollowRelation... follows) throws StreamException {
+        final Token token = buildFollowToken(secret, TokenAction.WRITE);
+        final UnfollowOperation[] ops = J8Arrays.stream(follows)
+                .map(follow -> new UnfollowOperation(follow, keepHistory))
+                .toArray(UnfollowOperation[]::new);
+        return batch.unfollowMany(token, ops);
+    }
+
+    public CompletableFuture<Void> unfollowMany(UnfollowOperation... unfollows) throws StreamException {
+        final Token token = buildFollowToken(secret, TokenAction.WRITE);
+        return batch.unfollowMany(token, unfollows);
     }
 
     public CompletableFuture<List<Activity>> getActivitiesByID(Iterable<String> activityIDs) throws StreamException {
