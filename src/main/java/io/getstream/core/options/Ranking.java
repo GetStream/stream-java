@@ -10,7 +10,7 @@ public final class Ranking implements RequestOption {
 
     public Ranking(String ranking) {
         checkNotNull(ranking, "Ranking can't be empty");
-        checkArgument(ranking.isEmpty(), "Ranking can't be empty");
+        checkArgument(!ranking.isEmpty(), "Ranking can't be empty");
         this.ranking = ranking;
     }
 

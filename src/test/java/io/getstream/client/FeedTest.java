@@ -140,16 +140,18 @@ public class FeedTest {
                 .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
                 .build();
 
-        FlatFeed feed = client.flatFeed("flat", "1");
+        FlatFeed feed = client.flatFeed("flat", "bob");
         Activity activity = Activity.builder()
-                .actor("test")
+                .actor("shmest")
                 .verb("test")
                 .object("test")
-                .foreignID("foreignID")
+                .foreignID("foreignID-1-2-3-4")
                 .time(new Date())
-                .to(Lists.newArrayList(new FeedID("feed:2")))
+                .to(Lists.newArrayList(new FeedID("flat:alice")))
                 .build();
-        feed.updateActivityToTargets(activity, new FeedID[]{new FeedID("feed:3")}, new FeedID[]{new FeedID("feed:2")});
+        Activity result = feed.addActivity(activity).join();
+        feed.updateActivityToTargets(result, new FeedID[]{new FeedID("flat", "claire")}, new FeedID[]{});
+        List<Activity> after = feed.getActivities().join();
     }
 
     @Test

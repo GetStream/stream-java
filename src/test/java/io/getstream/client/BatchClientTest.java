@@ -31,11 +31,15 @@ public class BatchClientTest {
     @Test
     public void followMany() throws Exception {
         BatchClient client = Client.builder(apiKey, secret).build().batch();
-
+/*
         client.followMany(0, new FollowRelation[]{
                 new FollowRelation("flat:1", "flat:2"),
                 new FollowRelation("aggregated:1", "flat:1")
         }).join();
+*/
+        List<FollowRelation> follows = new ArrayList<>();
+        follows.add(new FollowRelation("flat:1", "flat:2"));
+        client.followMany(follows.toArray(new FollowRelation[0])).join();
     }
 
     @Test

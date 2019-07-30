@@ -38,7 +38,7 @@ public final class Routes {
     }
 
     public static URL buildToTargetUpdateURL(URL baseURL, FeedID feed) throws MalformedURLException {
-        return new URL(baseURL, basePath + feedPath(feed) + toTargetUpdatePath);
+        return new URL(baseURL, basePath + feedTargetsPath(feed) + toTargetUpdatePath);
     }
 
     public static URL buildActivitiesURL(URL baseURL) throws MalformedURLException {
@@ -129,6 +129,10 @@ public final class Routes {
 
     private static String feedPath(FeedID feed) {
         return String.format("feed/%s/%s", feed.getSlug(), feed.getUserID());
+    }
+
+    private static String feedTargetsPath(FeedID feed) {
+        return String.format("feed_targets/%s/%s", feed.getSlug(), feed.getUserID());
     }
 
     private static String enrichedFeedPath(FeedID feed) {
