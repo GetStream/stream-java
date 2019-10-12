@@ -15,6 +15,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Group<T> {
+    private final String id;
     private final String group;
     private final List<T> activities;
     private final int actorCount;
@@ -23,6 +24,8 @@ public class Group<T> {
 
     @JsonCreator
     public Group(
+            @JsonProperty("id")
+                    String id,
             @JsonProperty("group")
                     String group,
             @JsonProperty("activities")
@@ -35,9 +38,11 @@ public class Group<T> {
             @JsonProperty("updated_at")
             @JsonDeserialize(using = DateDeserializer.class)
                     Date updatedAt) {
+        checkNotNull(id, "Group 'id' field required");
         checkNotNull(group, "Group 'group' field required");
         checkNotNull(activities, "Group 'activities' field required");
 
+        this.id = id;
         this.group = group;
         this.activities = activities;
         this.actorCount = actorCount;
@@ -45,8 +50,16 @@ public class Group<T> {
         this.updatedAt = updatedAt;
     }
 
+    public String getID() {
+        return id;
+    }
+
     public String getGroup() {
         return group;
+    }
+
+    public String getGroupID() {
+        return id + '.' + group;
     }
 
     public List<T> getActivities() {
@@ -71,6 +84,7 @@ public class Group<T> {
         if (o == null || getClass() != o.getClass()) return false;
         Group that = (Group) o;
         return actorCount == that.actorCount &&
+                Objects.equals(id, that.id) &&
                 Objects.equals(group, that.group) &&
                 Objects.equals(activities, that.activities) &&
                 Objects.equals(createdAt, that.createdAt) &&
@@ -79,7 +93,7 @@ public class Group<T> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(group, activities, actorCount, createdAt, updatedAt);
+        return Objects.hash(id, group, activities, actorCount, createdAt, updatedAt);
     }
 
     @Override

@@ -7,6 +7,7 @@ import io.getstream.client.entities.VolleyballMatch;
 import io.getstream.core.http.OKHTTPClientAdapter;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
+import io.getstream.core.models.Group;
 import okhttp3.OkHttpClient;
 import org.junit.Test;
 

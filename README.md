@@ -19,7 +19,7 @@ Add the following dependency to your pom.xml:
 or in your build.gradle:
 
 ```gradle
-compile 'io.getstream.client:stream-java:3.1.9'
+compile 'io.getstream.client:stream-java:3.1.10'
 ```
 
 In case you want to download the artifact and put it manually into your project,

@@ -18,6 +18,8 @@ public class NotificationGroup<T> extends Group<T> {
 
     @JsonCreator
     public NotificationGroup(
+            @JsonProperty("id")
+                    String id,
             @JsonProperty("group")
                     String group,
             @JsonProperty("activities")
@@ -34,7 +36,7 @@ public class NotificationGroup<T> extends Group<T> {
                     boolean isSeen,
             @JsonProperty("is_read")
                     boolean isRead) {
-        super(group, activities, actorCount, createdAt, updatedAt);
+        super(id, group, activities, actorCount, createdAt, updatedAt);
 
         this.seen = isSeen;
         this.read = isRead;
