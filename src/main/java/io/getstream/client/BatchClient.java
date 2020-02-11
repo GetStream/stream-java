@@ -75,6 +75,15 @@ public final class BatchClient {
         return batch.getActivitiesByID(token, activityIDs);
     }
 
+    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivitiesByID(Iterable<String> activityIDs) throws StreamException {
+        return getEnrichedActivitiesByID(Iterables.toArray(activityIDs, String.class));
+    }
+
+    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivitiesByID(String... activityIDs) throws StreamException {
+        final Token token = buildActivityToken(secret, TokenAction.READ);
+        return batch.getEnrichedActivitiesByID(token, activityIDs);
+    }
+
     public CompletableFuture<List<Activity>> getActivitiesByForeignID(Iterable<ForeignIDTimePair> activityIDTimePairs) throws StreamException {
         return getActivitiesByForeignID(Iterables.toArray(activityIDTimePairs, ForeignIDTimePair.class));
     }
@@ -82,6 +91,15 @@ public final class BatchClient {
     public CompletableFuture<List<Activity>> getActivitiesByForeignID(ForeignIDTimePair... activityIDTimePairs) throws StreamException {
         final Token token = buildActivityToken(secret, TokenAction.READ);
         return batch.getActivitiesByForeignID(token, activityIDTimePairs);
+    }
+
+    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivitiesByForeignID(Iterable<ForeignIDTimePair> activityIDTimePairs) throws StreamException {
+        return getEnrichedActivitiesByForeignID(Iterables.toArray(activityIDTimePairs, ForeignIDTimePair.class));
+    }
+
+    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivitiesByForeignID(ForeignIDTimePair... activityIDTimePairs) throws StreamException {
+        final Token token = buildActivityToken(secret, TokenAction.READ);
+        return batch.getEnrichedActivitiesByForeignID(token, activityIDTimePairs);
     }
 
     public CompletableFuture<Void> updateActivities(Iterable<Activity> activities) throws StreamException {
