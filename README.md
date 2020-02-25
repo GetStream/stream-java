@@ -1,5 +1,5 @@
-stream-java
-===========
+# stream-java
+
 [stream-java](https://github.com/GetStream/stream-java) is a Java client for [Stream](https://getstream.io/).
 
 You can sign up for a Stream account at https://getstream.io/get_started.
@@ -47,16 +47,8 @@ Run `gradle wrapper --gradle-version 4.10.3` to generate gradle wrapper files
 
 Run `gradle test` to execute integration tests
 
-### Credits & Contributors
-
-Project is maintained by [Max Klyga](nekuromento).
-
-This project was originally contributed by [Alessandro Pieri](sirio7g).
-
-We continue to welcome pull requests from community members.
-
 ### Copyright and License Information
 
-Copyright (c) 2016-2019 Stream.io Inc, and individual contributors. All rights reserved.
+Copyright (c) 2016-2020 Stream.io Inc, and individual contributors. All rights reserved.
 
 See the file "LICENSE" for information on the history of this software, terms & conditions for usage, and a DISCLAIMER OF ALL WARRANTIES.
