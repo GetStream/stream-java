@@ -11,6 +11,7 @@ import com.pholser.junit.quickcheck.random.SourceOfRandomness;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 public class ActivityGenerator extends Generator<Activity> {
   private static final class FeedIDGenerator extends Generator<FeedID> {
@@ -35,7 +36,7 @@ public class ActivityGenerator extends Generator<Activity> {
 
   private static final class DateGenerator extends Generator<Date> {
     private Date min = new Date(Integer.MIN_VALUE);
-    private Date max = new Date(8099, 0, 1);
+    private Date max = new GregorianCalendar(8099, 0, 1).getTime();
 
     public DateGenerator() {
       super(Date.class);
