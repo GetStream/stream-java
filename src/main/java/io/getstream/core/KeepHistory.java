@@ -1,16 +1,16 @@
 package io.getstream.core;
 
 public enum KeepHistory {
-    YES(true),
-    NO(false);
+  YES(true),
+  NO(false);
 
-    private final boolean flag;
+  private final boolean flag;
 
-    KeepHistory(boolean flag) {
-        this.flag = flag;
-    }
+  KeepHistory(boolean flag) {
+    this.flag = flag;
+  }
 
-    public boolean getFlag() {
-        return flag;
-    }
+  public boolean getFlag() {
+    return flag;
+  }
 }
