@@ -1,12 +1,12 @@
 package io.getstream.core.utils;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertNotNull;
 
+import org.junit.Test;
+
 public class InfoTest {
-    @Test
-    public void shouldGetProperties() {
-        assertNotNull(Info.getProperties().getProperty("version"));
-    }
+  @Test
+  public void shouldGetProperties() {
+    assertNotNull(Info.getProperties().getProperty("version"));
+  }
 }
