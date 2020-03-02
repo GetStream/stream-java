@@ -2,9 +2,6 @@
 *.jar
 *.war
 *.ear
-.gradle/
-.idea/
-.syntastic_javac_config
 build/
 gradle.properties
 gradle/
@@ -12,3 +9,13 @@ gradlew
 gradlew.bat
 out/
 target/
+bin/
+.classpath
+.project
+.settings/
+
+.gradle/
+.idea/
+.vscode/
+
+.syntastic_javac_config
