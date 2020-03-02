@@ -5,7 +5,6 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id 'signing'
-    id "com.scuilion.syntastic" version "0.3.8"
     id "com.prot.versioninfo" version "0.5"
 }
 
