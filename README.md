@@ -12,7 +12,7 @@ Add the following dependency to your pom.xml:
 <dependency>
     <groupId>io.getstream.client</groupId>
     <artifactId>stream-java</artifactId>
-    <version>3.1.9</version>
+    <version>3.1.10</version>
 </dependency>
 ```
 
