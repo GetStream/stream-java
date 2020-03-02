@@ -107,8 +107,8 @@ public final class StreamBatch {
     }
 
     public CompletableFuture<List<Activity>> getActivitiesByID(Token token, String... activityIDs) throws StreamException {
-        checkNotNull(activityIDs, "No activities to update");
-        checkArgument(activityIDs.length > 0, "No activities to update");
+        checkNotNull(activityIDs, "No activities to get");
+        checkArgument(activityIDs.length > 0, "No activities to get");
 
         try {
             final URL url = buildActivitiesURL(baseURL);
@@ -120,6 +120,25 @@ public final class StreamBatch {
                             throw new CompletionException(e);
                         }
                     });
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new StreamException(e);
+        }
+    }
+
+    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivitiesByID(Token token, String... activityIDs) throws StreamException {
+        checkNotNull(activityIDs, "No activities to get");
+        checkArgument(activityIDs.length > 0, "No activities to get");
+
+        try {
+            final URL url = buildEnrichedActivitiesURL(baseURL);
+            return httpClient.execute(buildGet(url, key, token, new CustomQueryParameter("ids", Joiner.on(",").join(activityIDs))))
+                .thenApply(response -> {
+                    try {
+                        return deserializeContainer(response, EnrichedActivity.class);
+                    } catch (StreamException | IOException e) {
+                        throw new CompletionException(e);
+                    }
+                });
         } catch (MalformedURLException | URISyntaxException e) {
             throw new StreamException(e);
         }
@@ -153,6 +172,39 @@ public final class StreamBatch {
                             throw new CompletionException(e);
                         }
                     });
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new StreamException(e);
+        }
+    }
+
+    public CompletableFuture<List<EnrichedActivity>> getEnrichedActivitiesByForeignID(Token token, ForeignIDTimePair... activityIDTimePairs) throws StreamException {
+        checkNotNull(activityIDTimePairs, "No activities to get");
+        checkArgument(activityIDTimePairs.length > 0, "No activities to get");
+
+        SimpleDateFormat timestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        timestampFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        timestampFormat.setLenient(false);
+
+        String[] foreignIDs = J8Arrays.stream(activityIDTimePairs)
+            .map(pair -> pair.getForeignID())
+            .toArray(String[]::new);
+        String[] timestamps = J8Arrays.stream(activityIDTimePairs)
+            .map(pair -> timestampFormat.format(pair.getTime()))
+            .toArray(String[]::new);
+        try {
+            final URL url = buildEnrichedActivitiesURL(baseURL);
+            final RequestOption[] options = new RequestOption[]{
+                new CustomQueryParameter("foreign_ids", Joiner.on(",").join(foreignIDs)),
+                new CustomQueryParameter("timestamps", Joiner.on(",").join(timestamps))
+            };
+            return httpClient.execute(buildGet(url, key, token, options))
+                .thenApply(response -> {
+                    try {
+                        return deserializeContainer(response, EnrichedActivity.class);
+                    } catch (StreamException | IOException e) {
+                        throw new CompletionException(e);
+                    }
+                });
         } catch (MalformedURLException | URISyntaxException e) {
             throw new StreamException(e);
         }

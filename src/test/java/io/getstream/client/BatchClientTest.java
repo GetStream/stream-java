@@ -139,9 +139,23 @@ public class BatchClientTest {
     }
 
     @Test
+    public void getEnrichedActivitiesByID() throws Exception {
+        BatchClient client = Client.builder(apiKey, secret).build().batch();
+
+        List<EnrichedActivity> result = client.getEnrichedActivitiesByID("1657b300-a648-11d5-8080-800020fde6c3").join();
+    }
+
+    @Test
     public void getActivitiesByForeignID() throws Exception {
         BatchClient client = Client.builder(apiKey, secret).build().batch();
 
         List<Activity> result = client.getActivitiesByForeignID(new ForeignIDTimePair("foreignID", new Date())).join();
+    }
+
+    @Test
+    public void getEnrichedActivitiesByForeignID() throws Exception {
+        BatchClient client = Client.builder(apiKey, secret).build().batch();
+
+        List<EnrichedActivity> result = client.getEnrichedActivitiesByForeignID(new ForeignIDTimePair("foreignID", new Date())).join();
     }
 }

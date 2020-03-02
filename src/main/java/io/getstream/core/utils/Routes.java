@@ -45,6 +45,10 @@ public final class Routes {
         return new URL(baseURL, basePath + activitiesPath);
     }
 
+    public static URL buildEnrichedActivitiesURL(URL baseURL) throws MalformedURLException {
+        return new URL(baseURL, basePath + enriched(activitiesPath));
+    }
+
     public static URL buildCollectionsURL(URL baseURL, String path) throws MalformedURLException {
         return new URL(baseURL, basePath + collectionsPath + path);
     }
@@ -137,5 +141,9 @@ public final class Routes {
 
     private static String enrichedFeedPath(FeedID feed) {
         return String.format("enrich/feed/%s/%s", feed.getSlug(), feed.getUserID());
+    }
+
+    private static String enriched(String url) {
+        return String.format("enrich/%s", url);
     }
 }
