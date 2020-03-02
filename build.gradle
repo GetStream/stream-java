@@ -98,8 +98,8 @@ publishing {
                         name = 'Alessandro Pieri'
                     }
                     developer {
-                        id = 'nekuromento'
-                        name = 'Max Klyga'
+                        id = 'ferhatelmas'
+                        name = 'Ferhat Elmas'
                     }
                 }
             }
