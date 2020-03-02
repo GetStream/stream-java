@@ -1,11 +1,13 @@
 package io.getstream.core;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.HTTPClient;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.FeedID;
+import io.getstream.core.models.Pagenated;
 import io.getstream.core.models.Reaction;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.Filter;
@@ -59,6 +61,25 @@ public final class StreamReactions {
         }
     }
 
+    public CompletableFuture<Pagenated> getPagenated(Token token, String id) throws StreamException {
+        checkNotNull(id, "Reaction id can't be null");
+        checkArgument(!id.isEmpty(), "Reaction id can't be empty");
+
+        try {
+            final URL url = buildReactionsURL(baseURL, id + '/');
+            return httpClient.execute(buildGet(url, key, token))
+                .thenApply(response -> {
+                    try {
+                        return deserialize(response, Pagenated.class);
+                    } catch (StreamException | IOException e) {
+                        throw new CompletionException(e);
+                    }
+                });
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new StreamException(e);
+        }
+    }
+
     public CompletableFuture<List<Reaction>> filter(Token token, LookupKind lookup, String id, Filter filter, Limit limit, String kind) throws StreamException {
         checkNotNull(lookup, "Lookup kind can't be null");
         checkNotNull(id, "Reaction ID can't be null");
@@ -77,6 +98,47 @@ public final class StreamReactions {
                             throw new CompletionException(e);
                         }
                     });
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new StreamException(e);
+        }
+    }
+
+    public CompletableFuture<Pagenated<Reaction>> pagenatedFilter(Token token, LookupKind lookup, String id, Filter filter, Limit limit, String kind) throws StreamException {
+        checkNotNull(lookup, "Lookup kind can't be null");
+        checkNotNull(id, "Reaction ID can't be null");
+        checkArgument(!id.isEmpty(), "Reaction ID can't be empty");
+        checkNotNull(filter, "Filter can't be null");
+        checkNotNull(kind, "Kind can't be null");
+
+        try {
+            final URL url = buildReactionsURL(baseURL, lookup.getKind() + '/' + id + '/' + kind);
+            RequestOption withActivityData = new CustomQueryParameter("with_activity_data", Boolean.toString(lookup == LookupKind.ACTIVITY_WITH_DATA));
+            return httpClient.execute(buildGet(url, key, token, filter, limit, withActivityData))
+                .thenApply(response -> {
+                    try {
+                        return deserialize(response, new TypeReference<Pagenated<Reaction>>() {});
+                    } catch (StreamException | IOException e) {
+                        throw new CompletionException(e);
+                    }
+                });
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new StreamException(e);
+        }
+    }
+
+    public CompletableFuture<Pagenated<Reaction>> pagenatedFilter(Token token, String next) throws StreamException {
+        checkNotNull(next, "next can't be null");
+
+        try {
+            final URL url = new URL(baseURL, next);
+            return httpClient.execute(buildGet(url, key, token))
+                .thenApply(response -> {
+                    try {
+                        return deserialize(response, new TypeReference<Pagenated<Reaction>>() {});
+                    } catch (StreamException | IOException e) {
+                        throw new CompletionException(e);
+                    }
+                });
         } catch (MalformedURLException | URISyntaxException e) {
             throw new StreamException(e);
         }

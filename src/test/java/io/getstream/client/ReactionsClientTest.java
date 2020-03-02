@@ -3,6 +3,7 @@ package io.getstream.client;
 import io.getstream.core.LookupKind;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
+import io.getstream.core.models.Pagenated;
 import io.getstream.core.models.Reaction;
 import org.junit.Test;
 
@@ -39,6 +40,27 @@ public class ReactionsClientTest {
         client.reactions().filter(LookupKind.ACTIVITY, activity.getID()).join();
 
         List<Reaction> result = client.reactions().filter(LookupKind.ACTIVITY_WITH_DATA, activity.getID(), "comment").join();
+    }
+
+    @Test
+    public void pagedFilter() throws Exception {
+        Client client = Client.builder(apiKey, secret).build();
+
+        Activity activity = client.flatFeed("flat", "reactor").addActivity(Activity.builder()
+            .actor("this")
+            .verb("done")
+            .object("that")
+            .build()).join();
+
+        client.reactions().add("john-doe", "like", activity.getID()).join();
+
+        client.reactions().pagenatedFilter(LookupKind.ACTIVITY, activity.getID()).join();
+
+        Pagenated<Reaction> result = client.reactions()
+            .pagenatedFilter(LookupKind.ACTIVITY_WITH_DATA, activity.getID(), "comment").join();
+        while (result.getNext() != null && !result.getNext().isEmpty()) {
+            result = client.reactions().pagenatedFilter(result.getNext()).join();
+        }
     }
 
     @Test

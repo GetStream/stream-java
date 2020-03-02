@@ -6,6 +6,7 @@ import io.getstream.core.StreamReactions;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.FeedID;
+import io.getstream.core.models.Pagenated;
 import io.getstream.core.models.Reaction;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
@@ -60,6 +61,40 @@ public final class ReactionsClient {
     public CompletableFuture<List<Reaction>> filter(LookupKind lookup, String id, Filter filter, Limit limit, String kind) throws StreamException {
         final Token token = buildReactionsToken(secret, TokenAction.READ);
         return reactions.filter(token, lookup, id, filter, limit, kind);
+    }
+
+    public CompletableFuture<Pagenated<Reaction>> pagenatedFilter(LookupKind lookup, String id) throws StreamException {
+        return pagenatedFilter(lookup, id, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_LIMIT, "");
+    }
+
+    public CompletableFuture<Pagenated<Reaction>> pagenatedFilter(LookupKind lookup, String id, Limit limit) throws StreamException {
+        return pagenatedFilter(lookup, id, DefaultOptions.DEFAULT_FILTER, limit, "");
+    }
+
+    public CompletableFuture<Pagenated<Reaction>> pagenatedFilter(LookupKind lookup, String id, Filter filter) throws StreamException {
+        return pagenatedFilter(lookup, id, filter, DefaultOptions.DEFAULT_LIMIT, "");
+    }
+
+    public CompletableFuture<Pagenated<Reaction>> pagenatedFilter(LookupKind lookup, String id, String kind) throws StreamException {
+        return pagenatedFilter(lookup, id, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_LIMIT, kind);
+    }
+
+    public CompletableFuture<Pagenated<Reaction>> pagenatedFilter(LookupKind lookup, String id, Filter filter, Limit limit) throws StreamException {
+        return pagenatedFilter(lookup, id, filter, limit, "");
+    }
+
+    public CompletableFuture<Pagenated<Reaction>> pagenatedFilter(LookupKind lookup, String id, Limit limit, String kind) throws StreamException {
+        return pagenatedFilter(lookup, id, DefaultOptions.DEFAULT_FILTER, limit, kind);
+    }
+
+    public CompletableFuture<Pagenated<Reaction>> pagenatedFilter(LookupKind lookup, String id, Filter filter, Limit limit, String kind) throws StreamException {
+        final Token token = buildReactionsToken(secret, TokenAction.READ);
+        return reactions.pagenatedFilter(token, lookup, id, filter, limit, kind);
+    }
+
+    public CompletableFuture<Pagenated<Reaction>> pagenatedFilter(String next) throws StreamException {
+        final Token token = buildReactionsToken(secret, TokenAction.READ);
+        return reactions.pagenatedFilter(token, next);
     }
 
     public CompletableFuture<Reaction> add(String userID, String kind, String activityID, Iterable<FeedID> targetFeeds) throws StreamException {
