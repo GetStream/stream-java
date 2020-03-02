@@ -3,6 +3,8 @@
 *.war
 *.ear
 build/
+
+.gradle/
 gradle.properties
 gradle/
 gradlew
@@ -14,8 +16,5 @@ bin/
 .project
 .settings/
 
-.gradle/
 .idea/
 .vscode/
-
-.syntastic_javac_config
