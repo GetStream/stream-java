@@ -1,14 +1,14 @@
 package io.getstream.core.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.google.common.base.MoreObjects;
 import java.util.List;
 import java.util.Objects;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Pagenated<T> {
+public class Paginated<T> {
 
   private final String next;
   private List<T> results;
@@ -31,7 +31,7 @@ public class Pagenated<T> {
   }
 
   @JsonCreator
-  private Pagenated(
+  private Paginated(
       @JsonProperty("next")
           String next,
       @JsonProperty("results")
@@ -52,7 +52,7 @@ public class Pagenated<T> {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Pagenated that = (Pagenated) o;
+    Paginated that = (Paginated) o;
     return next.equals(that.next) &&
         duration.equals(that.duration);
   }
@@ -70,5 +70,4 @@ public class Pagenated<T> {
         .add("duration", this.duration)
         .toString();
   }
-
 }

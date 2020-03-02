@@ -7,22 +7,22 @@ import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.HTTPClient;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.FeedID;
-import io.getstream.core.models.Pagenated;
+import io.getstream.core.models.Paginated;
 import io.getstream.core.models.Reaction;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
 import io.getstream.core.options.RequestOption;
-import java8.util.J8Arrays;
-import java8.util.concurrent.CompletableFuture;
-import java8.util.concurrent.CompletionException;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
+import java8.util.J8Arrays;
+import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletionException;
+
 
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -61,7 +61,7 @@ public final class StreamReactions {
         }
     }
 
-    public CompletableFuture<Pagenated> getPagenated(Token token, String id) throws StreamException {
+    public CompletableFuture<Paginated> getPaginated(Token token, String id) throws StreamException {
         checkNotNull(id, "Reaction id can't be null");
         checkArgument(!id.isEmpty(), "Reaction id can't be empty");
 
@@ -70,7 +70,7 @@ public final class StreamReactions {
             return httpClient.execute(buildGet(url, key, token))
                 .thenApply(response -> {
                     try {
-                        return deserialize(response, Pagenated.class);
+                        return deserialize(response, Paginated.class);
                     } catch (StreamException | IOException e) {
                         throw new CompletionException(e);
                     }
@@ -103,7 +103,7 @@ public final class StreamReactions {
         }
     }
 
-    public CompletableFuture<Pagenated<Reaction>> pagenatedFilter(Token token, LookupKind lookup, String id, Filter filter, Limit limit, String kind) throws StreamException {
+    public CompletableFuture<Paginated<Reaction>> paginatedFilter(Token token, LookupKind lookup, String id, Filter filter, Limit limit, String kind) throws StreamException {
         checkNotNull(lookup, "Lookup kind can't be null");
         checkNotNull(id, "Reaction ID can't be null");
         checkArgument(!id.isEmpty(), "Reaction ID can't be empty");
@@ -116,7 +116,7 @@ public final class StreamReactions {
             return httpClient.execute(buildGet(url, key, token, filter, limit, withActivityData))
                 .thenApply(response -> {
                     try {
-                        return deserialize(response, new TypeReference<Pagenated<Reaction>>() {});
+                        return deserialize(response, new TypeReference<Paginated<Reaction>>() {});
                     } catch (StreamException | IOException e) {
                         throw new CompletionException(e);
                     }
@@ -126,7 +126,7 @@ public final class StreamReactions {
         }
     }
 
-    public CompletableFuture<Pagenated<Reaction>> pagenatedFilter(Token token, String next) throws StreamException {
+    public CompletableFuture<Paginated<Reaction>> paginatedFilter(Token token, String next) throws StreamException {
         checkNotNull(next, "next can't be null");
 
         try {
@@ -134,7 +134,7 @@ public final class StreamReactions {
             return httpClient.execute(buildGet(url, key, token))
                 .thenApply(response -> {
                     try {
-                        return deserialize(response, new TypeReference<Pagenated<Reaction>>() {});
+                        return deserialize(response, new TypeReference<Paginated<Reaction>>() {});
                     } catch (StreamException | IOException e) {
                         throw new CompletionException(e);
                     }
