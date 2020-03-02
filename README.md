@@ -43,7 +43,7 @@ Javadocs are available [here](https://getstream.github.io/stream-java/).
 
 ### Building & Testing
 
-Run `gradle wrapper --gradle-version 4.10.3` to generate gradle wrapper files
+Run `gradle wrapper --gradle-version 5.1.1` to generate gradle wrapper files
 
 Run `gradle test` to execute integration tests
 
