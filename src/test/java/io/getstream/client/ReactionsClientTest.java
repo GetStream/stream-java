@@ -3,11 +3,11 @@ package io.getstream.client;
 import io.getstream.core.LookupKind;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
-import io.getstream.core.models.Pagenated;
+import io.getstream.core.models.Paginated;
 import io.getstream.core.models.Reaction;
+import java.util.List;
 import org.junit.Test;
 
-import java.util.List;
 
 public class ReactionsClientTest {
     private static final String apiKey = "gp6e8sxxzud6";
@@ -54,12 +54,12 @@ public class ReactionsClientTest {
 
         client.reactions().add("john-doe", "like", activity.getID()).join();
 
-        client.reactions().pagenatedFilter(LookupKind.ACTIVITY, activity.getID()).join();
+        client.reactions().paginatedFilter(LookupKind.ACTIVITY, activity.getID()).join();
 
-        Pagenated<Reaction> result = client.reactions()
-            .pagenatedFilter(LookupKind.ACTIVITY_WITH_DATA, activity.getID(), "comment").join();
+        Paginated<Reaction> result = client.reactions()
+            .paginatedFilter(LookupKind.ACTIVITY_WITH_DATA, activity.getID(), "comment").join();
         while (result.getNext() != null && !result.getNext().isEmpty()) {
-            result = client.reactions().pagenatedFilter(result.getNext()).join();
+            result = client.reactions().paginatedFilter(result.getNext()).join();
         }
     }
 
