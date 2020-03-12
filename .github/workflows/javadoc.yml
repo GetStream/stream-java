@@ -1,0 +1,29 @@
+name: Javadoc
+on:
+  push:
+    branches:
+      - master
+jobs:
+  javadoc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+      - name: Set up JDK
+        uses: actions/setup-java@081536e
+        with:
+          java-version: 8
+      - name: Set up Node.js 12
+        uses: actions/setup-node@8de2f9f
+        with:
+          node-version: 12
+      - name: Generate doc
+        run: gradle javadoc
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: build/docs/javadoc/
