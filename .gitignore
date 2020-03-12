@@ -6,8 +6,9 @@ build/
 
 .gradle/
 gradle.properties
-gradle/
-!gradle/wrapper/
+gradle/*
+!gradle/wrapper
+!gradle/wrapper/*.jar
 out/
 target/
 bin/
