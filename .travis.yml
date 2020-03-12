@@ -14,6 +14,6 @@ before_script:
   - wget -O google-java-format https://github.com/google/google-java-format/releases/download/google-java-format-1.7/google-java-format-1.7-all-deps.jar
   - find . -name "*.java" | xargs java -jar google-java-format --set-exit-if-changed --replace
 script:
-  - gradle test
+  - ./gradlew test
 #after_success:
 #- ".travis/publish.sh"
