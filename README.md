@@ -1,5 +1,6 @@
 # stream-java
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.getstream.client/stream-java/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.getstream.client/stream-java)
 ![](https://github.com/GetStream/stream-java/workflows/Java%20CI/badge.svg)
 
 [stream-java](https://github.com/GetStream/stream-java) is a Java client for [Stream](https://getstream.io/).
