@@ -9,20 +9,20 @@ You can sign up for a Stream account at https://getstream.io/get_started.
 
 ### Installation
 
-Add the following dependency to your pom.xml:
+Add the following dependency to your `pom.xml`:
 
 ```xml
 <dependency>
     <groupId>io.getstream.client</groupId>
     <artifactId>stream-java</artifactId>
-    <version>3.2.0</version>
+    <version>3.2.1</version>
 </dependency>
 ```
 
-or in your build.gradle:
+or in your `build.gradle`:
 
 ```gradle
-compile 'io.getstream.client:stream-java:3.2.0'
+compile 'io.getstream.client:stream-java:3.2.1'
 ```
 
 In case you want to download the artifact and put it manually into your project,

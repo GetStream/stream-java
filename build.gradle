@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'io.getstream.client'
-version = '3.2.0'
+version = '3.2.1'
 
 dependencies {
     sourceCompatibility = 1.8
