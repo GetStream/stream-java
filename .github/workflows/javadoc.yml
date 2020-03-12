@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - javadoc
 jobs:
   javadoc:
     runs-on: ubuntu-latest
@@ -22,9 +21,6 @@ jobs:
           node-version: 12
       - name: Generate doc
         run: gradle javadoc
-      # - name: Prepare to Deploy
-      #   run: |
-      #     npm ci
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
