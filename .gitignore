@@ -6,9 +6,9 @@ build/
 
 .gradle/
 gradle.properties
-gradle/
-gradlew
-gradlew.bat
+gradle/*
+!gradle/wrapper
+!gradle/wrapper/*.jar
 out/
 target/
 bin/

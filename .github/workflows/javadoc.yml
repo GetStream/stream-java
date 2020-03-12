@@ -20,7 +20,7 @@ jobs:
         with:
           node-version: 12
       - name: Generate doc
-        run: gradle javadoc
+        run: ./gradlew --no-daemon javadoc
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
