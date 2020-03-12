@@ -1,5 +1,7 @@
 # stream-java
 
+![](https://github.com/GetStream/stream-java/workflows/Java%20CI/badge.svg)
+
 [stream-java](https://github.com/GetStream/stream-java) is a Java client for [Stream](https://getstream.io/).
 
 You can sign up for a Stream account at https://getstream.io/get_started.
@@ -39,7 +41,7 @@ For examples have a look [here](https://github.com/GetStream/stream-java/tree/ma
 
 Docs are available on [GetStream.io](http://getstream.io/docs/).
 
-Javadocs are available [here](https://getstream.github.io/stream-java/).
+JavaDoc is available [here](https://getstream.github.io/stream-java/).
 
 ### Building & Testing
 
