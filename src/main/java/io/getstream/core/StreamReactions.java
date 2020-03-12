@@ -144,6 +144,7 @@ public final class StreamReactions {
   public CompletableFuture<Paginated<Reaction>> paginatedFilter(Token token, String next)
       throws StreamException {
     checkNotNull(next, "next can't be null");
+    checkArgument(!next.trim().isEmpty(), "next can't be empty");
 
     try {
       final URL url = new URL(baseURL, next);
