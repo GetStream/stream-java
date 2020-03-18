@@ -13,8 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: ["8"]
-        gradle: ["6.0", "6.1", "6.2"]
+        java: ['8']
+        gradle: ['6.2']
     steps:
       - uses: actions/checkout@722adc6
         with:
