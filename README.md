@@ -3,7 +3,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.getstream.client/stream-java/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.getstream.client/stream-java)
 ![](https://github.com/GetStream/stream-java/workflows/Java%20CI/badge.svg)
 
-[stream-java](https://github.com/GetStream/stream-java) is a Java feed client for [Stream](https://getstream.io/). At the moment, there is no pure Java client for chat but you can find REST docs [here](https://getstream.io/chat/docs_rest/) and an Android specific implementation can be seen [here](https://github.com/GetStream/stream-chat-android-client).
+[stream-java](https://github.com/GetStream/stream-java) is a Java feed client for [Stream](https://getstream.io/). At the moment, there is no pure Java client for chat but you can find REST docs [here](https://getstream.io/chat/docs_rest/) and an Android specific implementation in Kotlin can be seen [here](https://github.com/GetStream/stream-chat-android-client).
 
 You can sign up for a Stream account at https://getstream.io/get_started.
 
