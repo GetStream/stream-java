@@ -22,7 +22,7 @@ Add the following dependency to your `pom.xml`:
 or in your `build.gradle`:
 
 ```gradle
-compile 'io.getstream.client:stream-java:3.2.3'
+implementation 'io.getstream.client:stream-java:3.2.3'
 ```
 
 In case you want to download the artifact and put it manually into your project,
