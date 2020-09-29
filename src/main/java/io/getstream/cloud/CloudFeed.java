@@ -6,6 +6,7 @@ import static io.getstream.core.utils.Serialization.*;
 
 import com.google.common.collect.Iterables;
 import io.getstream.core.exceptions.StreamException;
+import io.getstream.core.http.Response;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.FollowRelation;
@@ -90,7 +91,7 @@ public class CloudFeed {
     return getClient()
         .addActivities(id, custom)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 Class<T> element =
                     (Class<T>)
@@ -108,7 +109,7 @@ public class CloudFeed {
     return getClient()
         .addActivities(id, activities)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, "activities", Activity.class);
               } catch (StreamException | IOException e) {
@@ -126,7 +127,7 @@ public class CloudFeed {
     return getClient()
         .addActivities(id, custom)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 Class<T> element = (Class<T>) activities.getClass().getComponentType();
                 return deserializeContainer(response, "activities", element);
@@ -140,7 +141,7 @@ public class CloudFeed {
     return client
         .removeActivityByID(this.id, id)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeError(response);
               } catch (StreamException | IOException e) {
@@ -154,7 +155,7 @@ public class CloudFeed {
     return client
         .removeActivityByForeignID(id, foreignID)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeError(response);
               } catch (StreamException | IOException e) {
@@ -177,7 +178,7 @@ public class CloudFeed {
     return client
         .follow(id, feed.getID(), activityCopyLimit)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeError(response);
               } catch (StreamException | IOException e) {
@@ -240,7 +241,7 @@ public class CloudFeed {
     return client
         .getFollowers(id, options)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, FollowRelation.class);
               } catch (StreamException | IOException e) {
@@ -303,7 +304,7 @@ public class CloudFeed {
     return client
         .getFollowed(id, options)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, FollowRelation.class);
               } catch (StreamException | IOException e) {
@@ -321,7 +322,7 @@ public class CloudFeed {
     return client
         .unfollow(id, feed.getID(), new io.getstream.core.options.KeepHistory(keepHistory))
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeError(response);
               } catch (StreamException | IOException e) {
