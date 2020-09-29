@@ -3,6 +3,7 @@ package io.getstream.cloud;
 import static io.getstream.core.utils.Serialization.deserializeContainer;
 
 import io.getstream.core.exceptions.StreamException;
+import io.getstream.core.http.Response;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.EnrichedActivity;
 import io.getstream.core.models.FeedID;
@@ -109,7 +110,7 @@ public class CloudAggregatedFeed extends CloudFeed {
     return getClient()
         .getActivities(getID(), limit, offset, filter, marker)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, Group.class, Activity.class);
               } catch (StreamException | IOException e) {
@@ -214,7 +215,7 @@ public class CloudAggregatedFeed extends CloudFeed {
     return getClient()
         .getActivities(getID(), limit, offset, filter, marker)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, Group.class, type);
               } catch (StreamException | IOException e) {
@@ -441,7 +442,7 @@ public class CloudAggregatedFeed extends CloudFeed {
     return getClient()
         .getEnrichedActivities(getID(), limit, offset, filter, marker, flags)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, Group.class, EnrichedActivity.class);
               } catch (StreamException | IOException e) {
@@ -695,7 +696,7 @@ public class CloudAggregatedFeed extends CloudFeed {
     return getClient()
         .getEnrichedActivities(getID(), limit, offset, filter, marker, flags)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, Group.class, type);
               } catch (StreamException | IOException e) {

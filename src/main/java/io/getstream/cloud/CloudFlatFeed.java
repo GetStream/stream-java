@@ -3,6 +3,7 @@ package io.getstream.cloud;
 import static io.getstream.core.utils.Serialization.deserializeContainer;
 
 import io.getstream.core.exceptions.StreamException;
+import io.getstream.core.http.Response;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.EnrichedActivity;
 import io.getstream.core.models.FeedID;
@@ -95,7 +96,7 @@ public final class CloudFlatFeed extends CloudFeed {
     return getClient()
         .getActivities(getID(), options)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, Activity.class);
               } catch (StreamException | IOException e) {
@@ -191,7 +192,7 @@ public final class CloudFlatFeed extends CloudFeed {
     return getClient()
         .getActivities(getID(), options)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, type);
               } catch (StreamException | IOException e) {
@@ -407,7 +408,7 @@ public final class CloudFlatFeed extends CloudFeed {
     return getClient()
         .getEnrichedActivities(getID(), options)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, EnrichedActivity.class);
               } catch (StreamException | IOException e) {
@@ -649,7 +650,7 @@ public final class CloudFlatFeed extends CloudFeed {
     return getClient()
         .getActivities(getID(), options)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, type);
               } catch (StreamException | IOException e) {

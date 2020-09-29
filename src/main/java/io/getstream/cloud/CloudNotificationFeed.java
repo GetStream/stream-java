@@ -3,6 +3,7 @@ package io.getstream.cloud;
 import static io.getstream.core.utils.Serialization.deserializeContainer;
 
 import io.getstream.core.exceptions.StreamException;
+import io.getstream.core.http.Response;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.EnrichedActivity;
 import io.getstream.core.models.FeedID;
@@ -122,7 +123,7 @@ public final class CloudNotificationFeed extends CloudAggregatedFeed {
     return getClient()
         .getActivities(getID(), limit, offset, filter, marker)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, NotificationGroup.class, Activity.class);
               } catch (StreamException | IOException e) {
@@ -240,7 +241,7 @@ public final class CloudNotificationFeed extends CloudAggregatedFeed {
     return getClient()
         .getActivities(getID(), limit, offset, filter, marker)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, NotificationGroup.class, type);
               } catch (StreamException | IOException e) {
@@ -492,7 +493,7 @@ public final class CloudNotificationFeed extends CloudAggregatedFeed {
     return getClient()
         .getEnrichedActivities(getID(), limit, offset, filter, marker, flags)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(
                     response, NotificationGroup.class, EnrichedActivity.class);
@@ -772,7 +773,7 @@ public final class CloudNotificationFeed extends CloudAggregatedFeed {
     return getClient()
         .getEnrichedActivities(getID(), limit, offset, filter, marker, flags)
         .thenApply(
-            response -> {
+            (Response response) -> {
               try {
                 return deserializeContainer(response, NotificationGroup.class, type);
               } catch (StreamException | IOException e) {
