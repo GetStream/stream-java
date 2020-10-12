@@ -7,6 +7,8 @@
 
 You can sign up for a Stream account at https://getstream.io/get_started.
 
+---
+
 ### Installation
 
 Add the following dependency to your `pom.xml`:
@@ -30,9 +32,27 @@ you can download it from [here](https://github.com/GetStream/stream-java/release
 
 Snapshots of the development version are available in [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/io/getstream/client/) snapshots repository.
 
-#### JDK / JVM version requirements
+---
+
+### JDK / JVM version requirements
 
 This API Client project requires Java SE 7.
+
+---
+
+### FAQ
+
+1. Is Android supported?
+
+Yes. Use `client` for your backend and use `CloudClient` for your mobile application.
+
+2. Cannot construct an instance of `io.getstream.core.models.*`, a model object in android. What is the problem?
+
+If you're using proguard, ensure having following: `-keep class io.getstream.core.models.** { *; }`
+
+Additionally, we're using Jackson JSON processor and see [their definitions](https://github.com/FasterXML/jackson-docs/wiki/JacksonOnAndroid) too unless you're already using it.
+
+---
 
 ### Full documentation
 
@@ -44,9 +64,13 @@ Docs are available on [GetStream.io](https://getstream.io/docs/?language=java).
 
 JavaDoc is available [here](https://getstream.github.io/stream-java/).
 
+---
+
 ### Building & Testing
 
 Run `gradlew test` to execute integration tests
+
+---
 
 ### Copyright and License Information
 
