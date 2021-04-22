@@ -1,12 +1,6 @@
 name: build
 
-on:
-  push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+on: [pull_request]
 
 jobs:
   build:
@@ -16,21 +10,21 @@ jobs:
         java: ['8']
         gradle: ['6.2']
     steps:
-      - uses: actions/checkout@722adc6
+      - uses: actions/checkout@v2
         with:
           fetch-depth: 0
 
       - name: Set up JDK ${{ matrix.java }}
-        uses: actions/setup-java@081536e
+        uses: actions/setup-java@v2
         with:
           java-version: ${{ matrix.java }}
 
       - name: Set up Node.js 12
-        uses: actions/setup-node@8de2f9f
+        uses: actions/setup-node@v2
         with:
           node-version: 12
 
-      - uses: actions/cache@cffae95
+      - uses: actions/cache@v2
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
