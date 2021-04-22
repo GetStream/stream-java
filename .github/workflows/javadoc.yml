@@ -1,4 +1,4 @@
-name: Javadoc
+name: javadoc
 on:
   push:
     branches:
