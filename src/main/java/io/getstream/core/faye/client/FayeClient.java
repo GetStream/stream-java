@@ -165,7 +165,7 @@ public class FayeClient extends WebSocketListener {
 
                 // Handshake successful: $clientId
                 final Set<String> keys = channels.keySet();
-                subscribeChannels(keys.toArray(new String[keys.size()]));
+                subscribeChannels(keys.toArray(new String[0]));
                 if (callback != null) callback.call();
             } else {
                 // Handshake unsuccessful
@@ -231,26 +231,41 @@ public class FayeClient extends WebSocketListener {
         return disconnectionCompleter;
     }
 
+    private void subscribeChannels(String[] channels) {
+        subscribeChannels(channels, null);
+    }
 
-    public CompletableFuture<ChannelSubscription> subscribe(String channel) {
-        return subscribe(channel, null);
+    private void subscribeChannels(String[] channels, Boolean force) {
+        for (String channel : channels) {
+            subscribe(channel, force);
+        }
     }
 
     public CompletableFuture<ChannelSubscription> subscribe(String channel, ChannelDataCallback callback) {
+        return subscribe(channel, callback, null);
+    }
+
+    private CompletableFuture<ChannelSubscription> subscribe(String channel, Boolean force) {
+        return subscribe(channel, null, force);
+    }
+
+    private CompletableFuture<ChannelSubscription> subscribe(String channel, ChannelDataCallback callback, Boolean force) {
+        // default value
+        if (force == null) force = false;
+
         final CompletableFuture<ChannelSubscription> subscriptionCompleter = new CompletableFuture<>();
 
         final ChannelSubscription channelSubscription = new ChannelSubscription(this, channel, callback);
         final boolean hasSubscribe = channels.containsKey(channel);
 
-        // (hasSubscribe && !force)
-        if (hasSubscribe) {
+        if (hasSubscribe && !force) {
             subscribeChannel(channel, channelSubscription);
             subscriptionCompleter.complete(channelSubscription);
         } else {
+            Boolean finalForce = force;
             connect(() -> {
                 // Client $clientId attempting to subscribe to $channel
-                // (!force)
-                if (!false) subscribeChannel(channel, channelSubscription);
+                if (!finalForce) subscribeChannel(channel, channelSubscription);
                 final Message message = new Message(Channel.SUBSCRIBE);
                 message.setClientId(clientId);
                 message.setSubscription(channel);
@@ -346,12 +361,6 @@ public class FayeClient extends WebSocketListener {
         for (String c : expandedChannels) {
             final Channel channel = this.channels.get(c);
             if (channel != null) channel.trigger(EVENT_MESSAGE, message);
-        }
-    }
-
-    private void subscribeChannels(String[] channels) {
-        for (String channel : channels) {
-            subscribe(channel);
         }
     }
 
