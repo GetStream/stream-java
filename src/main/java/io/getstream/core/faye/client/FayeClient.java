@@ -1,6 +1,7 @@
 package io.getstream.core.faye.client;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,14 +33,20 @@ public class FayeClient extends WebSocketListener {
     private static final int DEFAULT_TIMEOUT = 60; // seconds
     private static final int DEFAULT_INTERVAL = 0; // seconds
 
-    private final String baseUrl;
+    private final String baseURL;
     private final int timeout;
     private final int interval;
 
     private Advice advice;
 
-    public FayeClient(String baseUrl) {
-        this.baseUrl = baseUrl;
+    public FayeClient(URL baseURL) {
+        String url = baseURL.toString();
+        if (url.startsWith("http")) {
+            url = url.replace("http", "ws");
+        } else if (url.startsWith("https")) {
+            url = url.replace("https", "wss");
+        }
+        this.baseURL = url;
         this.timeout = DEFAULT_TIMEOUT;
         this.interval = DEFAULT_INTERVAL;
         this.advice = new Advice(Advice.RETRY, 1000 * interval, 1000 * timeout);
@@ -79,7 +86,7 @@ public class FayeClient extends WebSocketListener {
         if (webSocket != null) {
             closeWebSocket();
         }
-        final Request request = new Request.Builder().url(baseUrl).build();
+        final Request request = new Request.Builder().url(baseURL).build();
         webSocket = httpClient.newWebSocket(request, this);
     }
 
@@ -101,7 +108,7 @@ public class FayeClient extends WebSocketListener {
     public void onMessage(WebSocket webSocket, String text) {
         List<Message> messages = null;
         try {
-            messages = Serialization.fromJSON(text, Message.class);
+            messages = Serialization.fromJSONList(text, Message.class);
         } catch (IOException ignored) {
         }
 

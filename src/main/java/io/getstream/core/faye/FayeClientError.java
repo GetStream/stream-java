@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-import io.getstream.core.faye.client.FayeClient;
-
 public class FayeClientError extends Throwable {
     private final Integer code;
     private final List<String> params;

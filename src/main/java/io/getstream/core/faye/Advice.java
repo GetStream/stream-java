@@ -1,10 +1,12 @@
 package io.getstream.core.faye;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Advice {
     private final String reconnect;

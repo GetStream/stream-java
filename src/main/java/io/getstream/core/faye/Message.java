@@ -7,7 +7,7 @@ import com.google.common.base.MoreObjects;
 import java.util.Map;
 import java.util.Objects;
 
-@JsonIgnoreProperties(value = {"duration"})
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Message {
     private String id;
