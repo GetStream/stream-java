@@ -22,10 +22,10 @@ dependencies {
 
     implementation 'com.google.guava:guava:20.0'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.6'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.6'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.6'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.10'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.10'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.10'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.10'
     implementation 'com.auth0:java-jwt:3.4.0'
 
     api 'net.sourceforge.streamsupport:streamsupport:1.7.0'
