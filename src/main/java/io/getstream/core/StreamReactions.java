@@ -1,12 +1,5 @@
 package io.getstream.core;
 
-import static com.google.common.base.MoreObjects.firstNonNull;
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static io.getstream.core.utils.Request.*;
-import static io.getstream.core.utils.Routes.buildReactionsURL;
-import static io.getstream.core.utils.Serialization.*;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
@@ -20,15 +13,23 @@ import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
 import io.getstream.core.options.RequestOption;
+import java8.util.J8Arrays;
+import java8.util.concurrent.CompletableFuture;
+import java8.util.concurrent.CompletionException;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java8.util.J8Arrays;
-import java8.util.concurrent.CompletableFuture;
-import java8.util.concurrent.CompletionException;
+
+import static com.google.common.base.MoreObjects.firstNonNull;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.getstream.core.utils.Request.*;
+import static io.getstream.core.utils.Routes.buildReactionsURL;
+import static io.getstream.core.utils.Serialization.*;
 
 public final class StreamReactions {
   private final String key;
@@ -84,7 +85,13 @@ public final class StreamReactions {
   }
 
   public CompletableFuture<List<Reaction>> filter(
-      Token token, LookupKind lookup, String id, Filter filter, Limit limit, String kind)
+          Token token, LookupKind lookup, String id, Filter filter, Limit limit, String kind)
+          throws StreamException {
+    return filter(token, lookup, id, filter, limit, kind, null);
+  }
+
+  public CompletableFuture<List<Reaction>> filter(
+      Token token, LookupKind lookup, String id, Filter filter, Limit limit, String kind, Boolean withOwnChildren)
       throws StreamException {
     checkNotNull(lookup, "Lookup kind can't be null");
     checkNotNull(id, "Reaction ID can't be null");
@@ -97,8 +104,11 @@ public final class StreamReactions {
       RequestOption withActivityData =
           new CustomQueryParameter(
               "with_activity_data", Boolean.toString(lookup == LookupKind.ACTIVITY_WITH_DATA));
+      RequestOption ownChildren =
+              new CustomQueryParameter(
+                      "withOwnChildren", Boolean.toString(withOwnChildren != null && withOwnChildren));
       return httpClient
-          .execute(buildGet(url, key, token, filter, limit, withActivityData))
+          .execute(buildGet(url, key, token, filter, limit, withActivityData, ownChildren))
           .thenApply(
               response -> {
                 try {
@@ -113,7 +123,13 @@ public final class StreamReactions {
   }
 
   public CompletableFuture<Paginated<Reaction>> paginatedFilter(
-      Token token, LookupKind lookup, String id, Filter filter, Limit limit, String kind)
+          Token token, LookupKind lookup, String id, Filter filter, Limit limit, String kind)
+          throws StreamException {
+    return paginatedFilter(token, lookup, id, filter, limit, kind, null);
+  }
+
+  public CompletableFuture<Paginated<Reaction>> paginatedFilter(
+      Token token, LookupKind lookup, String id, Filter filter, Limit limit, String kind, Boolean withOwnChildren)
       throws StreamException {
     checkNotNull(lookup, "Lookup kind can't be null");
     checkNotNull(id, "Reaction ID can't be null");
@@ -126,8 +142,12 @@ public final class StreamReactions {
       RequestOption withActivityData =
           new CustomQueryParameter(
               "with_activity_data", Boolean.toString(lookup == LookupKind.ACTIVITY_WITH_DATA));
+      RequestOption ownChildren =
+              new CustomQueryParameter(
+                      "withOwnChildren", Boolean.toString(withOwnChildren != null && withOwnChildren));
+
       return httpClient
-          .execute(buildGet(url, key, token, filter, limit, withActivityData))
+          .execute(buildGet(url, key, token, filter, limit, withActivityData, ownChildren))
           .thenApply(
               response -> {
                 try {
