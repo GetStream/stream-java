@@ -18,9 +18,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class CloudAggregatedFeedTest {
-  private static final String apiKey = "gp6e8sxxzud6";
-  private static final String secret =
-      "7j7exnksc4nxy399fdxvjqyqsqdahax3nfgtp27pumpc7sfm9um688pzpxjpjbf2";
+  private static final String apiKey = System.getenv("STREAM_KEY") != null ? System.getenv("STREAM_KEY")
+      : System.getProperty("STREAM_KEY");
+  private static final String secret = System.getenv("STREAM_SECRET") != null ? System.getenv("STREAM_SECRET")
+      : System.getProperty("STREAM_SECRET");
   private static final String userID = "db07b4a3-8f48-41f7-950c-b228364496e2";
   private static final Token token = buildToken();
   private static String actorID;
@@ -35,9 +36,8 @@ public class CloudAggregatedFeedTest {
 
   @BeforeClass
   public static void setup() throws Exception {
-    actorID =
-        Enrichment.createUserReference(
-            Client.builder(apiKey, secret).build().user(userID).getOrCreate().join().getID());
+    actorID = Enrichment
+        .createUserReference(Client.builder(apiKey, secret).build().user(userID).getOrCreate().join().getID());
   }
 
   @Test
@@ -63,31 +63,15 @@ public class CloudAggregatedFeedTest {
     CloudClient client = CloudClient.builder(apiKey, token, userID).build();
 
     CloudAggregatedFeed feed = client.aggregatedFeed("rich_aggregated", userID);
-    Activity activity =
-        feed.addActivity(
-                Activity.builder()
-                    .actor(actorID)
-                    .verb("post")
-                    .object("text")
-                    .extraField("text", "Hello world!")
-                    .build())
-            .join();
-    client
-        .reactions()
-        .add(
-            userID,
-            Reaction.builder()
-                .activityID(activity.getID())
-                .userID(userID)
-                .kind("comment")
-                .extraField("text", "Hi there!")
-                .build(),
-            feed.getID())
+    Activity activity = feed
+        .addActivity(
+            Activity.builder().actor(actorID).verb("post").object("text").extraField("text", "Hello world!").build())
         .join();
-    List<? extends Group<EnrichedActivity>> result =
-        feed.getEnrichedActivities(
-                new EnrichmentFlags().withReactionCounts().withOwnReactions().withRecentReactions())
-            .join();
+    client.reactions().add(userID, Reaction.builder().activityID(activity.getID()).userID(userID).kind("comment")
+        .extraField("text", "Hi there!").build(), feed.getID()).join();
+    List<? extends Group<EnrichedActivity>> result = feed
+        .getEnrichedActivities(new EnrichmentFlags().withReactionCounts().withOwnReactions().withRecentReactions())
+        .join();
   }
 
   @Test

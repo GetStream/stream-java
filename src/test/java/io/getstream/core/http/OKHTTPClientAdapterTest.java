@@ -8,9 +8,10 @@ import okhttp3.OkHttpClient;
 import org.junit.Test;
 
 public class OKHTTPClientAdapterTest {
-  private static final String apiKey = "gp6e8sxxzud6";
-  private static final String secret =
-      "7j7exnksc4nxy399fdxvjqyqsqdahax3nfgtp27pumpc7sfm9um688pzpxjpjbf2";
+  private static final String apiKey = System.getenv("STREAM_KEY") != null ? System.getenv("STREAM_KEY")
+      : System.getProperty("STREAM_KEY");
+  private static final String secret = System.getenv("STREAM_SECRET") != null ? System.getenv("STREAM_SECRET")
+      : System.getProperty("STREAM_SECRET");
 
   @Test
   public void clientCreation() throws Exception {
@@ -19,10 +20,7 @@ public class OKHTTPClientAdapterTest {
 
   @Test
   public void getRequest() throws Exception {
-    Client client =
-        Client.builder(apiKey, secret)
-            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-            .build();
+    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
 
     FlatFeed feed = client.flatFeed("flat", "1");
     List<Activity> result = feed.getActivities().join();
@@ -30,10 +28,7 @@ public class OKHTTPClientAdapterTest {
 
   @Test
   public void postRequest() throws Exception {
-    Client client =
-        Client.builder(apiKey, secret)
-            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-            .build();
+    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
 
     Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
     FlatFeed feed = client.flatFeed("flat", "1");
@@ -42,10 +37,7 @@ public class OKHTTPClientAdapterTest {
 
   @Test
   public void deleteRequest() throws Exception {
-    Client client =
-        Client.builder(apiKey, secret)
-            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-            .build();
+    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
 
     FlatFeed feed = client.flatFeed("flat", "1");
     feed.removeActivityByID("654e333e-d146-11e8-bd18-1231d51167b4").join();
