@@ -9,10 +9,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class CloudUserTest {
-  private static final String apiKey = System.getenv("STREAM_KEY") != null ? System.getenv("STREAM_KEY")
-      : System.getProperty("STREAM_KEY");
-  private static final String secret = System.getenv("STREAM_SECRET") != null ? System.getenv("STREAM_SECRET")
-      : System.getProperty("STREAM_SECRET");
+  private static final String apiKey =
+      System.getenv("STREAM_KEY") != null
+          ? System.getenv("STREAM_KEY")
+          : System.getProperty("STREAM_KEY");
+  private static final String secret =
+      System.getenv("STREAM_SECRET") != null
+          ? System.getenv("STREAM_SECRET")
+          : System.getProperty("STREAM_SECRET");
   private static final String userID = "db07b4a3-8f48-41f7-950c-b228364496e2";
   private static final Token token = buildToken();
 

@@ -12,10 +12,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class CloudNotificationFeedTest {
-  private static final String apiKey = System.getenv("STREAM_KEY") != null ? System.getenv("STREAM_KEY")
-      : System.getProperty("STREAM_KEY");
-  private static final String secret = System.getenv("STREAM_SECRET") != null ? System.getenv("STREAM_SECRET")
-      : System.getProperty("STREAM_SECRET");
+  private static final String apiKey =
+      System.getenv("STREAM_KEY") != null
+          ? System.getenv("STREAM_KEY")
+          : System.getProperty("STREAM_KEY");
+  private static final String secret =
+      System.getenv("STREAM_SECRET") != null
+          ? System.getenv("STREAM_SECRET")
+          : System.getProperty("STREAM_SECRET");
   private static final String userID = "db07b4a3-8f48-41f7-950c-b228364496e1";
   private static final Token token = buildToken();
   private static String actorID;
@@ -30,8 +34,9 @@ public class CloudNotificationFeedTest {
 
   @BeforeClass
   public static void setup() throws Exception {
-    actorID = Enrichment
-        .createUserReference(Client.builder(apiKey, secret).build().user(userID).getOrCreate().join().getID());
+    actorID =
+        Enrichment.createUserReference(
+            Client.builder(apiKey, secret).build().user(userID).getOrCreate().join().getID());
   }
 
   @Test

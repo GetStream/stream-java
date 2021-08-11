@@ -6,6 +6,7 @@ plugins {
     id 'maven-publish'
     id 'signing'
     id "com.prot.versioninfo" version "0.5"
+    id 'com.diffplug.spotless' version '5.14.0'
 }
 
 group 'io.getstream.client'
@@ -34,6 +35,12 @@ dependencies {
 
 retrolambda {
     javaVersion JavaVersion.VERSION_1_7
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
 }
 
 test {
@@ -92,12 +99,8 @@ publishing {
 
                 developers {
                     developer {
-                        id = 'sirio7g'
-                        name = 'Alessandro Pieri'
-                    }
-                    developer {
-                        id = 'ferhatelmas'
-                        name = 'Ferhat Elmas'
+                        id = 'GetStream'
+                        name = 'Stream Developers'
                     }
                 }
             }

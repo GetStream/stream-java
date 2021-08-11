@@ -14,10 +14,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class CloudFeedTest {
-  private static final String apiKey = System.getenv("STREAM_KEY") != null ? System.getenv("STREAM_KEY")
-      : System.getProperty("STREAM_KEY");
-  private static final String secret = System.getenv("STREAM_SECRET") != null ? System.getenv("STREAM_SECRET")
-      : System.getProperty("STREAM_SECRET");
+  private static final String apiKey =
+      System.getenv("STREAM_KEY") != null
+          ? System.getenv("STREAM_KEY")
+          : System.getProperty("STREAM_KEY");
+  private static final String secret =
+      System.getenv("STREAM_SECRET") != null
+          ? System.getenv("STREAM_SECRET")
+          : System.getProperty("STREAM_SECRET");
   private static final String userID = "db07b4a3-8f48-41f7-950c-b228364496e1";
   private static final Token token = buildToken();
   private static String actorID;
@@ -33,8 +37,9 @@ public class CloudFeedTest {
 
   @BeforeClass
   public static void setup() throws Exception {
-    actorID = Enrichment
-        .createUserReference(Client.builder(apiKey, secret).build().user(userID).getOrCreate().join().getID());
+    actorID =
+        Enrichment.createUserReference(
+            Client.builder(apiKey, secret).build().user(userID).getOrCreate().join().getID());
   }
 
   @Test
@@ -95,8 +100,14 @@ public class CloudFeedTest {
 
     Date now = new Date();
     String foreignID = "some-foreign-id";
-    Activity activity = Activity.builder().actor(actorID).verb("test").object("test").foreignID(foreignID).time(now)
-        .build();
+    Activity activity =
+        Activity.builder()
+            .actor(actorID)
+            .verb("test")
+            .object("test")
+            .foreignID(foreignID)
+            .time(now)
+            .build();
     CloudFlatFeed feed = client.flatFeed("flat", userID);
     Activity result = feed.addActivity(activity).join();
 
