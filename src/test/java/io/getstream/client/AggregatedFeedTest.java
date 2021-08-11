@@ -14,9 +14,10 @@ import okhttp3.OkHttpClient;
 import org.junit.Test;
 
 public class AggregatedFeedTest {
-  private static final String apiKey = "gp6e8sxxzud6";
-  private static final String secret =
-      "7j7exnksc4nxy399fdxvjqyqsqdahax3nfgtp27pumpc7sfm9um688pzpxjpjbf2";
+  private static final String apiKey = System.getenv("STREAM_KEY") != null ? System.getenv("STREAM_KEY")
+      : System.getProperty("STREAM_KEY");
+  private static final String secret = System.getenv("STREAM_SECRET") != null ? System.getenv("STREAM_SECRET")
+      : System.getProperty("STREAM_SECRET");
 
   @Test
   public void getActivityGroups() throws Exception {
@@ -28,16 +29,12 @@ public class AggregatedFeedTest {
 
   @Test
   public void getEnrichedActivityGroups() throws Exception {
-    Client client =
-        Client.builder(apiKey, secret)
-            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
-            .build();
+    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
 
     AggregatedFeed feed = client.aggregatedFeed("aggregated", "1");
-    List<? extends Group<EnrichedActivity>> result =
-        feed.getEnrichedActivities(
-                new EnrichmentFlags().withReactionCounts().withRecentReactions().withOwnReactions())
-            .join();
+    List<? extends Group<EnrichedActivity>> result = feed
+        .getEnrichedActivities(new EnrichmentFlags().withReactionCounts().withRecentReactions().withOwnReactions())
+        .join();
   }
 
   @Test

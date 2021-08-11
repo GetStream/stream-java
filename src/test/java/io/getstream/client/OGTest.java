@@ -5,17 +5,15 @@ import java.net.URL;
 import org.junit.Test;
 
 public class OGTest {
-  private static final String apiKey = "gp6e8sxxzud6";
-  private static final String secret =
-      "7j7exnksc4nxy399fdxvjqyqsqdahax3nfgtp27pumpc7sfm9um688pzpxjpjbf2";
+  private static final String apiKey = System.getenv("STREAM_KEY") != null ? System.getenv("STREAM_KEY")
+      : System.getProperty("STREAM_KEY");
+  private static final String secret = System.getenv("STREAM_SECRET") != null ? System.getenv("STREAM_SECRET")
+      : System.getProperty("STREAM_SECRET");
 
   @Test
   public void openGraph() throws Exception {
     Client client = Client.builder(apiKey, secret).build();
 
-    OGData result =
-        client
-            .openGraph(new URL("https://joshuabloodwolf.bandcamp.com/track/thorns-run-red"))
-            .join();
+    OGData result = client.openGraph(new URL("https://joshuabloodwolf.bandcamp.com/track/thorns-run-red")).join();
   }
 }
