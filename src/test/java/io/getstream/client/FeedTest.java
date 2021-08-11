@@ -13,14 +13,21 @@ import okhttp3.OkHttpClient;
 import org.junit.Test;
 
 public class FeedTest {
-  private static final String apiKey = System.getenv("STREAM_KEY") != null ? System.getenv("STREAM_KEY")
-      : System.getProperty("STREAM_KEY");
-  private static final String secret = System.getenv("STREAM_SECRET") != null ? System.getenv("STREAM_SECRET")
-      : System.getProperty("STREAM_SECRET");
+  private static final String apiKey =
+      System.getenv("STREAM_KEY") != null
+          ? System.getenv("STREAM_KEY")
+          : System.getProperty("STREAM_KEY");
+  private static final String secret =
+      System.getenv("STREAM_SECRET") != null
+          ? System.getenv("STREAM_SECRET")
+          : System.getProperty("STREAM_SECRET");
 
   @Test
   public void addActivity() throws Exception {
-    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
 
     Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
     FlatFeed feed = client.flatFeed("flat", "1");
@@ -29,7 +36,10 @@ public class FeedTest {
 
   @Test
   public void addActivities() throws Exception {
-    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
 
     Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
     FlatFeed feed = client.flatFeed("flat", "1");
@@ -38,7 +48,10 @@ public class FeedTest {
 
   @Test
   public void addCustomActivities() throws Exception {
-    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
 
     VolleyballMatch volley = new VolleyballMatch();
     volley.actor = "Me";
@@ -61,7 +74,10 @@ public class FeedTest {
 
   @Test
   public void removeActivityByID() throws Exception {
-    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
 
     FlatFeed feed = client.flatFeed("flat", "1");
     feed.removeActivityByID("654e333e-d146-11e8-bd18-1231d51167b4").join();
@@ -69,7 +85,10 @@ public class FeedTest {
 
   @Test
   public void removeActivityByForeignID() throws Exception {
-    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
 
     FlatFeed feed = client.flatFeed("flat", "1");
     feed.removeActivityByForeignID("654e333e-d146-11e8-bd18-1231d51167b4").join();
@@ -77,7 +96,10 @@ public class FeedTest {
 
   @Test
   public void follow() throws Exception {
-    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
 
     FlatFeed feed1 = client.flatFeed("flat", "1");
     FlatFeed feed2 = client.flatFeed("flat", "2");
@@ -86,7 +108,10 @@ public class FeedTest {
 
   @Test
   public void getFollowers() throws Exception {
-    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
 
     FlatFeed feed = client.flatFeed("flat", "1");
     feed.getFollowers().join();
@@ -94,7 +119,10 @@ public class FeedTest {
 
   @Test
   public void getFollowed() throws Exception {
-    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
 
     FlatFeed feed = client.flatFeed("flat", "1");
     feed.getFollowed().join();
@@ -102,7 +130,10 @@ public class FeedTest {
 
   @Test
   public void unfollow() throws Exception {
-    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
 
     FlatFeed feed1 = client.flatFeed("flat", "1");
     FlatFeed feed2 = client.flatFeed("flat", "2");
@@ -111,23 +142,44 @@ public class FeedTest {
 
   @Test
   public void updateActivityToTargets() throws Exception {
-    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
 
     FlatFeed feed = client.flatFeed("flat", "bob");
-    Activity activity = Activity.builder().actor("shmest").verb("test").object("test").foreignID("foreignID-1-2-3-4")
-        .time(new Date()).to(Lists.newArrayList(new FeedID("flat:alice"))).build();
+    Activity activity =
+        Activity.builder()
+            .actor("shmest")
+            .verb("test")
+            .object("test")
+            .foreignID("foreignID-1-2-3-4")
+            .time(new Date())
+            .to(Lists.newArrayList(new FeedID("flat:alice")))
+            .build();
     Activity result = feed.addActivity(activity).join();
-    feed.updateActivityToTargets(result, new FeedID[] { new FeedID("flat", "claire") }, new FeedID[] {});
+    feed.updateActivityToTargets(
+        result, new FeedID[] {new FeedID("flat", "claire")}, new FeedID[] {});
     List<Activity> after = feed.getActivities().join();
   }
 
   @Test
   public void replaceActivityToTargets() throws Exception {
-    Client client = Client.builder(apiKey, secret).httpClient(new OKHTTPClientAdapter(new OkHttpClient())).build();
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
 
     FlatFeed feed = client.flatFeed("flat", "1");
-    Activity activity = Activity.builder().actor("test").verb("test").object("test").foreignID("foreignID")
-        .time(new Date()).to(Lists.newArrayList(new FeedID("feed:2"))).build();
+    Activity activity =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .foreignID("foreignID")
+            .time(new Date())
+            .to(Lists.newArrayList(new FeedID("feed:2")))
+            .build();
     feed.replaceActivityToTargets(activity, new FeedID("feed:3"));
   }
 }

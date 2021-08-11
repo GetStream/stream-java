@@ -9,10 +9,14 @@ import java.nio.file.FileSystems;
 import org.junit.Test;
 
 public class CloudFileStorageClientTest {
-  private static final String apiKey = System.getenv("STREAM_KEY") != null ? System.getenv("STREAM_KEY")
-      : System.getProperty("STREAM_KEY");
-  private static final String secret = System.getenv("STREAM_SECRET") != null ? System.getenv("STREAM_SECRET")
-      : System.getProperty("STREAM_SECRET");
+  private static final String apiKey =
+      System.getenv("STREAM_KEY") != null
+          ? System.getenv("STREAM_KEY")
+          : System.getProperty("STREAM_KEY");
+  private static final String secret =
+      System.getenv("STREAM_SECRET") != null
+          ? System.getenv("STREAM_SECRET")
+          : System.getProperty("STREAM_SECRET");
 
   @Test
   public void uploadBytes() throws Exception {
@@ -33,7 +37,8 @@ public class CloudFileStorageClientTest {
   public void delete() throws Exception {
     FileStorageClient client = Client.builder(apiKey, secret).build().files();
 
-    URL result = client.upload("test.txt", "Goodbye World!".getBytes(StandardCharsets.UTF_8)).join();
+    URL result =
+        client.upload("test.txt", "Goodbye World!".getBytes(StandardCharsets.UTF_8)).join();
     client.delete(result).join();
   }
 }

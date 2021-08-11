@@ -10,24 +10,39 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 public class CloudPersonalizationClientTest {
-  private static final String apiKey = System.getenv("STREAM_KEY") != null ? System.getenv("STREAM_KEY")
-      : System.getProperty("STREAM_KEY");
-  private static final String secret = System.getenv("STREAM_SECRET") != null ? System.getenv("STREAM_SECRET")
-      : System.getProperty("STREAM_SECRET");
+  private static final String apiKey =
+      System.getenv("STREAM_KEY") != null
+          ? System.getenv("STREAM_KEY")
+          : System.getProperty("STREAM_KEY");
+  private static final String secret =
+      System.getenv("STREAM_SECRET") != null
+          ? System.getenv("STREAM_SECRET")
+          : System.getProperty("STREAM_SECRET");
 
   @Test
   public void get() throws Exception {
     Client client = Client.builder(apiKey, secret).build();
 
-    Activity activity = Activity.builder().actor("test").verb("test").object("test").foreignID("picture:3").extraField(
-        "image",
-        "https://images.unsplash.com/photo-1503088414719-16a89b27b122?auto=format&fit=crop&w=3400&q=80&ixid=dW5zcGxhc2guY29tOzs7Ozs%3D")
-        .extraField("message", "Surfing at LA's beautiful Venice Beach").extraField("location", "Venice Beach, LA")
-        .extraField("tags", Lists.newArrayList("beach", "van", "surfing", "travel")).build();
+    Activity activity =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .foreignID("picture:3")
+            .extraField(
+                "image",
+                "https://images.unsplash.com/photo-1503088414719-16a89b27b122?auto=format&fit=crop&w=3400&q=80&ixid=dW5zcGxhc2guY29tOzs7Ozs%3D")
+            .extraField("message", "Surfing at LA's beautiful Venice Beach")
+            .extraField("location", "Venice Beach, LA")
+            .extraField("tags", Lists.newArrayList("beach", "van", "surfing", "travel"))
+            .build();
     client.flatFeed("flat", "3").addActivity(activity).join();
 
-    Map<String, Object> result = client.personalization()
-        .get("analyze_features", ImmutableMap.of("foreign_id", "picture:3")).join();
+    Map<String, Object> result =
+        client
+            .personalization()
+            .get("analyze_features", ImmutableMap.of("foreign_id", "picture:3"))
+            .join();
   }
 
   @Test
