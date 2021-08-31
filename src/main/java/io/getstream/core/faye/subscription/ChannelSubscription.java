@@ -7,6 +7,7 @@ public class ChannelSubscription {
     private final FayeClient client;
     private final String channel;
     private final ChannelDataCallback channelDataCallback;
+    private final SubscriptionCancelledCallback onCancelledCallback;
     private WithChannelDataCallback withChannel;
 
     private boolean cancelled = false;
@@ -15,12 +16,14 @@ public class ChannelSubscription {
         this.client = client;
         this.channel = channel;
         this.channelDataCallback = null;
+        this.onCancelledCallback = null;
     }
 
-    public ChannelSubscription(FayeClient client, String channel, ChannelDataCallback channelDataCallback) {
+    public ChannelSubscription(FayeClient client, String channel, ChannelDataCallback channelDataCallback, SubscriptionCancelledCallback onCancelledCallback) {
         this.client = client;
         this.channel = channel;
         this.channelDataCallback = channelDataCallback;
+        this.onCancelledCallback = onCancelledCallback;
     }
 
     public ChannelSubscription setWithChannel(WithChannelDataCallback withChannel) {
@@ -36,9 +39,9 @@ public class ChannelSubscription {
     public void cancel() {
         if (cancelled) return;
         client.unsubscribe(channel, this);
+        if (onCancelledCallback != null) onCancelledCallback.onCancelled();
         cancelled = true;
     }
-
 }
 
 

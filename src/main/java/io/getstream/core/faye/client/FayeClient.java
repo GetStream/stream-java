@@ -19,6 +19,7 @@ import io.getstream.core.faye.Message;
 import io.getstream.core.faye.MessageTransformer;
 import io.getstream.core.faye.subscription.ChannelDataCallback;
 import io.getstream.core.faye.subscription.ChannelSubscription;
+import io.getstream.core.faye.subscription.SubscriptionCancelledCallback;
 import io.getstream.core.utils.Serialization;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -239,30 +240,30 @@ public class FayeClient extends WebSocketListener {
     }
 
     private void subscribeChannels(String[] channels) {
-        subscribeChannels(channels, null);
-    }
-
-    private void subscribeChannels(String[] channels, Boolean force) {
         for (String channel : channels) {
-            subscribe(channel, force);
+            subscribe(channel, true);
         }
     }
 
     public CompletableFuture<ChannelSubscription> subscribe(String channel, ChannelDataCallback callback) {
-        return subscribe(channel, callback, null);
+        return subscribe(channel, callback, null, null);
     }
 
     private CompletableFuture<ChannelSubscription> subscribe(String channel, Boolean force) {
-        return subscribe(channel, null, force);
+        return subscribe(channel, null, null, force);
     }
 
-    private CompletableFuture<ChannelSubscription> subscribe(String channel, ChannelDataCallback callback, Boolean force) {
+    public CompletableFuture<ChannelSubscription> subscribe(String channel, ChannelDataCallback callback, SubscriptionCancelledCallback onCancelled) {
+        return subscribe(channel, callback, onCancelled, null);
+    }
+
+    private CompletableFuture<ChannelSubscription> subscribe(String channel, ChannelDataCallback onData, SubscriptionCancelledCallback onCancelled, Boolean force) {
         // default value
         if (force == null) force = false;
 
         final CompletableFuture<ChannelSubscription> subscriptionCompleter = new CompletableFuture<>();
 
-        final ChannelSubscription channelSubscription = new ChannelSubscription(this, channel, callback);
+        final ChannelSubscription channelSubscription = new ChannelSubscription(this, channel, onData, onCancelled);
         final boolean hasSubscribe = channels.containsKey(channel);
 
         if (hasSubscribe && !force) {
