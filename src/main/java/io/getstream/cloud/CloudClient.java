@@ -232,7 +232,7 @@ public final class CloudClient {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }).get();
+            }, () -> feedSubscriptions.remove("/" + notificationChannel)).get();
 
             subscription.channelSubscription = channelSubscription;
             feedSubscriptions.put("/" + notificationChannel, subscription);
