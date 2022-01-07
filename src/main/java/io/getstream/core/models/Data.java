@@ -1,6 +1,5 @@
 package io.getstream.core.models;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Serialization.convert;
 
@@ -40,7 +39,6 @@ public final class Data {
   }
 
   public <T> Data set(String key, T value) {
-    checkArgument(!"id".equals(key), "Key can't be named 'id'");
     checkNotNull(key, "Key can't be null");
 
     data.put(key, value);
