@@ -6,6 +6,7 @@ import io.getstream.core.models.Data;
 import io.getstream.core.models.ProfileData;
 import java.net.MalformedURLException;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class CloudUserTest {
@@ -59,6 +60,7 @@ public class CloudUserTest {
   }
 
   @Test
+  @Ignore
   public void create() throws Exception {
     CloudClient client = CloudClient.builder(apiKey, token, userID).build();
 
@@ -76,6 +78,7 @@ public class CloudUserTest {
   }
 
   @Test
+  @Ignore
   public void profile() throws Exception {
     CloudClient client = CloudClient.builder(apiKey, token, userID).build();
 

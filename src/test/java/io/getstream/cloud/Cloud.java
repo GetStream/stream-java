@@ -19,9 +19,6 @@ public class Cloud {
   public void openGraph() throws Exception {
     Client client = Client.builder(apiKey, secret).build();
 
-    OGData result =
-        client
-            .openGraph(new URL("https://joshuabloodwolf.bandcamp.com/track/thorns-run-red"))
-            .join();
+    OGData result = client.openGraph(new URL("https://google.com")).join();
   }
 }
