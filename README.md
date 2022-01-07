@@ -14,14 +14,14 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>io.getstream.client</groupId>
     <artifactId>stream-java</artifactId>
-    <version>3.2.4</version>
+    <version>$stream_version</version>
 </dependency>
 ```
 
 or in your `build.gradle`:
 
 ```gradle
-implementation 'io.getstream.client:stream-java:3.2.4'
+implementation 'io.getstream.client:stream-java:$stream_version'
 ```
 
 In case you want to download the artifact and put it manually into your project,
