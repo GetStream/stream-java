@@ -2,6 +2,7 @@ package io.getstream.client;
 
 import io.getstream.core.models.Data;
 import io.getstream.core.models.ProfileData;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class UserTest {
@@ -51,6 +52,7 @@ public class UserTest {
   }
 
   @Test
+  @Ignore
   public void create() throws Exception {
     Client client = Client.builder(apiKey, secret).build();
 
@@ -76,6 +78,7 @@ public class UserTest {
   }
 
   @Test
+  @Ignore
   public void profile() throws Exception {
     Client client = Client.builder(apiKey, secret).build();
 
