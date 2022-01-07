@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10,"i18":10,"i19":10,"i20":10,"i21":10,"i22":10,"i23":10,"i24":10,"i25":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -87,7 +87,7 @@ loadScripts(document, 'script');</script>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>
@@ -138,6 +138,29 @@ extends java.lang.Object</pre>
 <div class="summary">
 <ul class="blockList">
 <li class="blockList">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<section role="region">
+<ul class="blockList">
+<li class="blockList"><a id="nested.class.summary">
+<!--   -->
+</a>
+<h3>Nested Class Summary</h3>
+<table class="memberSummary">
+<caption><span>Nested Classes</span><span class="tabEnd">&nbsp;</span></caption>
+<tr>
+<th class="colFirst" scope="col">Modifier and Type</th>
+<th class="colSecond" scope="col">Class</th>
+<th class="colLast" scope="col">Description</th>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>class&nbsp;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="CloudReactionsClient.Params.html" title="class in io.getstream.cloud">CloudReactionsClient.Params</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+</table>
+</li>
+</ul>
+</section>
 <!-- ========== METHOD SUMMARY =========== -->
 <section role="region">
 <ul class="blockList">
@@ -277,12 +300,22 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i17" class="rowColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;java.util.List&lt;<a href="../core/models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#filter(io.getstream.core.LookupKind,java.lang.String,io.getstream.core.options.Filter,io.getstream.core.options.Limit,java.lang.String,java.lang.Boolean)">filter</a></span>&#8203;(<a href="../core/LookupKind.html" title="enum in io.getstream.core">LookupKind</a>&nbsp;lookup,
+      java.lang.String&nbsp;id,
+      <a href="../core/options/Filter.html" title="class in io.getstream.core.options">Filter</a>&nbsp;filter,
+      <a href="../core/options/Limit.html" title="class in io.getstream.core.options">Limit</a>&nbsp;limit,
+      java.lang.String&nbsp;kind,
+      java.lang.Boolean&nbsp;includeOwnChildren)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i18" class="altColor">
+<td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;java.util.List&lt;<a href="../core/models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#filter(io.getstream.core.LookupKind,java.lang.String,io.getstream.core.options.Limit)">filter</a></span>&#8203;(<a href="../core/LookupKind.html" title="enum in io.getstream.core">LookupKind</a>&nbsp;lookup,
       java.lang.String&nbsp;id,
       <a href="../core/options/Limit.html" title="class in io.getstream.core.options">Limit</a>&nbsp;limit)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i18" class="altColor">
+<tr id="i19" class="rowColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;java.util.List&lt;<a href="../core/models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#filter(io.getstream.core.LookupKind,java.lang.String,io.getstream.core.options.Limit,java.lang.String)">filter</a></span>&#8203;(<a href="../core/LookupKind.html" title="enum in io.getstream.core">LookupKind</a>&nbsp;lookup,
       java.lang.String&nbsp;id,
@@ -290,37 +323,37 @@ extends java.lang.Object</pre>
       java.lang.String&nbsp;kind)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i19" class="rowColor">
+<tr id="i20" class="altColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;java.util.List&lt;<a href="../core/models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#filter(io.getstream.core.LookupKind,java.lang.String,java.lang.String)">filter</a></span>&#8203;(<a href="../core/LookupKind.html" title="enum in io.getstream.core">LookupKind</a>&nbsp;lookup,
       java.lang.String&nbsp;id,
       java.lang.String&nbsp;kind)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i20" class="altColor">
+<tr id="i21" class="rowColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;<a href="../core/models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#get(java.lang.String)">get</a></span>&#8203;(java.lang.String&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i21" class="rowColor">
+<tr id="i22" class="altColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update(io.getstream.core.models.Reaction,io.getstream.core.models.FeedID...)">update</a></span>&#8203;(<a href="../core/models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&nbsp;reaction,
       <a href="../core/models/FeedID.html" title="class in io.getstream.core.models">FeedID</a>...&nbsp;targetFeeds)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i22" class="altColor">
+<tr id="i23" class="rowColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update(io.getstream.core.models.Reaction,java.lang.Iterable)">update</a></span>&#8203;(<a href="../core/models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&nbsp;reaction,
       java.lang.Iterable&lt;<a href="../core/models/FeedID.html" title="class in io.getstream.core.models">FeedID</a>&gt;&nbsp;targetFeeds)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i23" class="rowColor">
+<tr id="i24" class="altColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update(java.lang.String,io.getstream.core.models.FeedID...)">update</a></span>&#8203;(java.lang.String&nbsp;id,
       <a href="../core/models/FeedID.html" title="class in io.getstream.core.models">FeedID</a>...&nbsp;targetFeeds)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i24" class="altColor">
+<tr id="i25" class="rowColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update(java.lang.String,java.lang.Iterable)">update</a></span>&#8203;(java.lang.String&nbsp;id,
       java.lang.Iterable&lt;<a href="../core/models/FeedID.html" title="class in io.getstream.core.models">FeedID</a>&gt;&nbsp;targetFeeds)</code></th>
@@ -472,6 +505,25 @@ extends java.lang.Object</pre>
                                                                                 <a href="../core/options/Filter.html" title="class in io.getstream.core.options">Filter</a>&nbsp;filter,
                                                                                 <a href="../core/options/Limit.html" title="class in io.getstream.core.options">Limit</a>&nbsp;limit,
                                                                                 java.lang.String&nbsp;kind)
+                                                                         throws <a href="../core/exceptions/StreamException.html" title="class in io.getstream.core.exceptions">StreamException</a></pre>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="../core/exceptions/StreamException.html" title="class in io.getstream.core.exceptions">StreamException</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="filter(io.getstream.core.LookupKind,java.lang.String,io.getstream.core.options.Filter,io.getstream.core.options.Limit,java.lang.String,java.lang.Boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>filter</h4>
+<pre class="methodSignature">public&nbsp;java8.util.concurrent.CompletableFuture&lt;java.util.List&lt;<a href="../core/models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;&gt;&nbsp;filter&#8203;(<a href="../core/LookupKind.html" title="enum in io.getstream.core">LookupKind</a>&nbsp;lookup,
+                                                                                java.lang.String&nbsp;id,
+                                                                                <a href="../core/options/Filter.html" title="class in io.getstream.core.options">Filter</a>&nbsp;filter,
+                                                                                <a href="../core/options/Limit.html" title="class in io.getstream.core.options">Limit</a>&nbsp;limit,
+                                                                                java.lang.String&nbsp;kind,
+                                                                                java.lang.Boolean&nbsp;includeOwnChildren)
                                                                          throws <a href="../core/exceptions/StreamException.html" title="class in io.getstream.core.exceptions">StreamException</a></pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
@@ -800,7 +852,7 @@ extends java.lang.Object</pre>
 <div>
 <ul class="subNavList">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested.class.summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method.summary">Method</a></li>

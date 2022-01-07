@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -177,18 +177,29 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;java.util.List&lt;<a href="models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#filter(io.getstream.core.http.Token,io.getstream.core.LookupKind,java.lang.String,io.getstream.core.options.Filter,io.getstream.core.options.Limit,java.lang.String,java.lang.Boolean)">filter</a></span>&#8203;(<a href="http/Token.html" title="class in io.getstream.core.http">Token</a>&nbsp;token,
+      <a href="LookupKind.html" title="enum in io.getstream.core">LookupKind</a>&nbsp;lookup,
+      java.lang.String&nbsp;id,
+      <a href="options/Filter.html" title="class in io.getstream.core.options">Filter</a>&nbsp;filter,
+      <a href="options/Limit.html" title="class in io.getstream.core.options">Limit</a>&nbsp;limit,
+      java.lang.String&nbsp;kind,
+      java.lang.Boolean&nbsp;withOwnChildren)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;<a href="models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#get(io.getstream.core.http.Token,java.lang.String)">get</a></span>&#8203;(<a href="http/Token.html" title="class in io.getstream.core.http">Token</a>&nbsp;token,
    java.lang.String&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;<a href="models/Paginated.html" title="class in io.getstream.core.models">Paginated</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getPaginated(io.getstream.core.http.Token,java.lang.String)">getPaginated</a></span>&#8203;(<a href="http/Token.html" title="class in io.getstream.core.http">Token</a>&nbsp;token,
             java.lang.String&nbsp;id)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;<a href="models/Paginated.html" title="class in io.getstream.core.models">Paginated</a>&lt;<a href="models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#paginatedFilter(io.getstream.core.http.Token,io.getstream.core.LookupKind,java.lang.String,io.getstream.core.options.Filter,io.getstream.core.options.Limit,java.lang.String)">paginatedFilter</a></span>&#8203;(<a href="http/Token.html" title="class in io.getstream.core.http">Token</a>&nbsp;token,
                <a href="LookupKind.html" title="enum in io.getstream.core">LookupKind</a>&nbsp;lookup,
@@ -198,13 +209,24 @@ extends java.lang.Object</pre>
                java.lang.String&nbsp;kind)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;<a href="models/Paginated.html" title="class in io.getstream.core.models">Paginated</a>&lt;<a href="models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#paginatedFilter(io.getstream.core.http.Token,io.getstream.core.LookupKind,java.lang.String,io.getstream.core.options.Filter,io.getstream.core.options.Limit,java.lang.String,java.lang.Boolean)">paginatedFilter</a></span>&#8203;(<a href="http/Token.html" title="class in io.getstream.core.http">Token</a>&nbsp;token,
+               <a href="LookupKind.html" title="enum in io.getstream.core">LookupKind</a>&nbsp;lookup,
+               java.lang.String&nbsp;id,
+               <a href="options/Filter.html" title="class in io.getstream.core.options">Filter</a>&nbsp;filter,
+               <a href="options/Limit.html" title="class in io.getstream.core.options">Limit</a>&nbsp;limit,
+               java.lang.String&nbsp;kind,
+               java.lang.Boolean&nbsp;withOwnChildren)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i8" class="altColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;<a href="models/Paginated.html" title="class in io.getstream.core.models">Paginated</a>&lt;<a href="models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#paginatedFilter(io.getstream.core.http.Token,java.lang.String)">paginatedFilter</a></span>&#8203;(<a href="http/Token.html" title="class in io.getstream.core.http">Token</a>&nbsp;token,
                java.lang.String&nbsp;next)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>java8.util.concurrent.CompletableFuture&lt;java.lang.Void&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update(io.getstream.core.http.Token,io.getstream.core.models.Reaction,io.getstream.core.models.FeedID...)">update</a></span>&#8203;(<a href="http/Token.html" title="class in io.getstream.core.http">Token</a>&nbsp;token,
       <a href="models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&nbsp;reaction,
@@ -284,6 +306,26 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a id="filter(io.getstream.core.http.Token,io.getstream.core.LookupKind,java.lang.String,io.getstream.core.options.Filter,io.getstream.core.options.Limit,java.lang.String,java.lang.Boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>filter</h4>
+<pre class="methodSignature">public&nbsp;java8.util.concurrent.CompletableFuture&lt;java.util.List&lt;<a href="models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;&gt;&nbsp;filter&#8203;(<a href="http/Token.html" title="class in io.getstream.core.http">Token</a>&nbsp;token,
+                                                                                <a href="LookupKind.html" title="enum in io.getstream.core">LookupKind</a>&nbsp;lookup,
+                                                                                java.lang.String&nbsp;id,
+                                                                                <a href="options/Filter.html" title="class in io.getstream.core.options">Filter</a>&nbsp;filter,
+                                                                                <a href="options/Limit.html" title="class in io.getstream.core.options">Limit</a>&nbsp;limit,
+                                                                                java.lang.String&nbsp;kind,
+                                                                                java.lang.Boolean&nbsp;withOwnChildren)
+                                                                         throws <a href="exceptions/StreamException.html" title="class in io.getstream.core.exceptions">StreamException</a></pre>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="exceptions/StreamException.html" title="class in io.getstream.core.exceptions">StreamException</a></code></dd>
+</dl>
+</li>
+</ul>
 <a id="paginatedFilter(io.getstream.core.http.Token,io.getstream.core.LookupKind,java.lang.String,io.getstream.core.options.Filter,io.getstream.core.options.Limit,java.lang.String)">
 <!--   -->
 </a>
@@ -296,6 +338,26 @@ extends java.lang.Object</pre>
                                                                                     <a href="options/Filter.html" title="class in io.getstream.core.options">Filter</a>&nbsp;filter,
                                                                                     <a href="options/Limit.html" title="class in io.getstream.core.options">Limit</a>&nbsp;limit,
                                                                                     java.lang.String&nbsp;kind)
+                                                                             throws <a href="exceptions/StreamException.html" title="class in io.getstream.core.exceptions">StreamException</a></pre>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code><a href="exceptions/StreamException.html" title="class in io.getstream.core.exceptions">StreamException</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="paginatedFilter(io.getstream.core.http.Token,io.getstream.core.LookupKind,java.lang.String,io.getstream.core.options.Filter,io.getstream.core.options.Limit,java.lang.String,java.lang.Boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>paginatedFilter</h4>
+<pre class="methodSignature">public&nbsp;java8.util.concurrent.CompletableFuture&lt;<a href="models/Paginated.html" title="class in io.getstream.core.models">Paginated</a>&lt;<a href="models/Reaction.html" title="class in io.getstream.core.models">Reaction</a>&gt;&gt;&nbsp;paginatedFilter&#8203;(<a href="http/Token.html" title="class in io.getstream.core.http">Token</a>&nbsp;token,
+                                                                                    <a href="LookupKind.html" title="enum in io.getstream.core">LookupKind</a>&nbsp;lookup,
+                                                                                    java.lang.String&nbsp;id,
+                                                                                    <a href="options/Filter.html" title="class in io.getstream.core.options">Filter</a>&nbsp;filter,
+                                                                                    <a href="options/Limit.html" title="class in io.getstream.core.options">Limit</a>&nbsp;limit,
+                                                                                    java.lang.String&nbsp;kind,
+                                                                                    java.lang.Boolean&nbsp;withOwnChildren)
                                                                              throws <a href="exceptions/StreamException.html" title="class in io.getstream.core.exceptions">StreamException</a></pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
