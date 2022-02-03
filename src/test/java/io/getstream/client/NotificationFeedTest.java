@@ -1,10 +1,11 @@
 package io.getstream.client;
 
+import static org.junit.Assert.*;
+
 import io.getstream.core.http.OKHTTPClientAdapter;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.EnrichedActivity;
-import io.getstream.core.models.NotificationGroup;
-import java.util.List;
+import io.getstream.core.models.PaginatedNotificationGroup;
 import okhttp3.OkHttpClient;
 import org.junit.Test;
 
@@ -26,7 +27,9 @@ public class NotificationFeedTest {
             .build();
 
     NotificationFeed feed = client.notificationFeed("notification", "1");
-    List<NotificationGroup<Activity>> result = feed.getActivities().join();
+    PaginatedNotificationGroup<Activity> result = feed.getActivities().join();
+    assertFalse(result.getResults().isEmpty());
+    assertNotNull(result.getResults().get(0).getID());
   }
 
   @Test
@@ -37,6 +40,8 @@ public class NotificationFeedTest {
             .build();
 
     NotificationFeed feed = client.notificationFeed("notification", "1");
-    List<NotificationGroup<EnrichedActivity>> result = feed.getEnrichedActivities().join();
+    PaginatedNotificationGroup<EnrichedActivity> result = feed.getEnrichedActivities().join();
+    assertFalse(result.getResults().isEmpty());
+    assertNotNull(result.getResults().get(0).getID());
   }
 }
