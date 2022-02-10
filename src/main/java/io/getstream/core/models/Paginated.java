@@ -31,7 +31,7 @@ public class Paginated<T> {
   }
 
   @JsonCreator
-  private Paginated(
+  public Paginated(
       @JsonProperty("next") String next,
       @JsonProperty("results") List<T> results,
       @JsonProperty("duration") String duration) {

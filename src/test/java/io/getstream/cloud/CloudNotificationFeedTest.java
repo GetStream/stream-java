@@ -1,13 +1,14 @@
 package io.getstream.cloud;
 
+import static org.junit.Assert.*;
+
 import io.getstream.client.Client;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.EnrichedActivity;
-import io.getstream.core.models.NotificationGroup;
+import io.getstream.core.models.PaginatedNotificationGroup;
 import io.getstream.core.utils.Enrichment;
 import java.net.MalformedURLException;
-import java.util.List;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -53,7 +54,9 @@ public class CloudNotificationFeedTest {
     CloudClient client = CloudClient.builder(apiKey, token, userID).build();
 
     CloudNotificationFeed feed = client.notificationFeed("notification", userID);
-    List<NotificationGroup<Activity>> result = feed.getActivities().join();
+    PaginatedNotificationGroup<Activity> result = feed.getActivities().join();
+    assertFalse(result.getResults().isEmpty());
+    assertNotNull(result.getResults().get(0).getID());
   }
 
   @Test
@@ -61,6 +64,6 @@ public class CloudNotificationFeedTest {
     CloudClient client = CloudClient.builder(apiKey, token, userID).build();
 
     CloudNotificationFeed feed = client.notificationFeed("rich_notification", userID);
-    List<NotificationGroup<EnrichedActivity>> result = feed.getEnrichedActivities().join();
+    PaginatedNotificationGroup<EnrichedActivity> result = feed.getEnrichedActivities().join();
   }
 }
