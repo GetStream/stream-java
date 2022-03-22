@@ -51,6 +51,9 @@ public final class Data {
 
   public Data from(Map<String, Object> map) {
     checkNotNull(data, "Can't extract data from null");
+    if (map == null || map.isEmpty()) {
+      return this;
+    }
 
     for (Map.Entry<String, Object> entry : map.entrySet()) {
       set(entry.getKey(), entry.getValue());

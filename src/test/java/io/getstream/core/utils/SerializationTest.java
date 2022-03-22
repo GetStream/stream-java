@@ -2,6 +2,7 @@ package io.getstream.core.utils;
 
 import static io.getstream.core.utils.Serialization.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
@@ -13,6 +14,7 @@ import io.getstream.core.models.Activity;
 import io.getstream.core.models.CollectionData;
 import io.getstream.core.models.EnrichedActivity;
 import io.getstream.core.models.FeedID;
+import io.getstream.core.models.Reaction;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
@@ -207,6 +209,16 @@ public class SerializationTest {
 
     Map<String, Object> result =
         fromJSON(new ByteArrayInputStream(activity.getBytes(Charset.forName("UTF-8"))), type);
+  }
+
+  @Test
+  public void emptyDataDeserialization() throws Exception {
+    String reaction = "{ \"data\": {} }";
+    TypeReference<Reaction> type = new TypeReference<Reaction>() {};
+
+    Reaction result =
+        fromJSON(new ByteArrayInputStream(reaction.getBytes(Charset.forName("UTF-8"))), type);
+    assertNotNull(result);
   }
 
   @Test
