@@ -1,12 +1,32 @@
-# stream-java [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.getstream.client/stream-java/badge.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.getstream.client/stream-java) [![build](https://github.com/GetStream/stream-java/workflows/build/badge.svg)](https://github.com/GetStream/stream-java/actions)
+# Official Java SDK for [Stream Feeds](https://getstream.io/activity-feeds/)
 
-[stream-java](https://github.com/GetStream/stream-java) is a Java feed client for [Stream](https://getstream.io/). At the moment, there is no pure Java client for chat but you can find REST docs [here](https://getstream.io/chat/docs_rest/) and an Android specific implementation in Kotlin can be seen [here](https://github.com/GetStream/stream-chat-android).
+[![build](https://github.com/GetStream/stream-java/workflows/build/badge.svg)](https://github.com/GetStream/stream-java/actions)
 
-You can sign up for a Stream account at https://getstream.io/get_started.
+<p align="center">
+    <img src="./assets/logo.svg" width="50%" height="50%">
+</p>
+<p align="center">
+    Official Java API client for Stream Feeds, a web service for building scalable newsfeeds and activity streams.
+    <br />
+    <a href="https://getstream.io/activity-feeds/docs/?language=java"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://getstream.github.io/stream-java/">JavaDoc</a>
+    ·
+    <a href="https://github.com/GetStream/stream-java/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/GetStream/stream-java/issues">Request Feature</a>
+</p>
 
----
+## 📝 About Stream
 
-### Installation
+You can sign up for a Stream account at our [Get Started](https://getstream.io/chat/get_started/) page.
+
+You can use this library to access feeds API endpoints server-side.
+
+For the client-side integrations (web and mobile) have a look at the JavaScript, iOS and Android SDK libraries ([docs](https://getstream.io/activity-feeds/)).
+
+## ⚙️ Installation
 
 Add the following dependency to your `pom.xml`:
 
@@ -29,15 +49,9 @@ you can download it from [here](https://github.com/GetStream/stream-java/release
 
 Snapshots of the development version are available in [Sonatype](https://oss.sonatype.org/content/repositories/snapshots/io/getstream/client/) snapshots repository.
 
----
+> 💡This API Client project requires Java SE 7.
 
-### JDK / JVM version requirements
-
-This API Client project requires Java SE 7.
-
----
-
-### FAQ
+## 🙋 FAQ
 
 1. Is Android supported?
 
@@ -49,31 +63,26 @@ If you're using proguard, ensure having following: `-keep class io.getstream.cor
 
 Additionally, we're using Jackson JSON processor and see [their definitions](https://github.com/FasterXML/jackson-docs/wiki/JacksonOnAndroid) too unless you're already using it.
 
----
-
-### Full documentation
+## 📚 Full documentation
 
 Documentation for this Java client are available at the [Stream website](https://getstream.io/docs/?language=java).
 
-For examples have a look [here](https://github.com/GetStream/stream-java/tree/master/example/Example.java).
+For examples have a look [here](./example/Example.java).
 
 Docs are available on [GetStream.io](https://getstream.io/docs/?language=java).
 
 JavaDoc is available [here](https://getstream.github.io/stream-java/).
 
----
-
-### Building & Testing
+## 🧪 Building & Testing
 
 Run `gradlew test` to execute integration tests
 
----
 
-### Copyright and License Information
+## ✍️ Contributing
 
-Project is licensed under the [BSD 3-Clause](LICENSE).
+We welcome code changes that improve this library or fix a problem, please make sure to follow all best practices and add tests if applicable before submitting a Pull Request on Github. We are very happy to merge your code in the official repository. Make sure to sign our [Contributor License Agreement (CLA)](https://docs.google.com/forms/d/e/1FAIpQLScFKsKkAJI7mhCr7K9rEIOpqIDThrWxuvxnwUq2XkHyG154vQ/viewform) first. See our [license file](./LICENSE) for more details.
 
-## We are hiring!
+## 🧑‍💻 We are hiring!
 
 We've recently closed a [$38 million Series B funding round](https://techcrunch.com/2021/03/04/stream-raises-38m-as-its-chat-and-activity-feed-apis-power-communications-for-1b-users/) and we keep actively growing.
 Our APIs are used by more than a billion end-users, and you'll have a chance to make a huge impact on the product within a team of the strongest engineers all over the world.

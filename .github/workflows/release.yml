@@ -1,0 +1,50 @@
+name: Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  Release:
+    name: 🚀 Release
+    if: github.event.pull_request.merged && startsWith(github.head_ref, 'release-')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+  
+      - uses: actions/github-script@v5
+        with:
+          script: |
+            const get_change_log_diff = require('./scripts/get_changelog_diff.js')
+            core.exportVariable('CHANGELOG', get_change_log_diff())
+
+            // Getting the release version from the PR source branch
+            // Source branch looks like this: release-1.0.0
+            const version = context.payload.pull_request.head.ref.split('-')[1]
+            core.exportVariable('VERSION', version)
+
+      - name: Publish to MavenCentral
+        run: |
+          sudo bash -c "echo '$GPG_KEY_CONTENTS' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
+          ./gradlew publishReleasePublicationToSonatypeRepository --no-daemon --max-workers 1 closeAndReleaseSonatypeStagingRepository
+        env:
+          STREAM_KEY: ${{ secrets.STREAM_KEY }}
+          STREAM_SECRET: ${{ secrets.STREAM_SECRET }}
+          GPG_KEY_CONTENTS: ${{ secrets.GPG_KEY_CONTENTS }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          SIGNING_SECRET_KEY_RING_FILE: ${{ secrets.SIGNING_SECRET_KEY_RING_FILE }}
+          SONATYPE_STAGING_PROFILE_ID: ${{ secrets.SONATYPE_STAGING_PROFILE_ID }}
+
+      - name: Create release on GitHub
+        uses: ncipollo/release-action@v1
+        with:
+          body: ${{ env.CHANGELOG }}
+          tag: ${{ env.VERSION }}
+          token: ${{ secrets.GITHUB_TOKEN }}
