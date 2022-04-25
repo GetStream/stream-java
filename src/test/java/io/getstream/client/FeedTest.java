@@ -1,5 +1,7 @@
 package io.getstream.client;
 
+import static org.junit.Assert.assertEquals;
+
 import com.google.common.collect.Lists;
 import io.getstream.client.entities.FootballMatch;
 import io.getstream.client.entities.Match;
@@ -7,6 +9,8 @@ import io.getstream.client.entities.VolleyballMatch;
 import io.getstream.core.http.OKHTTPClientAdapter;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
+import io.getstream.core.models.FollowStats;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import okhttp3.OkHttpClient;
@@ -138,6 +142,28 @@ public class FeedTest {
     FlatFeed feed1 = client.flatFeed("flat", "1");
     FlatFeed feed2 = client.flatFeed("flat", "2");
     feed1.unfollow(feed2).join();
+  }
+
+  @Test
+  public void getFollowStats() throws Exception {
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
+    String feed1Id = "flat:1";
+    FlatFeed feed1 = client.flatFeed("flat", "1");
+    FlatFeed feed2 = client.flatFeed("flat", "2");
+    feed1.follow(feed2).join();
+
+    FollowStats stats =
+        feed1.getFollowStats(Collections.emptyList(), Lists.newArrayList("timeline")).join();
+    assertEquals(0, stats.getFollowers().getCount());
+    assertEquals(feed1Id, stats.getFollowers().getFeed());
+
+    stats = feed1.getFollowStats(Collections.emptyList(), Lists.newArrayList("user")).join();
+    assertEquals(0, stats.getFollowers().getCount());
+    assertEquals(feed1Id, stats.getFollowers().getFeed());
+    assertEquals(feed1Id, stats.getFollowing().getFeed());
   }
 
   @Test

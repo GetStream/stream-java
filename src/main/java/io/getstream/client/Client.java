@@ -317,6 +317,12 @@ public final class Client {
     return stream.unfollow(token, source, target, options);
   }
 
+  CompletableFuture<Response> getFollowStats(
+      FeedID feed, String[] followerSlugs, String[] followingSlugs) throws StreamException {
+    final Token token = buildFollowToken(secret, TokenAction.READ);
+    return stream.getFollowStats(token, feed, followerSlugs, followingSlugs);
+  }
+
   CompletableFuture<Response> updateActivityToTargets(
       FeedID feed, Activity activity, FeedID[] add, FeedID[] remove, FeedID[] newTargets)
       throws StreamException {
