@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9,"i7":9,"i8":9,"i9":9,"i10":9,"i11":9,"i12":9,"i13":9,"i14":9,"i15":9,"i16":9,"i17":9,"i18":9,"i19":9,"i20":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -260,6 +260,11 @@ extends java.lang.Object</pre>
 <td class="colFirst"><code>static java.net.URL</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#buildUsersURL(java.net.URL,java.lang.String)">buildUsersURL</a></span>&#8203;(java.net.URL&nbsp;baseURL,
              java.lang.String&nbsp;path)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i20" class="altColor">
+<td class="colFirst"><code>static java.net.URL</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#followStatsPath(java.net.URL)">followStatsPath</a></span>&#8203;(java.net.URL&nbsp;baseURL)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -565,11 +570,25 @@ extends java.lang.Object</pre>
 <a id="buildUnfollowManyURL(java.net.URL)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>buildUnfollowManyURL</h4>
 <pre class="methodSignature">public static&nbsp;java.net.URL&nbsp;buildUnfollowManyURL&#8203;(java.net.URL&nbsp;baseURL)
                                          throws java.net.MalformedURLException</pre>
+<dl>
+<dt><span class="throwsLabel">Throws:</span></dt>
+<dd><code>java.net.MalformedURLException</code></dd>
+</dl>
+</li>
+</ul>
+<a id="followStatsPath(java.net.URL)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>followStatsPath</h4>
+<pre class="methodSignature">public static&nbsp;java.net.URL&nbsp;followStatsPath&#8203;(java.net.URL&nbsp;baseURL)
+                                    throws java.net.MalformedURLException</pre>
 <dl>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code>java.net.MalformedURLException</code></dd>

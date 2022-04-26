@@ -676,6 +676,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/utils/Serialization.html#deserializeContainer(io.getstream.core.http.Response,java.lang.String,java.lang.Class)">deserializeContainer(Response, String, Class&lt;T&gt;)</a></span> - Static method in class io.getstream.core.utils.<a href="io/getstream/core/utils/Serialization.html" title="class in io.getstream.core.utils">Serialization</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/getstream/core/utils/Serialization.html#deserializeContainerSingleItem(io.getstream.core.http.Response,java.lang.Class)">deserializeContainerSingleItem(Response, Class&lt;T&gt;)</a></span> - Static method in class io.getstream.core.utils.<a href="io/getstream/core/utils/Serialization.html" title="class in io.getstream.core.utils">Serialization</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/utils/Serialization.html#deserializeError(io.getstream.core.http.Response)">deserializeError(Response)</a></span> - Static method in class io.getstream.core.utils.<a href="io/getstream/core/utils/Serialization.html" title="class in io.getstream.core.utils">Serialization</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/Region.html#DUBLIN">DUBLIN</a></span> - io.getstream.core.<a href="io/getstream/core/Region.html" title="enum in io.getstream.core">Region</a></dt>
@@ -879,6 +881,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="io/getstream/core/models/FollowRelation.html" title="class in io.getstream.core.models"><span class="typeNameLink">FollowRelation</span></a> - Class in <a href="io/getstream/core/models/package-summary.html">io.getstream.core.models</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/models/FollowRelation.html#%3Cinit%3E(java.lang.String,java.lang.String)">FollowRelation(String, String)</a></span> - Constructor for class io.getstream.core.models.<a href="io/getstream/core/models/FollowRelation.html" title="class in io.getstream.core.models">FollowRelation</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/getstream/core/models/FollowStats.FollowStat.html#%3Cinit%3E()">FollowStat()</a></span> - Constructor for class io.getstream.core.models.<a href="io/getstream/core/models/FollowStats.FollowStat.html" title="class in io.getstream.core.models">FollowStats.FollowStat</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/getstream/core/models/FollowStats.html" title="class in io.getstream.core.models"><span class="typeNameLink">FollowStats</span></a> - Class in <a href="io/getstream/core/models/package-summary.html">io.getstream.core.models</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/getstream/core/models/FollowStats.html#%3Cinit%3E()">FollowStats()</a></span> - Constructor for class io.getstream.core.models.<a href="io/getstream/core/models/FollowStats.html" title="class in io.getstream.core.models">FollowStats</a></dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/getstream/core/models/FollowStats.FollowStat.html" title="class in io.getstream.core.models"><span class="typeNameLink">FollowStats.FollowStat</span></a> - Class in <a href="io/getstream/core/models/package-summary.html">io.getstream.core.models</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/getstream/core/utils/Routes.html#followStatsPath(java.net.URL)">followStatsPath(URL)</a></span> - Static method in class io.getstream.core.utils.<a href="io/getstream/core/utils/Routes.html" title="class in io.getstream.core.utils">Routes</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/models/Activity.Builder.html#foreignID(java.lang.String)">foreignID(String)</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/Activity.Builder.html" title="class in io.getstream.core.models">Activity.Builder</a></dt>
 <dd>&nbsp;</dd>
@@ -1175,6 +1187,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/getstream/core/models/Engagement.html#getContent()">getContent()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/Engagement.html" title="class in io.getstream.core.models">Engagement</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/models/Impression.html#getContentList()">getContentList()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/Impression.html" title="class in io.getstream.core.models">Impression</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/getstream/core/models/FollowStats.FollowStat.html#getCount()">getCount()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/FollowStats.FollowStat.html" title="class in io.getstream.core.models">FollowStats.FollowStat</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/models/Group.html#getCreatedAt()">getCreatedAt()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/Group.html" title="class in io.getstream.core.models">Group</a></dt>
 <dd>&nbsp;</dd>
@@ -1944,6 +1958,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/models/Impression.html#getFeatures()">getFeatures()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/Impression.html" title="class in io.getstream.core.models">Impression</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/getstream/core/models/FollowStats.FollowStat.html#getFeed()">getFeed()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/FollowStats.FollowStat.html" title="class in io.getstream.core.models">FollowStats.FollowStat</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/models/Engagement.html#getFeedID()">getFeedID()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/Engagement.html" title="class in io.getstream.core.models">Engagement</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/models/Impression.html#getFeedID()">getFeedID()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/Impression.html" title="class in io.getstream.core.models">Impression</a></dt>
@@ -1992,6 +2008,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/cloud/CloudFeed.html#getFollowed(java.lang.Iterable)">getFollowed(Iterable&lt;FeedID&gt;)</a></span> - Method in class io.getstream.cloud.<a href="io/getstream/cloud/CloudFeed.html" title="class in io.getstream.cloud">CloudFeed</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/getstream/core/models/FollowStats.html#getFollowers()">getFollowers()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/FollowStats.html" title="class in io.getstream.core.models">FollowStats</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/Stream.html#getFollowers(io.getstream.core.http.Token,io.getstream.core.models.FeedID,io.getstream.core.options.RequestOption...)">getFollowers(Token, FeedID, RequestOption...)</a></span> - Method in class io.getstream.core.<a href="io/getstream/core/Stream.html" title="class in io.getstream.core">Stream</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/client/Feed.html#getFollowers(io.getstream.core.models.FeedID...)">getFollowers(FeedID...)</a></span> - Method in class io.getstream.client.<a href="io/getstream/client/Feed.html" title="class in io.getstream.client">Feed</a></dt>
@@ -2028,7 +2046,13 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/models/ProfileData.html#getFollowersCount()">getFollowersCount()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/ProfileData.html" title="class in io.getstream.core.models">ProfileData</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/getstream/core/models/FollowStats.html#getFollowing()">getFollowing()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/FollowStats.html" title="class in io.getstream.core.models">FollowStats</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/models/ProfileData.html#getFollowingCount()">getFollowingCount()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/ProfileData.html" title="class in io.getstream.core.models">ProfileData</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/getstream/core/Stream.html#getFollowStats(io.getstream.core.http.Token,io.getstream.core.models.FeedID,java.lang.String%5B%5D,java.lang.String%5B%5D,io.getstream.core.options.RequestOption...)">getFollowStats(Token, FeedID, String[], String[], RequestOption...)</a></span> - Method in class io.getstream.core.<a href="io/getstream/core/Stream.html" title="class in io.getstream.core">Stream</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/getstream/client/Feed.html#getFollowStats(java.lang.Iterable,java.lang.Iterable)">getFollowStats(Iterable&lt;String&gt;, Iterable&lt;String&gt;)</a></span> - Method in class io.getstream.client.<a href="io/getstream/client/Feed.html" title="class in io.getstream.client">Feed</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/getstream/core/models/Activity.html#getForeignID()">getForeignID()</a></span> - Method in class io.getstream.core.models.<a href="io/getstream/core/models/Activity.html" title="class in io.getstream.core.models">Activity</a></dt>
 <dd>&nbsp;</dd>
