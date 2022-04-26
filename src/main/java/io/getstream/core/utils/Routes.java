@@ -25,6 +25,7 @@ public final class Routes {
   private static final String reactionsPath = "reaction/";
   private static final String toTargetUpdatePath = "/activity_to_targets/";
   private static final String usersPath = "user/";
+  private static final String followStatsPath = "stats/follow/";
 
   private Routes() {
     /* nothing to see here */
@@ -110,6 +111,10 @@ public final class Routes {
 
   public static URL buildUnfollowManyURL(URL baseURL) throws MalformedURLException {
     return new URL(baseURL, basePath + unfollowManyPath);
+  }
+
+  public static URL followStatsPath(URL baseURL) throws MalformedURLException {
+    return new URL(baseURL, basePath + followStatsPath);
   }
 
   private static URL buildSubdomainPath(URL baseURL, String subdomain, String apiPath, String path)

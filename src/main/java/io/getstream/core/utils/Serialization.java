@@ -90,6 +90,16 @@ public final class Serialization {
     throw deserializeException(response);
   }
 
+  public static <T> T deserializeContainerSingleItem(Response response, Class<T> element)
+      throws IOException, StreamException {
+    if (normalResponseCodes.contains(response.getCode())) {
+      return fromJSON(
+          response.getBody(), "results", mapper.getTypeFactory().constructType(element));
+    }
+
+    throw deserializeException(response);
+  }
+
   public static <T> T deserializeContainer(Response response, String wrapper, JavaType element)
       throws IOException, StreamException {
     if (normalResponseCodes.contains(response.getCode())) {

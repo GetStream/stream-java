@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -367,6 +368,34 @@ public final class Stream {
     try {
       final URL url = buildFeedURL(baseURL, source, "/following/" + target + '/');
       return httpClient.execute(buildDelete(url, key, token, options));
+    } catch (MalformedURLException | URISyntaxException e) {
+      throw new StreamException(e);
+    }
+  }
+
+  public CompletableFuture<Response> getFollowStats(
+      Token token,
+      FeedID feed,
+      String[] followerSlugs,
+      String[] followingSlugs,
+      RequestOption... options)
+      throws StreamException {
+    try {
+      final URL url = followStatsPath(baseURL);
+      final List<CustomQueryParameter> params = new ArrayList<>(4);
+      final String feedId = String.join(":", feed.getSlug(), feed.getUserID());
+      params.add(new CustomQueryParameter("followers", feedId));
+      params.add(new CustomQueryParameter("following", feedId));
+
+      if (followerSlugs != null && followerSlugs.length > 0) {
+        params.add(new CustomQueryParameter("followers_slugs", String.join(",", followerSlugs)));
+      }
+      if (followingSlugs != null && followingSlugs.length > 0) {
+        params.add(new CustomQueryParameter("following_slugs", String.join(",", followingSlugs)));
+      }
+
+      return httpClient.execute(
+          buildGet(url, key, token, params.toArray(new CustomQueryParameter[0])));
     } catch (MalformedURLException | URISyntaxException e) {
       throw new StreamException(e);
     }

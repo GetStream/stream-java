@@ -3,12 +3,11 @@ package io.getstream.client;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Serialization.*;
+import static io.getstream.core.utils.Serialization.deserializeContainer;
 
 import com.google.common.collect.Iterables;
 import io.getstream.core.exceptions.StreamException;
-import io.getstream.core.models.Activity;
-import io.getstream.core.models.FeedID;
-import io.getstream.core.models.FollowRelation;
+import io.getstream.core.models.*;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.Limit;
 import io.getstream.core.options.Offset;
@@ -324,6 +323,23 @@ public class Feed {
             response -> {
               try {
                 return deserializeError(response);
+              } catch (StreamException | IOException e) {
+                throw new CompletionException(e);
+              }
+            });
+  }
+
+  public final CompletableFuture<FollowStats> getFollowStats(
+      Iterable<String> followerSlugs, Iterable<String> followingSlugs) throws StreamException {
+    return client
+        .getFollowStats(
+            id,
+            Iterables.toArray(followerSlugs, String.class),
+            Iterables.toArray(followingSlugs, String.class))
+        .thenApply(
+            response -> {
+              try {
+                return deserializeContainerSingleItem(response, FollowStats.class);
               } catch (StreamException | IOException e) {
                 throw new CompletionException(e);
               }
