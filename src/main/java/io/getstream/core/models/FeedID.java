@@ -40,6 +40,10 @@ public final class FeedID {
     return userID;
   }
 
+  public String getClaim() {
+    return slug + userID;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

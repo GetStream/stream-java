@@ -17,6 +17,10 @@ public final class CloudNotificationFeed extends CloudFeed {
     super(client, id);
   }
 
+  CloudNotificationFeed(CloudClient client, FeedID id, FeedSubscriber subscriber) {
+    super(client, id, subscriber);
+  }
+
   public CompletableFuture<PaginatedNotificationGroup<Activity>> getActivities()
       throws StreamException {
     return getActivities(

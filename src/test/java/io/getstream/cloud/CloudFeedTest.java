@@ -1,15 +1,21 @@
 package io.getstream.cloud;
 
+import static org.junit.Assert.fail;
+
 import io.getstream.client.Client;
 import io.getstream.client.entities.FootballMatch;
 import io.getstream.client.entities.Match;
 import io.getstream.client.entities.VolleyballMatch;
+import io.getstream.core.faye.subscription.ChannelSubscription;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.Activity;
+import io.getstream.core.models.RealtimeMessage;
 import io.getstream.core.utils.Enrichment;
 import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java8.util.concurrent.CompletableFuture;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -22,6 +28,10 @@ public class CloudFeedTest {
       System.getenv("STREAM_SECRET") != null
           ? System.getenv("STREAM_SECRET")
           : System.getProperty("STREAM_SECRET");
+  private static final String appId =
+      System.getenv("STREAM_APP_ID") != null
+          ? System.getenv("STREAM_APP_ID")
+          : System.getProperty("STREAM_APP_ID");
   private static final String userID = "db07b4a3-8f48-41f7-950c-b228364496e1";
   private static final Token token = buildToken();
   private static String actorID;
@@ -146,5 +156,34 @@ public class CloudFeedTest {
     CloudFlatFeed feed1 = client.flatFeed("flat", userID);
     CloudFlatFeed feed2 = client.flatFeed("flat", "2");
     feed1.unfollow(feed2).join();
+  }
+
+  @Test
+  public void TestFaye() throws Exception {
+    AtomicReference<RealtimeMessage> msg = new AtomicReference<>();
+    CloudClient client = CloudClient.builder(apiKey, token, userID, appId).build();
+    CloudFlatFeed feed = client.flatFeed("user", userID);
+    CompletableFuture<ChannelSubscription> subscription =
+        feed.subscribe(message -> msg.set(message));
+
+    feed.addActivity(
+            Activity.builder()
+                .actor("SU:" + userID)
+                .verb("tweet")
+                .object("tweet:10")
+                .extraField("message", "Beautiful bird!")
+                .build())
+        .get();
+
+    for (int i = 0; i < 15; i++) {
+      if (msg.get() != null) {
+        subscription.cancel(true);
+        return;
+      }
+      Thread.sleep(250);
+    }
+
+    subscription.cancel(true);
+    fail("Timeout. Did not receive message through websocket in time.");
   }
 }
