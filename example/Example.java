@@ -226,7 +226,7 @@ class Example {
         // Batch following many feeds
         // Let timeline:1 will follow user:1, user:2 and user:3
         FollowRelation[] follows = new FollowRelation[] { new FollowRelation("timeline:1", "user:1"),
-                new FollowRelation("timeline:3", "user:2"), new FollowRelation("timeline:1", "user:3") };
+                new FollowRelation("timeline:1", "user:2"), new FollowRelation("timeline:1", "user:3") };
         client.batch().followMany(follows);
         // copy only the last 10 activities from every feed
         client.batch().followMany(10, follows);
