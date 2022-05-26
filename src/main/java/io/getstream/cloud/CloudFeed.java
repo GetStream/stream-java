@@ -6,6 +6,7 @@ import static io.getstream.core.utils.Serialization.*;
 
 import com.google.common.collect.Iterables;
 import io.getstream.core.exceptions.StreamException;
+import io.getstream.core.faye.subscription.ChannelSubscription;
 import io.getstream.core.http.Response;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
@@ -26,6 +27,7 @@ import java8.util.concurrent.CompletionException;
 public class CloudFeed {
   private final CloudClient client;
   private final FeedID id;
+  private final FeedSubscriber subscriber;
 
   CloudFeed(CloudClient client, FeedID id) {
     checkNotNull(client, "Can't create feed w/o a client");
@@ -33,10 +35,26 @@ public class CloudFeed {
 
     this.client = client;
     this.id = id;
+    this.subscriber = null;
+  }
+
+  CloudFeed(CloudClient client, FeedID id, FeedSubscriber subscriber) {
+    checkNotNull(client, "Can't create feed w/o a client");
+    checkNotNull(id, "Can't create feed w/o an ID");
+
+    this.client = client;
+    this.id = id;
+    this.subscriber = subscriber;
   }
 
   protected final CloudClient getClient() {
     return client;
+  }
+
+  public final CompletableFuture<ChannelSubscription> subscribe(
+      RealtimeMessageCallback messageCallback) {
+    checkNotNull(subscriber, "A subscriber must be provided in order to start listening to a feed");
+    return subscriber.subscribe(id, messageCallback);
   }
 
   public final FeedID getID() {

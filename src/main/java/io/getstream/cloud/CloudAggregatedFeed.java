@@ -20,6 +20,10 @@ public class CloudAggregatedFeed extends CloudFeed {
     super(client, id);
   }
 
+  CloudAggregatedFeed(CloudClient client, FeedID id, FeedSubscriber subscriber) {
+    super(client, id, subscriber);
+  }
+
   public CompletableFuture<? extends List<? extends Group<Activity>>> getActivities()
       throws StreamException {
     return getActivities(

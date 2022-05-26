@@ -53,6 +53,16 @@ public final class Serialization {
     return mapper.readValue(mapper.treeAsTokens(tree), type);
   }
 
+  public static <T> T fromJSON(String json, Class<T> type) throws IOException {
+    return mapper.readValue(json, type);
+  }
+
+  public static <T> List<T> fromJSONList(String json, Class<T> type) throws IOException {
+    final CollectionType collection =
+        mapper.getTypeFactory().constructCollectionType(List.class, type);
+    return mapper.readValue(json, collection);
+  }
+
   public static <T, U> T convert(U obj, Class<T> type) {
     return mapper.convertValue(obj, type);
   }

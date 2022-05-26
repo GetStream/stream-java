@@ -19,6 +19,10 @@ public final class CloudFlatFeed extends CloudFeed {
     super(client, id);
   }
 
+  CloudFlatFeed(CloudClient client, FeedID id, FeedSubscriber subscriber) {
+    super(client, id, subscriber);
+  }
+
   public CompletableFuture<List<Activity>> getActivities() throws StreamException {
     return getActivities(
         DefaultOptions.DEFAULT_LIMIT,
