@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.6.0](https://github.com/GetStream/stream-java/compare/v3.5.0...v3.6.0) (2022-05-26)
+
+
+### Features
+
+* **faye:** add websocket client ([#110](https://github.com/GetStream/stream-java/issues/110)) ([c0b29e5](https://github.com/GetStream/stream-java/commit/c0b29e51708e424f44686e20d9b2b426da661b4c))
+
 ## [3.5.0](https://github.com/GetStream/stream-java/compare/v3.4.1...v3.5.0) (2022-04-26)
 
 
