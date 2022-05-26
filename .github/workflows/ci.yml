@@ -2,7 +2,7 @@ name: build
 
 on: [pull_request]
 
-concurrency: 
+concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
@@ -31,6 +31,7 @@ jobs:
         env:
           STREAM_KEY: ${{ secrets.STREAM_KEY }}
           STREAM_SECRET: ${{ secrets.STREAM_SECRET }}
+          STREAM_APP_ID: ${{ secrets.STREAM_APP_ID }}
         run: |
           ./gradlew spotlessCheck --no-daemon
           ./gradlew test --no-daemon
