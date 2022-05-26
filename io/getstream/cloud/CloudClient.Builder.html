@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -161,6 +161,13 @@ extends java.lang.Object</pre>
        java.lang.String&nbsp;userID)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.lang.String,io.getstream.core.http.Token,java.lang.String,java.lang.String)">Builder</a></span>&#8203;(java.lang.String&nbsp;apiKey,
+       <a href="../core/http/Token.html" title="class in io.getstream.core.http">Token</a>&nbsp;token,
+       java.lang.String&nbsp;userID,
+       java.lang.String&nbsp;appID)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 </table>
 </li>
 </ul>
@@ -186,30 +193,35 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="CloudClient.Builder.html" title="class in io.getstream.cloud">CloudClient.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#host(java.lang.String)">host</a></span>&#8203;(java.lang.String&nbsp;host)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#fayeURL(java.lang.String)">fayeURL</a></span>&#8203;(java.lang.String&nbsp;fayeURL)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="CloudClient.Builder.html" title="class in io.getstream.cloud">CloudClient.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#httpClient(io.getstream.core.http.HTTPClient)">httpClient</a></span>&#8203;(<a href="../core/http/HTTPClient.html" title="class in io.getstream.core.http">HTTPClient</a>&nbsp;httpClient)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#host(java.lang.String)">host</a></span>&#8203;(java.lang.String&nbsp;host)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="CloudClient.Builder.html" title="class in io.getstream.cloud">CloudClient.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#port(int)">port</a></span>&#8203;(int&nbsp;port)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#httpClient(io.getstream.core.http.HTTPClient)">httpClient</a></span>&#8203;(<a href="../core/http/HTTPClient.html" title="class in io.getstream.core.http">HTTPClient</a>&nbsp;httpClient)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="CloudClient.Builder.html" title="class in io.getstream.cloud">CloudClient.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#region(io.getstream.core.Region)">region</a></span>&#8203;(<a href="../core/Region.html" title="enum in io.getstream.core">Region</a>&nbsp;region)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#port(int)">port</a></span>&#8203;(int&nbsp;port)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="CloudClient.Builder.html" title="class in io.getstream.cloud">CloudClient.Builder</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#region(java.lang.String)">region</a></span>&#8203;(java.lang.String&nbsp;region)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#region(io.getstream.core.Region)">region</a></span>&#8203;(<a href="../core/Region.html" title="enum in io.getstream.core">Region</a>&nbsp;region)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="CloudClient.Builder.html" title="class in io.getstream.cloud">CloudClient.Builder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#region(java.lang.String)">region</a></span>&#8203;(java.lang.String&nbsp;region)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code><a href="CloudClient.Builder.html" title="class in io.getstream.cloud">CloudClient.Builder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#scheme(java.lang.String)">scheme</a></span>&#8203;(java.lang.String&nbsp;scheme)</code></th>
 <td class="colLast">&nbsp;</td>
@@ -241,12 +253,24 @@ extends java.lang.Object</pre>
 <a id="&lt;init&gt;(java.lang.String,io.getstream.core.http.Token,java.lang.String)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>Builder</h4>
 <pre>public&nbsp;Builder&#8203;(java.lang.String&nbsp;apiKey,
                <a href="../core/http/Token.html" title="class in io.getstream.core.http">Token</a>&nbsp;token,
                java.lang.String&nbsp;userID)</pre>
+</li>
+</ul>
+<a id="&lt;init&gt;(java.lang.String,io.getstream.core.http.Token,java.lang.String,java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>Builder</h4>
+<pre>public&nbsp;Builder&#8203;(java.lang.String&nbsp;apiKey,
+               <a href="../core/http/Token.html" title="class in io.getstream.core.http">Token</a>&nbsp;token,
+               java.lang.String&nbsp;userID,
+               java.lang.String&nbsp;appID)</pre>
 </li>
 </ul>
 </li>
@@ -311,6 +335,15 @@ extends java.lang.Object</pre>
 <li class="blockList">
 <h4>region</h4>
 <pre class="methodSignature">public&nbsp;<a href="CloudClient.Builder.html" title="class in io.getstream.cloud">CloudClient.Builder</a>&nbsp;region&#8203;(java.lang.String&nbsp;region)</pre>
+</li>
+</ul>
+<a id="fayeURL(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>fayeURL</h4>
+<pre class="methodSignature">public&nbsp;<a href="CloudClient.Builder.html" title="class in io.getstream.cloud">CloudClient.Builder</a>&nbsp;fayeURL&#8203;(java.lang.String&nbsp;fayeURL)</pre>
 </li>
 </ul>
 <a id="build()">
