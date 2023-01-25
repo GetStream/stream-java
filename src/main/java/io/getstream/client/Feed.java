@@ -28,6 +28,7 @@ public class Feed {
   Feed(Client client, FeedID id) {
     checkNotNull(client, "Can't create feed w/o a client");
     checkNotNull(id, "Can't create feed w/o an ID");
+    checkArgument(!id.getSlug().isEmpty(), "Feed slug can't be empty");
 
     this.client = client;
     this.id = id;
