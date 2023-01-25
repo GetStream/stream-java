@@ -214,4 +214,40 @@ public class FeedTest {
             .build();
     feed.replaceActivityToTargets(activity, new FeedID("feed:3"));
   }
+
+  @Test
+  public void feedValidation() throws Exception {
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
+
+    try {
+        FlatFeed feed = client.flatFeed(null, "1");
+        fail("Expected fail with null string");
+    catch(NumberFormatException e) {
+        // no-op (pass)
+    }
+
+    try {
+        FlatFeed feed = client.flatFeed("", "1");
+        fail("Expected fail with empty string");
+    catch(NumberFormatException e) {
+        // no-op (pass)
+    }
+
+    try {
+        FlatFeed feed = client.flatFeed("flat", "");
+        fail("Expected fail with empty string");
+    catch(NumberFormatException e) {
+        // no-op (pass)
+    }
+
+    try {
+        FlatFeed feed = client.flatFeed("flat", null);
+        fail("Expected fail with null string");
+    catch(NumberFormatException e) {
+        // no-op (pass)
+    }
+  }
 }

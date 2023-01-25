@@ -14,9 +14,11 @@ public final class FeedID {
 
   public FeedID(String slug, String userID) {
     checkNotNull(slug, "Feed slug can't be null");
+    checkArgument(!slug.isEmpty(), "Feed slug can't be empty");
     checkArgument(!slug.contains(":"), "Invalid slug");
     checkNotNull(userID, "Feed user ID can't be null");
     checkArgument(!userID.contains(":"), "Invalid user ID");
+    checkArgument(!userID.isEmpty(), "User ID can't be empty");
 
     this.slug = slug;
     this.userID = userID;
