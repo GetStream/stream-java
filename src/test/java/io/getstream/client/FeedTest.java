@@ -1,6 +1,7 @@
 package io.getstream.client;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import com.google.common.collect.Lists;
 import io.getstream.client.entities.FootballMatch;
@@ -223,31 +224,31 @@ public class FeedTest {
             .build();
 
     try {
-        FlatFeed feed = client.flatFeed(null, "1");
-        fail("Expected fail with null string");
-    catch(NumberFormatException e) {
-        // no-op (pass)
+      FlatFeed feed = client.flatFeed(null, "1");
+      fail("Expected fail with null string");
+    } catch (NullPointerException _e) {
+      // no-op (pass)
     }
 
     try {
-        FlatFeed feed = client.flatFeed("", "1");
-        fail("Expected fail with empty string");
-    catch(NumberFormatException e) {
-        // no-op (pass)
+      FlatFeed feed = client.flatFeed("", "1");
+      fail("Expected fail with empty string");
+    } catch (IllegalArgumentException _e) {
+      // no-op (pass)
     }
 
     try {
-        FlatFeed feed = client.flatFeed("flat", "");
-        fail("Expected fail with empty string");
-    catch(NumberFormatException e) {
-        // no-op (pass)
+      FlatFeed feed = client.flatFeed("flat", "");
+      fail("Expected fail with empty string");
+    } catch (IllegalArgumentException _e) {
+      // no-op (pass)
     }
 
     try {
-        FlatFeed feed = client.flatFeed("flat", null);
-        fail("Expected fail with null string");
-    catch(NumberFormatException e) {
-        // no-op (pass)
+      FlatFeed feed = client.flatFeed("flat", null);
+      fail("Expected fail with null string");
+    } catch (NullPointerException _e) {
+      // no-op (pass)
     }
   }
 }
