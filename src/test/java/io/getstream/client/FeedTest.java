@@ -1,7 +1,6 @@
 package io.getstream.client;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import com.google.common.collect.Lists;
 import io.getstream.client.entities.FootballMatch;
@@ -18,7 +17,9 @@ import java.util.List;
 import java.util.UUID;
 import okhttp3.OkHttpClient;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class FeedTest {
   private static final String apiKey =
@@ -31,6 +32,8 @@ public class FeedTest {
           : System.getProperty("STREAM_SECRET");
 
   private static Client client;
+
+  @Rule public ExpectedException expectedException = ExpectedException.none();
 
   @BeforeClass
   public static void setup() throws MalformedURLException {
@@ -170,33 +173,30 @@ public class FeedTest {
   }
 
   @Test
-  public void feedValidation() throws Exception {
-    try {
-      FlatFeed feed = client.flatFeed(null, "1");
-      fail("Expected fail with null string");
-    } catch (NullPointerException _e) {
-      // no-op (pass)
-    }
+  public void feedCanNotBeInitializedWithNullSlug() throws Exception {
+    expectedException.expect(NullPointerException.class);
+    expectedException.expectMessage("Feed slug can't be null");
+    client.flatFeed(null, "1");
+  }
 
-    try {
-      FlatFeed feed = client.flatFeed("", "1");
-      fail("Expected fail with empty string");
-    } catch (IllegalArgumentException _e) {
-      // no-op (pass)
-    }
+  @Test
+  public void feedCanNotBeInitializedWithEmptySlug() throws Exception {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("Feed slug can't be empty");
+    client.flatFeed("", "1");
+  }
 
-    try {
-      FlatFeed feed = client.flatFeed("flat", "");
-      fail("Expected fail with empty string");
-    } catch (IllegalArgumentException _e) {
-      // no-op (pass)
-    }
+  @Test
+  public void feedCanNotBeInitializedWithNullUserId() throws Exception {
+    expectedException.expect(NullPointerException.class);
+    expectedException.expectMessage("Feed user ID can't be null");
+    client.flatFeed("flat", null);
+  }
 
-    try {
-      FlatFeed feed = client.flatFeed("flat", null);
-      fail("Expected fail with null string");
-    } catch (NullPointerException _e) {
-      // no-op (pass)
-    }
+  @Test
+  public void feedCanNotBeInitializedWithEmptyUserId() throws Exception {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("User ID can't be empty");
+    client.flatFeed("flat", "");
   }
 }
