@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'io.getstream.client'
-version = '3.6.1'
+version = 'null'
 description = 'Stream Feeds official Java SDK'
 
 repositories {
