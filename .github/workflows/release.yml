@@ -27,10 +27,13 @@ jobs:
             const version = context.payload.pull_request.head.ref.split('-')[1]
             core.exportVariable('VERSION', version)
 
+      - name: Build artifacts
+        run: ./gradlew jar javadocJar sourcesJar
+
       - name: Publish to MavenCentral
         run: |
           sudo bash -c "echo '$GPG_KEY_CONTENTS' | base64 -d > '$SIGNING_SECRET_KEY_RING_FILE'"
-          ./gradlew publishReleasePublicationToSonatypeRepository --no-daemon --max-workers 1 closeAndReleaseSonatypeStagingRepository
+          ./gradlew publishReleasePublicationToSonatypeRepository --max-workers 1 closeAndReleaseSonatypeStagingRepository
         env:
           STREAM_KEY: ${{ secrets.STREAM_KEY }}
           STREAM_SECRET: ${{ secrets.STREAM_SECRET }}
