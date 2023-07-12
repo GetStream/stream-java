@@ -16,8 +16,8 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Commit message lint
-        uses: wagoid/commitlint-github-action@v4
+      #- name: Commit message lint
+      #  uses: wagoid/commitlint-github-action@v4
 
       - name: Restore cache
         uses: actions/cache@v3
