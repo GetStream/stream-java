@@ -96,7 +96,7 @@ public final class BatchClient {
   }
 
   public CompletableFuture<List<EnrichedActivity>> getEnrichedActivitiesByID(
-          EnrichmentFlags flags, String... activityIDs) throws StreamException {
+      EnrichmentFlags flags, String... activityIDs) throws StreamException {
     final Token token = buildActivityToken(secret, TokenAction.READ);
     return batch.getEnrichedActivitiesByID(token, flags, activityIDs);
   }

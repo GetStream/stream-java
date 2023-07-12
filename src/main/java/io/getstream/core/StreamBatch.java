@@ -152,7 +152,7 @@ public final class StreamBatch {
   }
 
   public CompletableFuture<List<EnrichedActivity>> getEnrichedActivitiesByID(
-          Token token, EnrichmentFlags flags, String... activityIDs) throws StreamException {
+      Token token, EnrichmentFlags flags, String... activityIDs) throws StreamException {
     checkNotNull(activityIDs, "No activities to get");
     checkArgument(activityIDs.length > 0, "No activities to get");
 
