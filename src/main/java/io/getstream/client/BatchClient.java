@@ -8,6 +8,7 @@ import io.getstream.core.StreamBatch;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.*;
+import io.getstream.core.options.EnrichmentFlags;
 import io.getstream.core.utils.DefaultOptions;
 import java.util.List;
 import java8.util.J8Arrays;
@@ -91,8 +92,13 @@ public final class BatchClient {
 
   public CompletableFuture<List<EnrichedActivity>> getEnrichedActivitiesByID(String... activityIDs)
       throws StreamException {
+    return getEnrichedActivitiesByID(DefaultOptions.DEFAULT_ENRICHMENT_FLAGS, activityIDs);
+  }
+
+  public CompletableFuture<List<EnrichedActivity>> getEnrichedActivitiesByID(
+          EnrichmentFlags flags, String... activityIDs) throws StreamException {
     final Token token = buildActivityToken(secret, TokenAction.READ);
-    return batch.getEnrichedActivitiesByID(token, activityIDs);
+    return batch.getEnrichedActivitiesByID(token, flags, activityIDs);
   }
 
   public CompletableFuture<List<Activity>> getActivitiesByForeignID(
