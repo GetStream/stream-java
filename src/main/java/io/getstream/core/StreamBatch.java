@@ -14,6 +14,7 @@ import io.getstream.core.http.HTTPClient;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.*;
 import io.getstream.core.options.CustomQueryParameter;
+import io.getstream.core.options.EnrichmentFlags;
 import io.getstream.core.options.RequestOption;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -151,7 +152,7 @@ public final class StreamBatch {
   }
 
   public CompletableFuture<List<EnrichedActivity>> getEnrichedActivitiesByID(
-      Token token, String... activityIDs) throws StreamException {
+      Token token, EnrichmentFlags flags, String... activityIDs) throws StreamException {
     checkNotNull(activityIDs, "No activities to get");
     checkArgument(activityIDs.length > 0, "No activities to get");
 
@@ -163,6 +164,7 @@ public final class StreamBatch {
                   url,
                   key,
                   token,
+                  flags,
                   new CustomQueryParameter("ids", Joiner.on(",").join(activityIDs))))
           .thenApply(
               response -> {
