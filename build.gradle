@@ -1,5 +1,4 @@
 plugins {
-    id "me.tatarka.retrolambda" version "3.7.1"
     id 'java-library'
     id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
     id 'com.diffplug.spotless' version '5.14.0'
@@ -16,6 +15,8 @@ repositories {
     maven { url uri('https://repo.maven.apache.org/maven2/') }
 }
 
+var jackson_version = '2.14.2'
+
 dependencies {
     sourceCompatibility = 1.8
     targetCompatibility = 1.8
@@ -25,20 +26,16 @@ dependencies {
     testImplementation 'com.pholser:junit-quickcheck-generators:0.8.1'
     testRuntimeOnly 'org.junit.vintage:junit-vintage-engine:5.2.0'
 
-    implementation 'com.google.guava:guava:20.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.10'
-    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.10'
-    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.10'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.10'
-    implementation 'com.auth0:java-jwt:3.4.0'
+    implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+    implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
+    implementation "com.fasterxml.jackson.core:jackson-core:$jackson_version"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:$jackson_version"
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jackson_version"
+    implementation 'com.auth0:java-jwt:4.2.2'
 
     api 'net.sourceforge.streamsupport:streamsupport:1.7.0'
     api 'net.sourceforge.streamsupport:streamsupport-cfuture:1.7.0'
-}
-
-retrolambda {
-    javaVersion JavaVersion.VERSION_1_7
 }
 
 def localProperties = new Properties()
