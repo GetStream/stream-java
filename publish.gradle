@@ -36,12 +36,12 @@ nexusPublishing {
 }
 
 task javadocJar(type: Jar) {
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     from javadoc
 }
 
 task sourcesJar(type: Jar) {
-    classifier = 'sources'
+    archiveClassifier = 'sources'
     from sourceSets.main.allSource
 }
 
@@ -57,7 +57,6 @@ afterEvaluate {
             	artifactId 'stream-java'
 
                 artifact sourcesJar
-                artifact javadocJar
 
                 pom {
                     name = "Stream Feeds official Java API Client"
