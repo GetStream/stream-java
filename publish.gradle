@@ -57,6 +57,7 @@ afterEvaluate {
             	artifactId 'stream-java'
 
                 artifact sourcesJar
+                artifact javadocJar
 
                 pom {
                     name = "Stream Feeds official Java API Client"
