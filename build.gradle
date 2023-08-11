@@ -70,11 +70,11 @@ sourceSets {
         output.dir(generatedVersionDir, builtBy: 'generateVersionProperties')
     }
 }
-/*spotless {
+spotless {
     java {
         googleJavaFormat()
     }
-}*/
+}
 task generateVersionProperties {
     doLast {
         def propertiesFile = file "$generatedVersionDir/version.properties"
