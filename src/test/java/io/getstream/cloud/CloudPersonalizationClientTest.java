@@ -19,7 +19,9 @@ public class CloudPersonalizationClientTest {
           ? System.getenv("STREAM_SECRET")
           : System.getProperty("STREAM_SECRET");
 
+  // personalization unsupported at the moment
   @Test
+  @Ignore
   public void get() throws Exception {
     Client client = Client.builder(apiKey, secret).build();
 
