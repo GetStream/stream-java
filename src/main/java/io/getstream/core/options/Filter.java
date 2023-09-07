@@ -6,10 +6,11 @@ import java.util.List;
 
 public final class Filter implements RequestOption {
   enum OpType {
-    ID_GREATER_THEN_OR_EQUAL("id_gte"),
-    ID_GREATER_THEN("id_gt"),
-    ID_LESS_THEN_OR_EQUAL("id_lte"),
-    ID_LESS_THEN("id_lt");
+    ID_GREATER_THAN_OR_EQUAL("id_gte"),
+    ID_GREATER_THAN("id_gt"),
+    ID_LESS_THAN_OR_EQUAL("id_lte"),
+    ID_LESS_THAN("id_lt"),
+    REFRESH("refresh");
 
     private String operator;
 
@@ -36,22 +37,27 @@ public final class Filter implements RequestOption {
   private final List<OpEntry> ops = Lists.newArrayList();
 
   public Filter idGreaterThan(String id) {
-    ops.add(new OpEntry(OpType.ID_GREATER_THEN, id));
+    ops.add(new OpEntry(OpType.ID_GREATER_THAN, id));
     return this;
   }
 
   public Filter idGreaterThanEqual(String id) {
-    ops.add(new OpEntry(OpType.ID_GREATER_THEN_OR_EQUAL, id));
+    ops.add(new OpEntry(OpType.ID_GREATER_THAN_OR_EQUAL, id));
     return this;
   }
 
   public Filter idLessThan(String id) {
-    ops.add(new OpEntry(OpType.ID_LESS_THEN, id));
+    ops.add(new OpEntry(OpType.ID_LESS_THAN, id));
     return this;
   }
 
   public Filter idLessThanEqual(String id) {
-    ops.add(new OpEntry(OpType.ID_LESS_THEN_OR_EQUAL, id));
+    ops.add(new OpEntry(OpType.ID_LESS_THAN_OR_EQUAL, id));
+    return this;
+  }
+
+  public Filter refresh() {
+    ops.add(new OpEntry(OpType.REFRESH, "1"));
     return this;
   }
 
