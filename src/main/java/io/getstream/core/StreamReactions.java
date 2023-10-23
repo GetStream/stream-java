@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.HTTPClient;
+import io.getstream.core.http.Request;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.Paginated;
@@ -283,14 +284,40 @@ public final class StreamReactions {
     }
   }
 
-  public CompletableFuture<Void> delete(Token token, String id) throws StreamException {
+  public CompletableFuture<Void> delete(Token token, String id, Boolean soft) throws StreamException {
     checkNotNull(id, "Reaction id can't be null");
     checkArgument(!id.isEmpty(), "Reaction id can't be empty");
 
     try {
       final URL url = buildReactionsURL(baseURL, id + '/');
+      
+      final Request deleteRequest = soft ? buildDelete(url, key, token, new CustomQueryParameter("soft", "true"))
+          : buildDelete(url, key, token);
+
       return httpClient
-          .execute(buildDelete(url, key, token))
+        .execute(deleteRequest)
+        .thenApply(
+          response -> {
+            try {
+              return deserializeError(response);
+            } catch (StreamException | IOException e) {
+              throw new CompletionException(e);
+            }
+          });  
+    } catch (MalformedURLException | URISyntaxException e) {
+      throw new StreamException(e);
+    }
+  }
+
+  public CompletableFuture<Void> restore(Token token, String id) throws StreamException {
+    checkNotNull(id, "Reaction id can't be null");
+    checkArgument(!id.isEmpty(), "Reaction id can't be empty");
+
+    try {
+      final URL url = buildReactionsURL(baseURL, id + "/restore/");
+      byte[] payload = new byte[0];
+      return httpClient
+          .execute(buildPut(url, key, token, payload))
           .thenApply(
               response -> {
                 try {

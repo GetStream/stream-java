@@ -200,7 +200,19 @@ public final class CloudReactionsClient {
   }
 
   public CompletableFuture<Void> delete(String id) throws StreamException {
-    return reactions.delete(token, id);
+    return reactions.delete(token, id, false);
+  }
+
+  public CompletableFuture<Void> delete(String id, Boolean soft) throws StreamException {
+    return reactions.delete(token, id, soft);
+  }
+
+  public CompletableFuture<Void> softDelete(String id) throws StreamException {
+    return reactions.delete(token, id, true);
+  }
+
+  public CompletableFuture<Void> restore(String id) throws StreamException {
+    return reactions.restore(token, id);
   }
 
   public class Params {
