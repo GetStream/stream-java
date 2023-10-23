@@ -194,6 +194,11 @@ public final class ReactionsClient {
 
   public CompletableFuture<Void> delete(String id) throws StreamException {
     final Token token = buildReactionsToken(secret, TokenAction.DELETE);
-    return reactions.delete(token, id);
+    return reactions.delete(token, id, false);
+  }
+
+  public CompletableFuture<Void> softDelete(String id) throws StreamException {
+    final Token token = buildReactionsToken(secret, TokenAction.DELETE);
+    return reactions.delete(token, id, true);
   }
 }

@@ -283,14 +283,14 @@ public final class StreamReactions {
     }
   }
 
-  public CompletableFuture<Void> delete(Token token, String id) throws StreamException {
+  public CompletableFuture<Void> delete(Token token, String id, Boolean soft) throws StreamException {
     checkNotNull(id, "Reaction id can't be null");
     checkArgument(!id.isEmpty(), "Reaction id can't be empty");
 
     try {
       final URL url = buildReactionsURL(baseURL, id + '/');
       return httpClient
-          .execute(buildDelete(url, key, token))
+          .execute(buildDelete(url, key, token, soft))
           .thenApply(
               response -> {
                 try {

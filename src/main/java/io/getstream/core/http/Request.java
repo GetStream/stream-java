@@ -136,9 +136,14 @@ public final class Request {
       return this;
     }
 
-    public Builder delete() {
+    public Builder delete(Boolean soft) {
       this.method = Method.DELETE;
       this.body = null;
+      
+      if (soft) {
+        this.addQueryParameter("soft", "true");
+      }
+
       return this;
     }
 
@@ -155,4 +160,4 @@ public final class Request {
       return new Request(this);
     }
   }
-}
+} 
