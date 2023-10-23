@@ -91,3 +91,15 @@ public class CloudReactionsClientTest {
     client.reactions().delete(reply.getId()).join();
   }
 }
+
+@Test
+  public void softDelete() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    Reaction data =
+        Reaction.builder().activityID("ed2837a6-0a3b-4679-adc1-778a1704852d").kind("like").build();
+    Reaction reply = client.reactions().add("user-id", data, new FeedID("flat", "1")).join();
+    client.reactions().softDelete(reply.getId()).join();
+    client.reactions().restore(reply.getId()).join();
+  }
+}
