@@ -292,7 +292,7 @@ public final class StreamReactions {
       final URL url = buildReactionsURL(baseURL, id + '/');
       
       final Request deleteRequest = soft ? buildDelete(url, key, token, new CustomQueryParameter("soft", "true"))
-          : buildDelete(url, key, token, new CustomQueryParameter("soft", "true"));
+          : buildDelete(url, key, token);
 
       return httpClient
         .execute(deleteRequest)
