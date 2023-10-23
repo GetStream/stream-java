@@ -315,8 +315,9 @@ public final class StreamReactions {
 
     try {
       final URL url = buildReactionsURL(baseURL, id + "/restore/");
+      byte[] payload = new byte[0];
       return httpClient
-          .execute(buildPut(url, key, token, null))
+          .execute(buildPut(url, key, token, payload))
           .thenApply(
               response -> {
                 try {
