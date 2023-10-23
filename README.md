@@ -20,7 +20,7 @@
 
 ## 📝 About Stream
 
-You can sign up for a Stream account at our [Get Started](https://getstream.io/chat/get_started/) page.
+You can sign up for a Stream account at our [Get Started](https://getstream.io/activity-feeds/docs/java/?language=java) page.
 
 You can use this library to access feeds API endpoints server-side.
 
