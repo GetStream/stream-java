@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.HTTPClient;
+import io.getstream.core.http.Request;
 import io.getstream.core.http.Token;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.Paginated;
@@ -289,30 +290,20 @@ public final class StreamReactions {
 
     try {
       final URL url = buildReactionsURL(baseURL, id + '/');
-      if (soft) {
-        return httpClient
-          .execute(buildDelete(url, key, token, new CustomQueryParameter("soft", "true")))
-          .thenApply(
-              response -> {
-                try {
-                  return deserializeError(response);
-                } catch (StreamException | IOException e) {
-                  throw new CompletionException(e);
-                }
-              });
-      } else {
-        return httpClient
-          .execute(buildDelete(url, key, token))
-          .thenApply(
-              response -> {
-                try {
-                  return deserializeError(response);
-                } catch (StreamException | IOException e) {
-                  throw new CompletionException(e);
-                }
-              });
-      }
       
+      final Request deleteRequest = soft ? buildDelete(url, key, token, new CustomQueryParameter("soft", "true"))
+          : buildDelete(url, key, token, new CustomQueryParameter("soft", "true"));
+
+      return httpClient
+        .execute(deleteRequest)
+        .thenApply(
+          response -> {
+            try {
+              return deserializeError(response);
+            } catch (StreamException | IOException e) {
+              throw new CompletionException(e);
+            }
+          });  
     } catch (MalformedURLException | URISyntaxException e) {
       throw new StreamException(e);
     }
