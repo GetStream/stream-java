@@ -303,4 +303,25 @@ public final class StreamReactions {
       throw new StreamException(e);
     }
   }
+
+  public CompletableFuture<Void> restore(Token token, String id) throws StreamException {
+    checkNotNull(id, "Reaction id can't be null");
+    checkArgument(!id.isEmpty(), "Reaction id can't be empty");
+
+    try {
+      final URL url = buildReactionsURL(baseURL, id + "/restore/");
+      return httpClient
+          .execute(buildPut(url, key, token, null))
+          .thenApply(
+              response -> {
+                try {
+                  return deserializeError(response);
+                } catch (StreamException | IOException e) {
+                  throw new CompletionException(e);
+                }
+              });
+    } catch (MalformedURLException | URISyntaxException e) {
+      throw new StreamException(e);
+    }
+  }
 }
