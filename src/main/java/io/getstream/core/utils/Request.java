@@ -31,9 +31,9 @@ public final class Request {
   }
 
   public static io.getstream.core.http.Request buildDelete(
-      URL url, String apiKey, Token token, Boolean soft, RequestOption... options)
+      URL url, String apiKey, Token token, RequestOption... options)
       throws URISyntaxException, MalformedURLException {
-    return buildRequest(url, apiKey, token, options).delete(soft).build();
+    return buildRequest(url, apiKey, token, options).delete().build();
   }
 
   public static io.getstream.core.http.Request buildPost(

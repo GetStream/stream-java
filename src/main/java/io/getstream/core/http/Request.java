@@ -136,14 +136,9 @@ public final class Request {
       return this;
     }
 
-    public Builder delete(Boolean soft) {
+    public Builder delete() {
       this.method = Method.DELETE;
       this.body = null;
-      
-      if (soft) {
-        this.addQueryParameter("soft", "true");
-      }
-
       return this;
     }
 

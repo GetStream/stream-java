@@ -289,8 +289,9 @@ public final class StreamReactions {
 
     try {
       final URL url = buildReactionsURL(baseURL, id + '/');
-      return httpClient
-          .execute(buildDelete(url, key, token, soft))
+      if (soft) {
+        return httpClient
+          .execute(buildDelete(url, key, token, new CustomQueryParameter("soft", "true")))
           .thenApply(
               response -> {
                 try {
@@ -299,6 +300,19 @@ public final class StreamReactions {
                   throw new CompletionException(e);
                 }
               });
+      } else {
+        return httpClient
+          .execute(buildDelete(url, key, token))
+          .thenApply(
+              response -> {
+                try {
+                  return deserializeError(response);
+                } catch (StreamException | IOException e) {
+                  throw new CompletionException(e);
+                }
+              });
+      }
+      
     } catch (MalformedURLException | URISyntaxException e) {
       throw new StreamException(e);
     }
