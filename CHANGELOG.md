@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.8.0](https://github.com/GetStream/stream-java/compare/v3.7.0...v3.8.0) (2023-10-23)
+* Added support to force refresh
+* Added support for soft deletions
+
 ## [3.7.0](https://github.com/GetStream/stream-java/compare/v3.6.2...v3.7.0) (2023-08-16)
 
 
