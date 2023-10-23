@@ -90,9 +90,8 @@ public class CloudReactionsClientTest {
     Reaction reply = client.reactions().add("user-id", data, new FeedID("flat", "1")).join();
     client.reactions().delete(reply.getId()).join();
   }
-}
 
-@Test
+  @Test
   public void softDelete() throws Exception {
     Client client = Client.builder(apiKey, secret).build();
 
