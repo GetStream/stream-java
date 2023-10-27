@@ -36,7 +36,7 @@ Add the following dependency to your `pom.xml`:
 <dependency>
     <groupId>io.getstream.client</groupId>
     <artifactId>stream-java</artifactId>
-    <version>$stream_version</version>
+    <version>${stream_version}</version>
 </dependency>
 ```
 
