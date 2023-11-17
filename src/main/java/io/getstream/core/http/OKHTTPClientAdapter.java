@@ -62,7 +62,8 @@ public final class OKHTTPClientAdapter extends HTTPClient {
             .url(request.getURL())
             .addHeader("Stream-Auth-Type", "jwt")
             .addHeader("Authorization", request.getToken().toString())
-            .addHeader("User-Agent", userAgent);
+            .addHeader("User-Agent", userAgent)
+            .addHeader("X-Stream-Client", "stream-java-" + version);
 
     MediaType mediaType;
     switch (request.getMethod()) {
