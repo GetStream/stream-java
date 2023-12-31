@@ -1,93 +1,93 @@
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
-
-// Create variables with empty default values
-ext["ossrhUsername"] = ''
-ext["ossrhPassword"] = ''
-ext["signing.keyId"] = ''
-ext["signing.password"] = ''
-ext["signing.secretKeyRingFile"] = ''
-ext["sonatypeStagingProfileId"] = ''
-
-File secretPropsFile = project.rootProject.file('local.properties')
-if (secretPropsFile.exists()) {
-    // Read local.properties file first if it exists
-    Properties p = new Properties()
-    new FileInputStream(secretPropsFile).withCloseable { is -> p.load(is) }
-    p.each { name, value -> ext[name] = value }
-} else {
-    // Use system environment variables
-    ext["ossrhUsername"] = System.getenv('OSSRH_USERNAME')
-    ext["ossrhPassword"] = System.getenv('OSSRH_PASSWORD')
-    ext["signing.keyId"] = System.getenv('SIGNING_KEY_ID')
-    ext["signing.password"] = System.getenv('SIGNING_PASSWORD')
-    ext["signing.secretKeyRingFile"] = System.getenv('SIGNING_SECRET_KEY_RING_FILE')
-    ext["sonatypeStagingProfileId"] = System.getenv('SONATYPE_STAGING_PROFILE_ID')
-}
-
-nexusPublishing {
-    repositories {
-        sonatype {
-            stagingProfileId = sonatypeStagingProfileId
-            username = ossrhUsername
-            password = ossrhPassword
-        }
-    }
-}
-
-task javadocJar(type: Jar) {
-    archiveClassifier = 'javadoc'
-    from javadoc
-}
-
-task sourcesJar(type: Jar) {
-    archiveClassifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-artifacts {
-    archives javadocJar, sourcesJar
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-        	release(MavenPublication) {
-        		from components.java
-            	artifactId 'stream-java'
-
-                artifact sourcesJar
-                artifact javadocJar
-
-                pom {
-                    name = "Stream Feeds official Java API Client"
-                    description = "Stream Feeds Java Client for backend and android integrations"
-                    url = 'https://github.com/getstream/stream-chat-java'
-                    licenses {
-                        license {
-                            name = 'The 3-Clause BSD License'
-                            url = 'https://opensource.org/licenses/BSD-3-Clause'
-                            distribution = 'repo'
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = 'getstream-support'
-                            name = 'Stream Support'
-                            email = 'support@getstream.io'
-                        }
-                    }
-                    scm {
-                        connection = 'scm:git:github.com/getstream/stream-java.git'
-                        developerConnection = 'scm:git:ssh://github.com/getstream/stream-java.git'
-                        url = 'https://github.com/getstream/stream-java'
-                    }
-                }
-            }
-        }
-    }
-}
-
-signing {
-    sign publishing.publications
-}
+//apply plugin: 'maven-publish'
+//apply plugin: 'signing'
+//
+//// Create variables with empty default values
+//ext["ossrhUsername"] = ''
+//ext["ossrhPassword"] = ''
+//ext["signing.keyId"] = ''
+//ext["signing.password"] = ''
+//ext["signing.secretKeyRingFile"] = ''
+//ext["sonatypeStagingProfileId"] = ''
+//
+//File secretPropsFile = project.rootProject.file('local.properties')
+//if (secretPropsFile.exists()) {
+//    // Read local.properties file first if it exists
+//    Properties p = new Properties()
+//    new FileInputStream(secretPropsFile).withCloseable { is -> p.load(is) }
+//    p.each { name, value -> ext[name] = value }
+//} else {
+//    // Use system environment variables
+//    ext["ossrhUsername"] = System.getenv('OSSRH_USERNAME')
+//    ext["ossrhPassword"] = System.getenv('OSSRH_PASSWORD')
+//    ext["signing.keyId"] = System.getenv('SIGNING_KEY_ID')
+//    ext["signing.password"] = System.getenv('SIGNING_PASSWORD')
+//    ext["signing.secretKeyRingFile"] = System.getenv('SIGNING_SECRET_KEY_RING_FILE')
+//    ext["sonatypeStagingProfileId"] = System.getenv('SONATYPE_STAGING_PROFILE_ID')
+//}
+//
+//nexusPublishing {
+//    repositories {
+//        sonatype {
+//            stagingProfileId = sonatypeStagingProfileId
+//            username = ossrhUsername
+//            password = ossrhPassword
+//        }
+//    }
+//}
+//
+//task javadocJar(type: Jar) {
+//    archiveClassifier = 'javadoc'
+//    from javadoc
+//}
+//
+//task sourcesJar(type: Jar) {
+//    archiveClassifier = 'sources'
+//    from sourceSets.main.allSource
+//}
+//
+//artifacts {
+//    archives javadocJar, sourcesJar
+//}
+//
+//afterEvaluate {
+//    publishing {
+//        publications {
+//        	release(MavenPublication) {
+//        		from components.java
+//            	artifactId 'stream-java'
+//
+//                artifact sourcesJar
+//                artifact javadocJar
+//
+//                pom {
+//                    name = "Stream Feeds official Java API Client"
+//                    description = "Stream Feeds Java Client for backend and android integrations"
+//                    url = 'https://github.com/getstream/stream-chat-java'
+//                    licenses {
+//                        license {
+//                            name = 'The 3-Clause BSD License'
+//                            url = 'https://opensource.org/licenses/BSD-3-Clause'
+//                            distribution = 'repo'
+//                        }
+//                    }
+//                    developers {
+//                        developer {
+//                            id = 'getstream-support'
+//                            name = 'Stream Support'
+//                            email = 'support@getstream.io'
+//                        }
+//                    }
+//                    scm {
+//                        connection = 'scm:git:github.com/getstream/stream-java.git'
+//                        developerConnection = 'scm:git:ssh://github.com/getstream/stream-java.git'
+//                        url = 'https://github.com/getstream/stream-java'
+//                    }
+//                }
+//            }
+//        }
+//    }
+//}
+//
+//signing {
+//    sign publishing.publications
+//}

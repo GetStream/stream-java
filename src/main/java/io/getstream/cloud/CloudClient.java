@@ -9,6 +9,7 @@ import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.faye.DefaultMessageTransformer;
 import io.getstream.core.faye.Message;
 import io.getstream.core.faye.client.FayeClient;
+import io.getstream.core.faye.client.FayeErrorListener;
 import io.getstream.core.faye.subscription.ChannelSubscription;
 import io.getstream.core.http.HTTPClient;
 import io.getstream.core.http.OKHTTPClientAdapter;
@@ -219,7 +220,7 @@ public final class CloudClient {
   }
 
   private CompletableFuture<ChannelSubscription> feedSubscriber(
-      FeedID feedId, RealtimeMessageCallback messageCallback) {
+      FeedID feedId, RealtimeMessageCallback messageCallback, FayeErrorListener errorListener) {
     final CompletableFuture<ChannelSubscription> subscriberCompletion = new CompletableFuture<>();
     try {
       checkNotNull(appID, "Missing app id, which is needed in order to subscribe feed");
@@ -239,10 +240,14 @@ public final class CloudClient {
                           Serialization.fromJSON(new String(payload), RealtimeMessage.class);
                       messageCallback.onMessage(message);
                     } catch (Exception e) {
-                      e.printStackTrace();
+                      if (errorListener != null){
+                          errorListener.onError(e, null);
+                      }
                     }
                   },
-                  () -> feedSubscriptions.remove("/" + notificationChannel))
+                  () -> feedSubscriptions.remove("/" + notificationChannel),
+                          errorListener
+                  )
               .get();
 
       subscription.channelSubscription = channelSubscription;
