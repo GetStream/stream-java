@@ -395,7 +395,7 @@ public final class FlatFeed extends Feed {
     return getEnrichedActivities(limit, offset, DefaultOptions.DEFAULT_FILTER, flags, ranking);
   }
 
-  CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(
+  public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(
       Limit limit, Offset offset, Filter filter, EnrichmentFlags flags, String ranking)
       throws StreamException {
     final RequestOption[] options =
