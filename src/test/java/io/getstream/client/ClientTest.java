@@ -158,7 +158,7 @@ public class ClientTest {
   }
 
   @Test
-  public void enrichedFeedURLExternalRanking() throws Exception {
+  public void feedURLExternalRanking() throws Exception {
     MockHTTPClient httpClient = new MockHTTPClient();
     Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
     FlatFeed feed = client.flatFeed("flat", "1");
