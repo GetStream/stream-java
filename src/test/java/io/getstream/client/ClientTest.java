@@ -6,11 +6,13 @@ import io.getstream.core.Region;
 import io.getstream.core.http.HTTPClient;
 import io.getstream.core.http.Request;
 import io.getstream.core.http.Response;
-import io.getstream.core.options.EnrichmentFlags;
-import io.getstream.core.options.Filter;
-import io.getstream.core.options.Limit;
-import io.getstream.core.options.Offset;
+import io.getstream.core.options.*;
+
 import java.net.URL;
+import java.util.Map;
+import java.util.LinkedHashMap;
+
+import io.getstream.core.utils.DefaultOptions;
 import java8.util.concurrent.CompletableFuture;
 import org.junit.Test;
 
@@ -150,6 +152,37 @@ public class ClientTest {
             "https://us-east-api.stream-io-api.com:443/api/v1.0/enrich/feed/flat/1/?api_key="
                 + apiKey
                 + "&limit=69&id_gte=123&id_lte=456&with_own_reactions=true&user_id=user1");
+    assertEquals(httpClient.lastRequest.getURL(), feedURL);
+    assertEquals(httpClient.lastRequest.getMethod(), Request.Method.GET);
+    assertNull(httpClient.lastRequest.getBody());
+  }
+
+  @Test
+  public void enrichedFeedURLExternalRanking() throws Exception {
+    MockHTTPClient httpClient = new MockHTTPClient();
+    Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
+    FlatFeed feed = client.flatFeed("flat", "1");
+
+    Map<String, Object> mp=new LinkedHashMap();
+
+    mp.put("boolVal",true);
+    mp.put("music",1);
+    mp.put("sports",2.1);
+    mp.put("string","str");
+    feed.getActivities(
+        new Limit(69),
+        new Offset(13),
+            DefaultOptions.DEFAULT_FILTER,
+        "rank",
+        new RankingVars(mp)
+    );
+
+    assertNotNull(httpClient.lastRequest);
+    URL feedURL =
+        new URL(
+            "https://us-east-api.stream-io-api.com:443/api/v1.0/feed/flat/1/?api_key="
+                + apiKey
+                + "&limit=69&offset=13&ranking=rank&ranking_vars=%7B%22boolVal%22:true,%22music%22:1,%22sports%22:2.1,%22string%22:%22str%22%7D");
     assertEquals(httpClient.lastRequest.getURL(), feedURL);
     assertEquals(httpClient.lastRequest.getMethod(), Request.Method.GET);
     assertNull(httpClient.lastRequest.getBody());
