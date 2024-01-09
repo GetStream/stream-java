@@ -8,8 +8,10 @@ import io.getstream.core.models.EnrichedActivity;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.options.*;
 import io.getstream.core.utils.DefaultOptions;
+
 import java.io.IOException;
 import java.util.List;
+
 import java8.util.concurrent.CompletableFuture;
 import java8.util.concurrent.CompletionException;
 
@@ -103,6 +105,28 @@ public final class FlatFeed extends Feed {
               }
             });
   }
+
+  CompletableFuture<List<Activity>> getActivities(
+      Limit limit, Offset offset, Filter filter, String ranking, RankingVars rankingVars) throws StreamException {
+
+    final RequestOption[] options =
+        ranking == null
+            ? new RequestOption[] {limit, offset, filter, DefaultOptions.DEFAULT_MARKER}
+            : new RequestOption[] {
+              limit, offset, filter, DefaultOptions.DEFAULT_MARKER, new Ranking(ranking), rankingVars
+            };
+    return getClient()
+        .getActivities(getID(), options)
+        .thenApply(
+            response -> {
+              try {
+                return deserializeContainer(response, Activity.class);
+              } catch (StreamException | IOException e) {
+                throw new CompletionException(e);
+              }
+            });
+  }
+
 
   public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type) throws StreamException {
     return getCustomActivities(

@@ -221,6 +221,20 @@ class Example {
         // playerFeed.addActivity(activity);
         userFeed.addActivity(activity);
 
+        // Get activities sorted by the ranking method along with externalRankingVars
+        Map<String, Object> mp=new LinkedHashMap();
+
+        mp.put("boolVal",true);
+        mp.put("music",1);
+        mp.put("sports",2.1);
+        mp.put("string","str");
+        response = userFeed.feed.getActivities(
+                new Limit(69),
+                new Offset(13),
+                DefaultOptions.DEFAULT_FILTER,
+                "rank",
+                new RankingVars(mp)
+        );
         /* -------------------------------------------------------- */
 
         // Batch following many feeds
