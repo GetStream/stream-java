@@ -20,6 +20,8 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -58,6 +60,8 @@ public class FayeClient extends WebSocketListener {
 
   private MessageTransformer messageTransformer = new DefaultMessageTransformer();
 
+  private FayeErrorListener errorListener;
+
   public void setMessageTransformer(MessageTransformer messageTransformer) {
     this.messageTransformer = messageTransformer;
   }
@@ -76,7 +80,9 @@ public class FayeClient extends WebSocketListener {
   }
 
   private WebSocket webSocket;
-  private final OkHttpClient httpClient = new OkHttpClient();
+  private final OkHttpClient httpClient = new OkHttpClient.Builder()
+          .pingInterval(5, TimeUnit.SECONDS)
+          .build();
 
   private Timer timer = new Timer();
 
@@ -123,6 +129,10 @@ public class FayeClient extends WebSocketListener {
     // 'Error occurred', error, stacktrace);
     closeWebSocket();
     initWebSocket();
+
+    if (errorListener != null) {
+      errorListener.onError(t, response);
+    }
   }
 
   private boolean manuallyClosed = false;
@@ -137,15 +147,19 @@ public class FayeClient extends WebSocketListener {
   }
 
   private void scheduleTimerTask(Callback callback, long duration) {
-    if (timer == null) timer = new Timer();
-    timer.schedule(
-        new TimerTask() {
-          @Override
-          public void run() {
-            callback.call();
-          }
-        },
-        duration);
+    try {
+      if (timer == null) timer = new Timer();
+      timer.schedule(
+          new TimerTask() {
+            @Override
+            public void run() {
+              callback.call();
+            }
+          },
+          duration);
+    } catch (Exception ignored) {
+      // We don't really care if the timer is cancelled, we create a new client anyway.
+    }
   }
 
   public void handshake() {
@@ -251,23 +265,25 @@ public class FayeClient extends WebSocketListener {
 
   public CompletableFuture<ChannelSubscription> subscribe(
       String channel, ChannelDataCallback callback) {
-    return subscribe(channel, callback, null, null);
+    return subscribe(channel, callback, null,null, null);
   }
 
   private CompletableFuture<ChannelSubscription> subscribe(String channel, Boolean force) {
-    return subscribe(channel, null, null, force);
+    return subscribe(channel, null, null, null, force);
   }
 
   public CompletableFuture<ChannelSubscription> subscribe(
-      String channel, ChannelDataCallback callback, SubscriptionCancelledCallback onCancelled) {
-    return subscribe(channel, callback, onCancelled, null);
+      String channel, ChannelDataCallback callback, SubscriptionCancelledCallback onCancelled, FayeErrorListener errorListener) {
+    return subscribe(channel, callback, onCancelled, errorListener, null);
   }
 
   private CompletableFuture<ChannelSubscription> subscribe(
       String channel,
       ChannelDataCallback onData,
       SubscriptionCancelledCallback onCancelled,
+      FayeErrorListener errorListener,
       Boolean force) {
+    this.errorListener = errorListener;
     // default value
     if (force == null) force = false;
 

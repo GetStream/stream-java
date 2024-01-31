@@ -164,7 +164,7 @@ public class CloudFeedTest {
     CloudClient client = CloudClient.builder(apiKey, token, userID, appId).build();
     CloudFlatFeed feed = client.flatFeed("user", userID);
     CompletableFuture<ChannelSubscription> subscription =
-        feed.subscribe(message -> msg.set(message));
+        feed.subscribe(message -> msg.set(message), null);
 
     feed.addActivity(
             Activity.builder()

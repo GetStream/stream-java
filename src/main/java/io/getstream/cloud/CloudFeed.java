@@ -6,6 +6,7 @@ import static io.getstream.core.utils.Serialization.*;
 
 import com.google.common.collect.Iterables;
 import io.getstream.core.exceptions.StreamException;
+import io.getstream.core.faye.client.FayeErrorListener;
 import io.getstream.core.faye.subscription.ChannelSubscription;
 import io.getstream.core.http.Response;
 import io.getstream.core.models.Activity;
@@ -52,9 +53,9 @@ public class CloudFeed {
   }
 
   public final CompletableFuture<ChannelSubscription> subscribe(
-      RealtimeMessageCallback messageCallback) {
+      RealtimeMessageCallback messageCallback, FayeErrorListener errorListener) {
     checkNotNull(subscriber, "A subscriber must be provided in order to start listening to a feed");
-    return subscriber.subscribe(id, messageCallback);
+    return subscriber.subscribe(id, messageCallback, errorListener);
   }
 
   public final FeedID getID() {
