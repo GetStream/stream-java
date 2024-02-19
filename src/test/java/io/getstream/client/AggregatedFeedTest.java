@@ -17,9 +17,6 @@ import java8.util.concurrent.CompletionException;
 import okhttp3.OkHttpClient;
 import org.junit.Test;
 
-import java.util.Map;
-import java.util.LinkedHashMap;
-
 public class AggregatedFeedTest {
   private static final String apiKey =
       System.getenv("STREAM_KEY") != null
