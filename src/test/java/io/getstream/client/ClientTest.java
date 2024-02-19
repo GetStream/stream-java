@@ -163,7 +163,7 @@ public class ClientTest {
     Client client = Client.builder(apiKey, secret).httpClient(httpClient).build();
     FlatFeed feed = client.flatFeed("flat", "1");
 
-    Map<String, Object> mp=new LinkedHashMap();
+    Map<String, Object> mp = new LinkedHashMap();
 
     mp.put("boolVal",true);
     mp.put("music",1);
