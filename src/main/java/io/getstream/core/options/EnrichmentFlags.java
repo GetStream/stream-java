@@ -3,19 +3,24 @@ package io.getstream.core.options;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import io.getstream.core.http.Request;
+import java8.util.concurrent.CompletionException;
+
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public final class EnrichmentFlags implements RequestOption {
   enum OpType {
     OWN_CHILDREN("with_own_children"),
     OWN_REACTIONS("with_own_reactions"),
     REACTION_COUNTS("with_reaction_counts"),
-    // XXX: move it to a separate option???
     REACTION_KINDS("reaction_kinds_filter"),
     RECENT_REACTIONS("with_recent_reactions"),
-    RECENT_REACTIONS_LIMIT("recent_reactions_limit");
+    RECENT_REACTIONS_LIMIT("recent_reactions_limit"),
+    RANKING_VARS("ranking_vars");
 
     private String operator;
 
@@ -88,6 +93,23 @@ public final class EnrichmentFlags implements RequestOption {
     checkArgument(!userID.isEmpty(), "No user ID");
     ops.add(new OpEntry(OpType.OWN_CHILDREN, "true"));
     this.userID = userID;
+    return this;
+  }
+
+  public EnrichmentFlags rankingVars(Map<String, Object> externalVars) {
+    checkNotNull(externalVars, "No external variables to filter by");
+    checkArgument(externalVars.size() > 0, "No external variables to filter by");
+
+    String rankingVarsJSON;
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      rankingVarsJSON = objectMapper.writeValueAsString(externalVars);
+    }
+    catch (IOException e){
+      throw new CompletionException(e);
+    }
+
+    ops.add(new OpEntry(OpType.RANKING_VARS, rankingVarsJSON));
     return this;
   }
 

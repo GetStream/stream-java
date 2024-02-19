@@ -8,10 +8,17 @@ import io.getstream.core.models.Activity;
 import io.getstream.core.models.EnrichedActivity;
 import io.getstream.core.models.Group;
 import io.getstream.core.options.EnrichmentFlags;
+
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 import java8.util.concurrent.CompletionException;
 import okhttp3.OkHttpClient;
 import org.junit.Test;
+
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class AggregatedFeedTest {
   private static final String apiKey =
@@ -43,6 +50,25 @@ public class AggregatedFeedTest {
         feed.getEnrichedActivities(
                 new EnrichmentFlags().withReactionCounts().withRecentReactions().withOwnReactions())
             .join();
+  }
+
+  @Test
+  public void getEnrichedRankingVars() throws Exception {
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
+
+    Map<String, Object> mp = new LinkedHashMap();
+
+    mp.put("boolVal",true);
+    mp.put("music",1);
+    mp.put("sports",2.1);
+    mp.put("string","str");
+
+    FlatFeed feed = client.flatFeed("flat", "1");
+
+    List<EnrichedActivity> result = feed.getEnrichedActivities(new EnrichmentFlags().rankingVars(mp)).join();
   }
 
   @Test
