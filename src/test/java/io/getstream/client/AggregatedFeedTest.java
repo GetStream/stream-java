@@ -8,7 +8,12 @@ import io.getstream.core.models.Activity;
 import io.getstream.core.models.EnrichedActivity;
 import io.getstream.core.models.Group;
 import io.getstream.core.options.EnrichmentFlags;
+import io.getstream.core.options.Limit;
+import io.getstream.core.options.Offset;
 
+import static org.junit.Assert.assertEquals;
+
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,21 +56,31 @@ public class AggregatedFeedTest {
 
   @Test
   public void getEnrichedRankingVars() throws Exception {
+    MockHTTPClient httpClient = new MockHTTPClient();
     Client client =
         Client.builder(apiKey, secret)
-            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .httpClient(httpClient)
             .build();
 
     Map<String, Object> mp = new LinkedHashMap();
 
-    mp.put("boolVal",true);
-    mp.put("music",1);
-    mp.put("sports",2.1);
-    mp.put("string","str");
+    mp.put("boolVal", true);
+    mp.put("music", 1);
+    mp.put("sports", 2.1);
+    mp.put("string", "str");
 
     FlatFeed feed = client.flatFeed("flat", "1");
 
-    List<EnrichedActivity> result = feed.getEnrichedActivities(new EnrichmentFlags().rankingVars(mp)).join();
+    List<EnrichedActivity> result = feed.getEnrichedActivities(
+      new Limit(69),
+      new Offset(13),
+      new EnrichmentFlags().rankingVars(mp)).join();
+
+    URL feedURL = new URL(
+      "https://us-east-api.stream-io-api.com:443/api/v1.0/enrich/feed/flat/1/?api_key="
+      + apiKey
+      + "&limit=69&offset=13&ranking=rank&ranking_vars=%7B%22boolVal%22:true,%22music%22:1,%22sports%22:2.1,%22string%22:%22str%22%7D");
+    assertEquals(httpClient.lastRequest.getURL(), feedURL);
   }
 
   @Test
