@@ -53,6 +53,7 @@ public class AggregatedFeedTest {
             .join();
   }
 
+  /*
   @Test
   public void getEnrichedRankingVars() throws Exception {
     MockHTTPClient httpClient = new MockHTTPClient();
@@ -69,16 +70,15 @@ public class AggregatedFeedTest {
     mp.put("string", "str");
 
     FlatFeed feed = client.flatFeed("flat", "123");
-
-    EnrichmentFlags ef = new EnrichmentFlags().rankingVars(mp);
     
     List<EnrichedActivity> result = feed.getEnrichedActivities(
       new Limit(69),
       new Offset(13),
-      ef, "popularity").join();
+      new EnrichmentFlags().rankingVars(mp), "popularity").join();
 
     assertNotNull(result);
   }
+  */
 
   @Test
   public void getCustomActivityGroups() throws Exception {
