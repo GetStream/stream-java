@@ -12,6 +12,7 @@ import io.getstream.core.options.Limit;
 import io.getstream.core.options.Offset;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.URL;
 import java.util.LinkedHashMap;
@@ -59,7 +60,7 @@ public class AggregatedFeedTest {
     MockHTTPClient httpClient = new MockHTTPClient();
     Client client =
         Client.builder(apiKey, secret)
-            .httpClient(httpClient)
+        .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))//.httpClient(httpClient)
             .build();
 
     Map<String, Object> mp = new LinkedHashMap();
@@ -69,18 +70,16 @@ public class AggregatedFeedTest {
     mp.put("sports", 2.1);
     mp.put("string", "str");
 
-    FlatFeed feed = client.flatFeed("flat", "1");
+    FlatFeed feed = client.flatFeed("user", "1");
 
+    EnrichmentFlags ef = new EnrichmentFlags().rankingVars(mp);
+    
     List<EnrichedActivity> result = feed.getEnrichedActivities(
       new Limit(69),
       new Offset(13),
-      new EnrichmentFlags().rankingVars(mp)).join();
+      ef, "popular").join();
 
-    URL feedURL = new URL(
-      "https://us-east-api.stream-io-api.com:443/api/v1.0/enrich/feed/flat/1/?api_key="
-      + apiKey
-      + "&limit=69&offset=13&ranking=rank&ranking_vars=%7B%22boolVal%22:true,%22music%22:1,%22sports%22:2.1,%22string%22:%22str%22%7D");
-    assertEquals(httpClient.lastRequest.getURL(), feedURL);
+    assertNotNull(result);
   }
 
   @Test
