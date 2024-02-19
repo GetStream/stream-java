@@ -68,14 +68,14 @@ public class AggregatedFeedTest {
     mp.put("sports", 2.1);
     mp.put("string", "str");
 
-    FlatFeed feed = client.flatFeed("user", "1");
+    FlatFeed feed = client.flatFeed("flat", "123");
 
     EnrichmentFlags ef = new EnrichmentFlags().rankingVars(mp);
     
     List<EnrichedActivity> result = feed.getEnrichedActivities(
       new Limit(69),
       new Offset(13),
-      ef, "popular").join();
+      ef, "popularity").join();
 
     assertNotNull(result);
   }
