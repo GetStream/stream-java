@@ -11,10 +11,8 @@ import io.getstream.core.options.EnrichmentFlags;
 import io.getstream.core.options.Limit;
 import io.getstream.core.options.Offset;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
