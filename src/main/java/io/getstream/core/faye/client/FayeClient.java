@@ -80,9 +80,7 @@ public class FayeClient extends WebSocketListener {
   }
 
   private WebSocket webSocket;
-  private final OkHttpClient httpClient = new OkHttpClient.Builder()
-          .pingInterval(5, TimeUnit.SECONDS)
-          .build();
+  private final OkHttpClient httpClient = new OkHttpClient();
 
   private Timer timer = new Timer();
 
