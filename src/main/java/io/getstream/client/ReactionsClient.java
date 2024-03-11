@@ -73,40 +73,40 @@ public final class ReactionsClient {
   public CompletableFuture<Paginated<Reaction>> paginatedFilter(LookupKind lookup, String id)
       throws StreamException {
     return paginatedFilter(
-        lookup, id, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_LIMIT, "");
+        lookup, id, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_LIMIT, "", false);
   }
 
   public CompletableFuture<Paginated<Reaction>> paginatedFilter(
       LookupKind lookup, String id, Limit limit) throws StreamException {
-    return paginatedFilter(lookup, id, DefaultOptions.DEFAULT_FILTER, limit, "");
+    return paginatedFilter(lookup, id, DefaultOptions.DEFAULT_FILTER, limit, "", false);
   }
 
   public CompletableFuture<Paginated<Reaction>> paginatedFilter(
       LookupKind lookup, String id, Filter filter) throws StreamException {
-    return paginatedFilter(lookup, id, filter, DefaultOptions.DEFAULT_LIMIT, "");
+    return paginatedFilter(lookup, id, filter, DefaultOptions.DEFAULT_LIMIT, "", false);
   }
 
   public CompletableFuture<Paginated<Reaction>> paginatedFilter(
       LookupKind lookup, String id, String kind) throws StreamException {
     return paginatedFilter(
-        lookup, id, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_LIMIT, kind);
+        lookup, id, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_LIMIT, kind, false);
   }
 
   public CompletableFuture<Paginated<Reaction>> paginatedFilter(
       LookupKind lookup, String id, Filter filter, Limit limit) throws StreamException {
-    return paginatedFilter(lookup, id, filter, limit, "");
+    return paginatedFilter(lookup, id, filter, limit, "", false);
   }
 
   public CompletableFuture<Paginated<Reaction>> paginatedFilter(
       LookupKind lookup, String id, Limit limit, String kind) throws StreamException {
-    return paginatedFilter(lookup, id, DefaultOptions.DEFAULT_FILTER, limit, kind);
+    return paginatedFilter(lookup, id, DefaultOptions.DEFAULT_FILTER, limit, kind, false);
   }
 
   public CompletableFuture<Paginated<Reaction>> paginatedFilter(
-      LookupKind lookup, String id, Filter filter, Limit limit, String kind)
+      LookupKind lookup, String id, Filter filter, Limit limit, String kind, Boolean withOwnChildren)
       throws StreamException {
     final Token token = buildReactionsToken(secret, TokenAction.READ);
-    return reactions.paginatedFilter(token, lookup, id, filter, limit, kind);
+    return reactions.paginatedFilter(token, lookup, id, filter, limit, kind, withOwnChildren);
   }
 
   public CompletableFuture<Paginated<Reaction>> paginatedFilter(String next)
