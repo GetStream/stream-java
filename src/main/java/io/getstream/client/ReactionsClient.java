@@ -70,6 +70,13 @@ public final class ReactionsClient {
     return reactions.filter(token, lookup, id, filter, limit, kind);
   }
 
+  public CompletableFuture<List<Reaction>> filter(
+      LookupKind lookup, String id, Filter filter, Limit limit, String kind, Boolean withOwnChildren)
+      throws StreamException {
+    final Token token = buildReactionsToken(secret, TokenAction.READ);
+    return reactions.filter(token, lookup, id, filter, limit, kind, withOwnChildren);
+  }
+
   public CompletableFuture<Paginated<Reaction>> paginatedFilter(LookupKind lookup, String id)
       throws StreamException {
     return paginatedFilter(
