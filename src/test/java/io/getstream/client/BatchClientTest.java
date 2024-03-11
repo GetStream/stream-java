@@ -150,9 +150,11 @@ public class BatchClientTest {
 
   @Test
   public void getActivitiesByID() throws Exception {
+    Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
+
     BatchClient client = Client.builder(apiKey, secret).build().batch();
 
-    List<Activity> result = client.getActivitiesByID("1657b300-a648-11d5-8080-800020fde6c3").join();
+    List<Activity> result = client.getActivitiesByID(activity.getID()).join();
   }
 
   @Test
@@ -160,7 +162,7 @@ public class BatchClientTest {
     BatchClient client = Client.builder(apiKey, secret).build().batch();
 
     List<EnrichedActivity> result =
-        client.getEnrichedActivitiesByID("1657b300-a648-11d5-8080-800020fde6c3").join();
+        client.getEnrichedActivitiesByID("5a4781d0-7a42-11ee-8080-8001056a0dad").join();
   }
 
   @Test
