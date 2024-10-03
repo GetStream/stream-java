@@ -9,6 +9,7 @@ import static io.getstream.core.utils.Serialization.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.OptBoolean;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.getstream.client.ModerationClient;
 import io.getstream.core.exceptions.StreamException;
 import io.getstream.core.http.HTTPClient;
 import io.getstream.core.http.Response;
@@ -57,6 +58,10 @@ public final class Stream {
 
   public StreamReactions reactions() {
     return new StreamReactions(key, baseURL, httpClient);
+  }
+
+  public Moderation moderation() {
+    return new Moderation(key, baseURL, httpClient);
   }
 
   public StreamFiles files() {
