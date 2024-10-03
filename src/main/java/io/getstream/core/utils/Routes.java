@@ -18,6 +18,7 @@ public final class Routes {
   private static final String addToManyPath = "feed/add_to_many/";
   private static final String followManyPath = "follow_many/";
   private static final String unfollowManyPath = "unfollow_many/";
+  private static final String moderationFlagPath = "moderation/flag/";
   private static final String collectionsPath = "collections/";
   private static final String filesPath = "files/";
   private static final String imagesPath = "images/";
@@ -111,6 +112,10 @@ public final class Routes {
 
   public static URL buildUnfollowManyURL(URL baseURL) throws MalformedURLException {
     return new URL(baseURL, basePath + unfollowManyPath);
+  }
+
+  public static URL buildModerationFlagURL(URL baseURL) throws MalformedURLException {
+    return new URL(baseURL, basePath + moderationFlagPath);
   }
 
   public static URL followStatsPath(URL baseURL) throws MalformedURLException {

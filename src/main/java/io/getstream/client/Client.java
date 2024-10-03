@@ -250,6 +250,10 @@ public final class Client {
     return new ReactionsClient(secret, stream.reactions());
   }
 
+  public ModerationClient moderation() {
+    return new ModerationClient(secret, stream.moderation());
+  }
+
   public FileStorageClient files() {
     return new FileStorageClient(secret, stream.files());
   }
