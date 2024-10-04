@@ -19,6 +19,7 @@ import java.util.Objects;
 @JsonInclude(Include.NON_NULL)
 @JsonDeserialize(builder = Activity.Builder.class)
 public class Activity {
+
   private final String id;
   private final String actor;
   private final String verb;
@@ -31,6 +32,8 @@ public class Activity {
   private final List<FeedID> to;
   private final Double score;
   private final Map<String, Object> extra;
+  private final String moderationTemplate;
+  private final ModerationResponse moderationResponse;
 
   private Activity(Builder builder) {
     id = builder.id;
@@ -44,6 +47,8 @@ public class Activity {
     to = builder.to;
     score = builder.score;
     extra = builder.extra;
+    moderationTemplate = builder.moderationTemplate;
+    moderationResponse = builder.moderationResponse;
   }
 
   public String getID() {
@@ -95,6 +100,16 @@ public class Activity {
   @JsonAnyGetter
   public Map<String, Object> getExtra() {
     return extra;
+  }
+
+  @JsonProperty("moderation")
+  public ModerationResponse getModerationResponse() {
+    return moderationResponse;
+  }
+
+  @JsonProperty("moderation_template")
+  public String getModerationTemplate() {
+    return moderationTemplate;
   }
 
   @Override
@@ -154,9 +169,16 @@ public class Activity {
     private List<FeedID> to;
     private Double score;
     private Map<String, Object> extra;
+    private String moderationTemplate;
+    private ModerationResponse moderationResponse;
 
     public Builder id(String id) {
       this.id = id;
+      return this;
+    }
+
+    public Builder moderationTemplate(String moderationTemplate) {
+      this.moderationTemplate = moderationTemplate;
       return this;
     }
 
@@ -180,6 +202,13 @@ public class Activity {
       this.foreignID = foreignID;
       return this;
     }
+
+    @JsonProperty("moderation")
+    public Builder setModerationResponse(ModerationResponse mod) {
+      this.moderationResponse=mod;
+      return this;
+    }
+
 
     public Builder target(String target) {
       this.target = target;
@@ -250,6 +279,8 @@ public class Activity {
       this.to = activity.to;
       this.score = activity.score;
       this.extra = activity.extra;
+      this.moderationTemplate = activity.moderationTemplate;
+      this.moderationResponse = activity.moderationResponse;
       return this;
     }
 

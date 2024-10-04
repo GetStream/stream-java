@@ -2,9 +2,8 @@ package io.getstream.client;
 
 import io.getstream.client.Client;
 import io.getstream.client.ModerationClient;
+import io.getstream.core.models.*;
 import io.getstream.core.models.Activity;
-import io.getstream.core.models.Data;
-import io.getstream.core.models.Reaction;
 import io.getstream.core.http.Response;
 import static org.junit.Assert.*;
 
@@ -33,6 +32,7 @@ public class ModerationClientTest {
     @Test
     public void testFlagUser() throws Exception {
         Client client = Client.builder(apiKey, secret).build();
+
         ModerationClient moderationClient = client.moderation();
 
         String userId = UUID.randomUUID().toString();
@@ -73,5 +73,30 @@ public class ModerationClientTest {
 
         Response flagResponse = moderationClient.flagReaction(reactionResponse.getId(), "bobby", "blood", null).join();
         assertNotNull(flagResponse);
+    }
+    @Test
+    public void testActivityModerated() throws Exception {
+
+        Client client = Client.builder(apiKey, secret).build();
+
+        ModerationClient moderationClient = client.moderation();
+
+        String[] images = new String[] { "image1", "image2" };
+        Activity activity = Activity.builder().
+                actor("test").
+                verb("test").
+                object("test").
+                moderationTemplate("moderation_template_test_7").
+                extraField("text", "pissoar").
+                extraField("attachment", images).
+                foreignID("for").
+                time(new Date()).
+                build();
+
+        Activity activityResponse = client.flatFeed("user", "1").addActivity(activity).join();
+        assertNotNull(activityResponse);
+        ModerationResponse m=activityResponse.getModerationResponse();
+        assertEquals(m.getStatus(), "complete");
+        assertEquals(m.getRecommendedAction(), "remove");
     }
 }
