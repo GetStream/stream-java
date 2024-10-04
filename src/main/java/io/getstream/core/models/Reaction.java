@@ -27,6 +27,8 @@ public class Reaction {
   private final Data userData;
   private final Map<String, Object> activityData;
   private final Map<String, Object> extra;
+  private String moderationTemplate;
+  private Map<String, Object> moderation;
 
   private Reaction(Builder builder) {
     id = builder.id;
@@ -41,6 +43,8 @@ public class Reaction {
     userData = builder.userData;
     activityData = builder.activityData;
     extra = builder.extra;
+    moderationTemplate = builder.moderationTemplate;
+    moderation = builder.moderation;
   }
 
   public String getId() {
@@ -95,6 +99,29 @@ public class Reaction {
     return extra;
   }
 
+  @JsonProperty("moderation_template")
+  public String getModerationTemplate() {
+    return moderationTemplate;
+  }
+
+  public void setModerationTemplate(String moderationTemplate) {
+    this.moderationTemplate = moderationTemplate;
+  }
+
+  @JsonProperty("moderation")
+  public Map<String, Object> getModeration() {
+    return moderation;
+  }
+
+  public ModerationResponse getModerationResponseFromMap()throws Exception {
+    String key = "response";
+    if (moderation != null && moderation.containsKey(key)) {
+      return convert(moderation.get(key), ModerationResponse.class);
+    } else {
+      throw new Exception("Key '" + key + "' not found in moderation map.");
+    }
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -111,7 +138,9 @@ public class Reaction {
         && Objects.equals(childrenCounts, reaction.childrenCounts)
         && Objects.equals(userData, reaction.userData)
         && Objects.equals(activityData, reaction.activityData)
-        && Objects.equals(extra, reaction.extra);
+        && Objects.equals(extra, reaction.extra)
+        && Objects.equals(moderationTemplate, reaction.moderationTemplate)
+        && Objects.equals(moderation, reaction.moderation);
   }
 
   @Override
@@ -128,7 +157,9 @@ public class Reaction {
         childrenCounts,
         userData,
         activityData,
-        extra);
+        extra,
+        moderationTemplate,
+        moderation);
   }
 
   @Override
@@ -146,6 +177,8 @@ public class Reaction {
         .add("userData", this.userData)
         .add("activityData", this.activityData)
         .add("extra", this.extra)
+        .add("moderationTemplate", this.moderationTemplate)
+        .add("moderation", this.moderation)
         .toString();
   }
 
@@ -167,6 +200,8 @@ public class Reaction {
     private Data userData;
     private Map<String, Object> activityData;
     private Map<String, Object> extra;
+    private String moderationTemplate;
+    private Map<String, Object> moderation;
 
     public Builder id(String id) {
       this.id = id;
@@ -239,6 +274,18 @@ public class Reaction {
       return this;
     }
 
+    @JsonProperty("moderation_template")
+    public Builder moderationTemplate(String moderationTemplate) {
+      this.moderationTemplate = moderationTemplate;
+      return this;
+    }
+
+    @JsonProperty("moderation")
+    public Builder moderation(Map<String, Object> moderation) {
+      this.moderation = moderation;
+      return this;
+    }
+
     @JsonIgnore
     public Builder extra(Map<String, Object> extra) {
       this.extra = extra;
@@ -259,6 +306,8 @@ public class Reaction {
       this.userData = reaction.userData;
       this.activityData = reaction.activityData;
       this.extra = reaction.extra;
+      this.moderationTemplate = reaction.moderationTemplate;
+      this.moderation = reaction.moderation;
       return this;
     }
 

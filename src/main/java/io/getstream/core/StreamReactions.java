@@ -235,6 +235,9 @@ public final class StreamReactions {
       if (reaction.getExtra() != null) {
         payloadBuilder.put("data", reaction.getExtra());
       }
+      if (reaction.getModerationTemplate() != null) {
+        payloadBuilder.put("moderation_template", reaction.getModerationTemplate());
+      }
       final byte[] payload = toJSON(payloadBuilder.build());
       final URL url = buildReactionsURL(baseURL);
       return httpClient

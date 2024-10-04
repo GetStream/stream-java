@@ -45,6 +45,7 @@ public class ModerationResponse {
 class APIError {
     private String Code;
     private String Message;
+    private String Status;
 
     // Default constructor
     public APIError() {}
@@ -53,9 +54,11 @@ class APIError {
     @JsonCreator
     public APIError(
         @JsonProperty("code") String code,
-        @JsonProperty("message") String message) {
+        @JsonProperty("message") String message,
+        @JsonProperty("status") String status) {
         this.Code = code;
         this.Message = message;
+        this.Status = status;
     }
 
     // Getters

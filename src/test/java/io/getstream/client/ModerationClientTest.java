@@ -1,21 +1,12 @@
 package io.getstream.client;
 
-import io.getstream.client.Client;
-import io.getstream.client.ModerationClient;
 import io.getstream.core.models.*;
 import io.getstream.core.models.Activity;
 import io.getstream.core.http.Response;
 import static org.junit.Assert.*;
-
-
-import java.net.MalformedURLException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import org.junit.*;
-
 
 public class ModerationClientTest {
 
@@ -28,10 +19,32 @@ public class ModerationClientTest {
                     ? System.getenv("STREAM_SECRET")
                     : System.getProperty("STREAM_SECRET");
 
+    Client client;
+    @Before
+    public void setUp()throws Exception {
 
+        System.out.println("api key-------------------------------------------------");
+        System.out.println(addSpacesAfterEachChar(apiKey));
+//        client =
+//                Client.builder(apiKey, secret)
+//                        .scheme("http")
+//                        .host("localhost")
+//                        .port(18000)
+//                        .build();
+        client= Client.builder(apiKey, secret).build();
+    }
+    public static String addSpacesAfterEachChar(String str) {
+        StringBuilder stringBuilder = new StringBuilder(); // Using StringBuilder for efficiency
+
+        for (int i = 0; i < str.length(); i++) {
+            stringBuilder.append(str.charAt(i)); // Append the character
+            stringBuilder.append(' '); // Append a space
+        }
+
+        return stringBuilder.toString().trim(); // Convert to string and remove the trailing space
+    }
     @Test
     public void testFlagUser() throws Exception {
-        Client client = Client.builder(apiKey, secret).build();
 
         ModerationClient moderationClient = client.moderation();
 
@@ -46,7 +59,6 @@ public class ModerationClientTest {
 
     @Test
     public void testFlagActivity() throws Exception {
-        Client client = Client.builder(apiKey, secret).build();
         ModerationClient moderationClient = client.moderation();
 
         Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
@@ -60,7 +72,6 @@ public class ModerationClientTest {
 
     @Test
     public void testFlagReaction() throws Exception {
-        Client client = Client.builder(apiKey, secret).build();
         ModerationClient moderationClient = client.moderation();
 
         Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
@@ -76,8 +87,6 @@ public class ModerationClientTest {
     }
     @Test
     public void testActivityModerated() throws Exception {
-
-        Client client = Client.builder(apiKey, secret).build();
 
         ModerationClient moderationClient = client.moderation();
 
@@ -99,4 +108,36 @@ public class ModerationClientTest {
         assertEquals(m.getStatus(), "complete");
         assertEquals(m.getRecommendedAction(), "remove");
     }
+    @Test
+        public void testActivityModeratedReactions() throws Exception {
+
+            ModerationClient moderationClient = client.moderation();
+
+            String[] images = new String[] { "image1", "image2" };
+            Activity activity = Activity.builder().
+                    actor("test").
+                    verb("test").
+                    object("test").
+                    extraField("text", "pissoar").
+                    extraField("attachment", images).
+                    foreignID("for").
+                    time(new Date()).
+                    build();
+
+            Activity activityResponse = client.flatFeed("user", "1").addActivity(activity).join();
+            assertNotNull(activityResponse);
+
+            Reaction r=Reaction.builder().
+                        kind("like").
+                        activityID(activityResponse.getID()).
+                        userID("user123").
+                        extraField("p","pissoar").
+                        moderationTemplate("reaction_test_7").
+                        build();
+
+            Reaction reactionResponse = client.reactions().add("user", r).join();
+            ModerationResponse m=reactionResponse.getModerationResponseFromMap();
+            assertEquals(m.getStatus(), "complete");
+            assertEquals(m.getRecommendedAction(), "remove");
+        }
 }
