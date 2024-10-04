@@ -22,15 +22,6 @@ public class ModerationClientTest {
     Client client;
     @Before
     public void setUp()throws Exception {
-
-        System.out.println("api key-------------------------------------------------");
-        System.out.println(addSpacesAfterEachChar(apiKey));
-//        client =
-//                Client.builder(apiKey, secret)
-//                        .scheme("http")
-//                        .host("localhost")
-//                        .port(18000)
-//                        .build();
         client= Client.builder(apiKey, secret).build();
     }
     public static String addSpacesAfterEachChar(String str) {
@@ -95,7 +86,7 @@ public class ModerationClientTest {
                 actor("test").
                 verb("test").
                 object("test").
-                moderationTemplate("moderation_template_test_7").
+                moderationTemplate("moderation_template_activity").
                 extraField("text", "pissoar").
                 extraField("attachment", images).
                 foreignID("for").
@@ -132,7 +123,7 @@ public class ModerationClientTest {
                         activityID(activityResponse.getID()).
                         userID("user123").
                         extraField("p","pissoar").
-                        moderationTemplate("reaction_test_7").
+                        moderationTemplate("moderation_template_reaction").
                         build();
 
             Reaction reactionResponse = client.reactions().add("user", r).join();
