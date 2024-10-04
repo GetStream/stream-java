@@ -22,17 +22,7 @@ public class ModerationClientTest {
     Client client;
     @Before
     public void setUp()throws Exception {
-        client= Client.builder(apiKey, secret).build();
-    }
-    public static String addSpacesAfterEachChar(String str) {
-        StringBuilder stringBuilder = new StringBuilder(); // Using StringBuilder for efficiency
-
-        for (int i = 0; i < str.length(); i++) {
-            stringBuilder.append(str.charAt(i)); // Append the character
-            stringBuilder.append(' '); // Append a space
-        }
-
-        return stringBuilder.toString().trim(); // Convert to string and remove the trailing space
+        client = Client.builder(apiKey, secret).build();
     }
     @Test
     public void testFlagUser() throws Exception {
@@ -122,7 +112,7 @@ public class ModerationClientTest {
                         kind("like").
                         activityID(activityResponse.getID()).
                         userID("user123").
-                        extraField("p","pissoar").
+                        extraField("text","pissoar").
                         moderationTemplate("moderation_template_reaction").
                         build();
 

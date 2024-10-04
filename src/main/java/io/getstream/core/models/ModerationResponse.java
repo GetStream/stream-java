@@ -42,31 +42,3 @@ public class ModerationResponse {
         return OriginFeed;
     }
 }
-class APIError {
-    private String Code;
-    private String Message;
-    private String Status;
-
-    // Default constructor
-    public APIError() {}
-
-    // Constructor with parameters
-    @JsonCreator
-    public APIError(
-        @JsonProperty("code") String code,
-        @JsonProperty("message") String message,
-        @JsonProperty("status") String status) {
-        this.Code = code;
-        this.Message = message;
-        this.Status = status;
-    }
-
-    // Getters
-    public String getCode() {
-        return Code;
-    }
-
-    public String getMessage() {
-        return Message;
-    }
-}
