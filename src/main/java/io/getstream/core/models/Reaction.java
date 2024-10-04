@@ -113,7 +113,7 @@ public class Reaction {
     return moderation;
   }
 
-  public ModerationResponse getModerationResponseFromMap()throws Exception {
+  public ModerationResponse getModerationResponse()throws Exception {
     String key = "response";
     if (moderation != null && moderation.containsKey(key)) {
       return convert(moderation.get(key), ModerationResponse.class);

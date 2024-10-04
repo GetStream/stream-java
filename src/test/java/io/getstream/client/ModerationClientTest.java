@@ -117,7 +117,7 @@ public class ModerationClientTest {
                         build();
 
             Reaction reactionResponse = client.reactions().add("user", r).join();
-            ModerationResponse m=reactionResponse.getModerationResponseFromMap();
+            ModerationResponse m=reactionResponse.getModerationResponse();
             assertEquals(m.getStatus(), "complete");
             assertEquals(m.getRecommendedAction(), "remove");
         }
