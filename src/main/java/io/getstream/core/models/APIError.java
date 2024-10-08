@@ -4,33 +4,34 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class APIError {
-    private String Code;
-    private String Message;
-    private String Status;
+  private String Code;
+  private String Message;
+  private String Status;
 
-    public String toString() {
-        return "{Code='" + Code + "', Message=" + Message + "}";
-    }
-    // Default constructor
-    public APIError() {}
+  public String toString() {
+    return "{Code='" + Code + "', Message=" + Message + "}";
+  }
 
-    // Constructor with parameters
-    @JsonCreator
-    public APIError(
-            @JsonProperty("code") String code,
-            @JsonProperty("message") String message,
-            @JsonProperty("status") String status) {
-        this.Code = code;
-        this.Message = message;
-        this.Status = status;
-    }
+  // Default constructor
+  public APIError() {}
 
-    // Getters
-    public String getCode() {
-        return Code;
-    }
+  // Constructor with parameters
+  @JsonCreator
+  public APIError(
+      @JsonProperty("code") String code,
+      @JsonProperty("message") String message,
+      @JsonProperty("status") String status) {
+    this.Code = code;
+    this.Message = message;
+    this.Status = status;
+  }
 
-    public String getMessage() {
-        return Message;
-    }
+  // Getters
+  public String getCode() {
+    return Code;
+  }
+
+  public String getMessage() {
+    return Message;
+  }
 }

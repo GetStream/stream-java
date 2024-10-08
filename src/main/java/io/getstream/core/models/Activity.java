@@ -205,10 +205,9 @@ public class Activity {
 
     @JsonProperty("moderation")
     public Builder setModerationResponse(ModerationResponse mod) {
-      this.moderationResponse=mod;
+      this.moderationResponse = mod;
       return this;
     }
-
 
     public Builder target(String target) {
       this.target = target;

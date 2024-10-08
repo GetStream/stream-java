@@ -1,124 +1,135 @@
 package io.getstream.client;
 
+import static org.junit.Assert.*;
+
+import io.getstream.core.http.Response;
 import io.getstream.core.models.*;
 import io.getstream.core.models.Activity;
-import io.getstream.core.http.Response;
-import static org.junit.Assert.*;
 import java.util.Date;
 import java.util.UUID;
 import org.junit.*;
 
 public class ModerationClientTest {
 
-    private static final String apiKey =
-            System.getenv("STREAM_KEY") != null
-                    ? System.getenv("STREAM_KEY")
-                    : System.getProperty("STREAM_KEY");
-    private static final String secret =
-            System.getenv("STREAM_SECRET") != null
-                    ? System.getenv("STREAM_SECRET")
-                    : System.getProperty("STREAM_SECRET");
+  private static final String apiKey =
+      System.getenv("STREAM_KEY") != null
+          ? System.getenv("STREAM_KEY")
+          : System.getProperty("STREAM_KEY");
+  private static final String secret =
+      System.getenv("STREAM_SECRET") != null
+          ? System.getenv("STREAM_SECRET")
+          : System.getProperty("STREAM_SECRET");
 
-    Client client;
-    @Before
-    public void setUp()throws Exception {
-        client = Client.builder(apiKey, secret).build();
-    }
-    @Test
-    public void testFlagUser() throws Exception {
+  Client client;
 
-        ModerationClient moderationClient = client.moderation();
+  @Before
+  public void setUp() throws Exception {
+    client = Client.builder(apiKey, secret).build();
+  }
 
-        String userId = UUID.randomUUID().toString();
-        User user = client.user(userId);
-        user.getOrCreate().join();
-        Data result = user.get().join();
+  @Test
+  public void testFlagUser() throws Exception {
 
-        Response flagResponse = moderationClient.flagUser(userId, "blood", null).join();
-        assertNotNull(flagResponse);
-    }
+    ModerationClient moderationClient = client.moderation();
 
-    @Test
-    public void testFlagActivity() throws Exception {
-        ModerationClient moderationClient = client.moderation();
+    String userId = UUID.randomUUID().toString();
+    User user = client.user(userId);
+    user.getOrCreate().join();
+    Data result = user.get().join();
 
-        Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
+    Response flagResponse = moderationClient.flagUser(userId, "blood", null).join();
+    assertNotNull(flagResponse);
+  }
 
-        Activity activityResponse = client.flatFeed("flat", "1").addActivity(activity).join();
-        assertNotNull(activityResponse);
+  @Test
+  public void testFlagActivity() throws Exception {
+    ModerationClient moderationClient = client.moderation();
 
-        Response flagResponse = moderationClient.flagActivity(activityResponse.getID(), "vishal", "blood", null).join();
-        assertNotNull(flagResponse);
-    }
+    Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
 
-    @Test
-    public void testFlagReaction() throws Exception {
-        ModerationClient moderationClient = client.moderation();
+    Activity activityResponse = client.flatFeed("flat", "1").addActivity(activity).join();
+    assertNotNull(activityResponse);
 
-        Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
+    Response flagResponse =
+        moderationClient.flagActivity(activityResponse.getID(), "vishal", "blood", null).join();
+    assertNotNull(flagResponse);
+  }
 
-        Activity activityResponse = client.flatFeed("flat", "1").addActivity(activity).join();
-        assertNotNull(activityResponse);
+  @Test
+  public void testFlagReaction() throws Exception {
+    ModerationClient moderationClient = client.moderation();
 
-        Reaction reactionResponse = client.reactions().add("user123","like", activityResponse.getID()).join();
-        assertNotNull(reactionResponse);
+    Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
 
-        Response flagResponse = moderationClient.flagReaction(reactionResponse.getId(), "bobby", "blood", null).join();
-        assertNotNull(flagResponse);
-    }
-    @Test
-    public void testActivityModerated() throws Exception {
+    Activity activityResponse = client.flatFeed("flat", "1").addActivity(activity).join();
+    assertNotNull(activityResponse);
 
-        ModerationClient moderationClient = client.moderation();
+    Reaction reactionResponse =
+        client.reactions().add("user123", "like", activityResponse.getID()).join();
+    assertNotNull(reactionResponse);
 
-        String[] images = new String[] { "image1", "image2" };
-        Activity activity = Activity.builder().
-                actor("test").
-                verb("test").
-                object("test").
-                moderationTemplate("moderation_template_activity").
-                extraField("text", "pissoar").
-                extraField("attachment", images).
-                foreignID("for").
-                time(new Date()).
-                build();
+    Response flagResponse =
+        moderationClient.flagReaction(reactionResponse.getId(), "bobby", "blood", null).join();
+    assertNotNull(flagResponse);
+  }
 
-        Activity activityResponse = client.flatFeed("user", "1").addActivity(activity).join();
-        assertNotNull(activityResponse);
-        ModerationResponse m=activityResponse.getModerationResponse();
-        assertEquals(m.getStatus(), "complete");
-        assertEquals(m.getRecommendedAction(), "remove");
-    }
-    @Test
-        public void testActivityModeratedReactions() throws Exception {
+  @Test
+  public void testActivityModerated() throws Exception {
 
-            ModerationClient moderationClient = client.moderation();
+    ModerationClient moderationClient = client.moderation();
 
-            String[] images = new String[] { "image1", "image2" };
-            Activity activity = Activity.builder().
-                    actor("test").
-                    verb("test").
-                    object("test").
-                    extraField("text", "pissoar").
-                    extraField("attachment", images).
-                    foreignID("for").
-                    time(new Date()).
-                    build();
+    String[] images = new String[] {"image1", "image2"};
+    Activity activity =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .moderationTemplate("moderation_template_activity")
+            .extraField("text", "pissoar")
+            .extraField("attachment", images)
+            .foreignID("for")
+            .time(new Date())
+            .build();
 
-            Activity activityResponse = client.flatFeed("user", "1").addActivity(activity).join();
-            assertNotNull(activityResponse);
+    Activity activityResponse = client.flatFeed("user", "1").addActivity(activity).join();
+    assertNotNull(activityResponse);
+    ModerationResponse m = activityResponse.getModerationResponse();
+    assertEquals(m.getStatus(), "complete");
+    assertEquals(m.getRecommendedAction(), "remove");
+  }
 
-            Reaction r=Reaction.builder().
-                        kind("like").
-                        activityID(activityResponse.getID()).
-                        userID("user123").
-                        extraField("text","pissoar").
-                        moderationTemplate("moderation_template_reaction").
-                        build();
+  @Test
+  public void testActivityModeratedReactions() throws Exception {
 
-            Reaction reactionResponse = client.reactions().add("user", r).join();
-            ModerationResponse m=reactionResponse.getModerationResponse();
-            assertEquals(m.getStatus(), "complete");
-            assertEquals(m.getRecommendedAction(), "remove");
-        }
+    ModerationClient moderationClient = client.moderation();
+
+    String[] images = new String[] {"image1", "image2"};
+    Activity activity =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .extraField("text", "pissoar")
+            .extraField("attachment", images)
+            .foreignID("for")
+            .time(new Date())
+            .build();
+
+    Activity activityResponse = client.flatFeed("user", "1").addActivity(activity).join();
+    assertNotNull(activityResponse);
+
+    Reaction r =
+        Reaction.builder()
+            .kind("like")
+            .activityID(activityResponse.getID())
+            .userID("user123")
+            .extraField("text", "pissoar")
+            .moderationTemplate("moderation_template_reaction")
+            .build();
+
+    Reaction reactionResponse = client.reactions().add("user", r).join();
+    ModerationResponse m = reactionResponse.getModerationResponse();
+    assertEquals(m.getStatus(), "complete");
+    assertEquals(m.getRecommendedAction(), "remove");
+  }
 }
