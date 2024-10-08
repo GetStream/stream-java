@@ -235,6 +235,9 @@ public final class StreamReactions {
       if (reaction.getExtra() != null) {
         payloadBuilder.put("data", reaction.getExtra());
       }
+      if (reaction.getModerationTemplate() != null) {
+        payloadBuilder.put("moderation_template", reaction.getModerationTemplate());
+      }
       final byte[] payload = toJSON(payloadBuilder.build());
       final URL url = buildReactionsURL(baseURL);
       return httpClient
@@ -284,26 +287,29 @@ public final class StreamReactions {
     }
   }
 
-  public CompletableFuture<Void> delete(Token token, String id, Boolean soft) throws StreamException {
+  public CompletableFuture<Void> delete(Token token, String id, Boolean soft)
+      throws StreamException {
     checkNotNull(id, "Reaction id can't be null");
     checkArgument(!id.isEmpty(), "Reaction id can't be empty");
 
     try {
       final URL url = buildReactionsURL(baseURL, id + '/');
-      
-      final Request deleteRequest = soft ? buildDelete(url, key, token, new CustomQueryParameter("soft", "true"))
-          : buildDelete(url, key, token);
+
+      final Request deleteRequest =
+          soft
+              ? buildDelete(url, key, token, new CustomQueryParameter("soft", "true"))
+              : buildDelete(url, key, token);
 
       return httpClient
-        .execute(deleteRequest)
-        .thenApply(
-          response -> {
-            try {
-              return deserializeError(response);
-            } catch (StreamException | IOException e) {
-              throw new CompletionException(e);
-            }
-          });  
+          .execute(deleteRequest)
+          .thenApply(
+              response -> {
+                try {
+                  return deserializeError(response);
+                } catch (StreamException | IOException e) {
+                  throw new CompletionException(e);
+                }
+              });
     } catch (MalformedURLException | URISyntaxException e) {
       throw new StreamException(e);
     }

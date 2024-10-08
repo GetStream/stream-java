@@ -59,6 +59,10 @@ public final class Stream {
     return new StreamReactions(key, baseURL, httpClient);
   }
 
+  public Moderation moderation() {
+    return new Moderation(key, baseURL, httpClient);
+  }
+
   public StreamFiles files() {
     return new StreamFiles(key, baseURL, httpClient);
   }
