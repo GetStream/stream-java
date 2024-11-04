@@ -1,5 +1,6 @@
 package io.getstream.client;
 
+import static io.getstream.core.utils.Auth.buildModerationToken;
 import static io.getstream.core.utils.Auth.buildReactionsToken;
 import static io.getstream.core.utils.Routes.*;
 import static io.getstream.core.utils.Serialization.*;
@@ -33,19 +34,19 @@ public class ModerationClient {
   }
 
   public CompletableFuture<Response> flagReaction(
-      String entityId, String entityCreatorId, String reason, Map<String, Object> options)
+      String entityId, String reportingUser, String reason, Map<String, Object> options)
       throws StreamException {
-    return flag("stream:feeds:v2:reaction", entityId, entityCreatorId, reason, options);
+    return flag("stream:feeds:v2:reaction", entityId, reportingUser, reason, options);
   }
 
   private CompletableFuture<Response> flag(
       String entityType,
       String entityId,
-      String entityCreatorId,
+      String reportingUser,
       String reason,
       Map<String, Object> options)
       throws StreamException {
-    final Token token = buildReactionsToken(secret, Auth.TokenAction.WRITE);
-    return mod.flag(token, entityType, entityId, entityCreatorId, reason, options);
+    final Token token = buildModerationToken(secret, Auth.TokenAction.WRITE);
+    return mod.flag(token, entityType, entityId, reportingUser, reason, options);
   }
 }

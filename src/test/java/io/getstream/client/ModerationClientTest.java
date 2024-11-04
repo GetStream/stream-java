@@ -5,6 +5,10 @@ import static org.junit.Assert.*;
 import io.getstream.core.http.Response;
 import io.getstream.core.models.*;
 import io.getstream.core.models.Activity;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.nio.Buffer;
 import java.util.Date;
 import java.util.UUID;
 import org.junit.*;
@@ -65,12 +69,15 @@ public class ModerationClientTest {
     assertNotNull(activityResponse);
 
     Reaction reactionResponse =
-        client.reactions().add("user123", "like", activityResponse.getID()).join();
+        client.reactions().add("test", "like", activityResponse.getID()).join();
     assertNotNull(reactionResponse);
 
     Response flagResponse =
-        moderationClient.flagReaction(reactionResponse.getId(), "bobby", "blood", null).join();
+        moderationClient.flagReaction(reactionResponse.getId(), "vishal", "blood", null).join();
     assertNotNull(flagResponse);
+    assertEquals(201, flagResponse.getCode());
+    assertNotNull(flagResponse);
+
   }
 
   @Test
