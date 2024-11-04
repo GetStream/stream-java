@@ -73,7 +73,7 @@ public class ModerationClientTest {
     assertNotNull(reactionResponse);
 
     Response flagResponse =
-        moderationClient.flagReaction(reactionResponse.getId(), "vishal", "blood", null).join();
+        moderationClient.flagReaction(reactionResponse.getId(), "test", "blood", null).join();
     assertNotNull(flagResponse);
     assertEquals(201, flagResponse.getCode());
     assertNotNull(flagResponse);
