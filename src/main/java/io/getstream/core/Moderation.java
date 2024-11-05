@@ -31,18 +31,18 @@ public class Moderation {
       Token token,
       String entityType,
       String entityId,
-      String entityCreatorId,
-      String reason,
+      String reportingUser,
+      String Reason,
       Map<String, Object> options)
       throws StreamException {
     try {
       final byte[] payload =
           toJSON(
               new Object() {
-                public final String UserId = entityCreatorId;
-                public final String EntityType = entityType;
-                public final String EntityId = entityId;
-                public final String Reason = reason;
+                public final String user_id = reportingUser;
+                public final String entity_type = entityType;
+                public final String entity_id = entityId;
+                public final String reason = Reason;
               });
 
       final URL url = buildModerationFlagURL(baseURL);

@@ -41,7 +41,8 @@ public final class Auth {
     OPEN_GRAPH("url"),
     PERSONALIZATION("personalization"),
     REACTIONS("reactions"),
-    USERS("users");
+    USERS("users"),
+    MODERATION("moderation");
 
     private final String resource;
 
@@ -96,6 +97,10 @@ public final class Auth {
 
   public static Token buildReactionsToken(String secret, TokenAction action) {
     return buildBackendToken(secret, TokenResource.REACTIONS, action, "*");
+  }
+
+  public static Token buildModerationToken(String secret, TokenAction action) {
+    return buildBackendToken(secret, TokenResource.MODERATION, action, "*");
   }
 
   public static Token buildAnalyticsToken(String secret, TokenAction action) {
