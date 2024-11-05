@@ -6,9 +6,7 @@ import io.getstream.core.http.Response;
 import io.getstream.core.models.*;
 import io.getstream.core.models.Activity;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.nio.Buffer;
+import java.sql.Time;
 import java.util.Date;
 import java.util.UUID;
 import org.junit.*;
@@ -32,51 +30,50 @@ public class ModerationClientTest {
   }
 
   @Test
+  public void testFlagActivity() throws Exception {
+    ModerationClient moderationClient = client.moderation();
+
+    Activity activity = Activity.builder().actor("bad-user").verb("test").object("test").moderationTemplate("moderation_template_activity").time(new Date()).foreignID("fid").build();
+    Activity activityResponse = client.flatFeed("user", "1").addActivity(activity).join();
+
+    String reportingUser="reporting-user";
+    Activity activity1 = Activity.builder().actor(reportingUser).verb("verb").object("test").moderationTemplate("moderation_template_activity").time(new Date()).foreignID("fid").build();
+    Activity activityResponse1 = client.flatFeed("user", "1").addActivity(activity1).join();
+    assertNotNull(activityResponse);
+
+    Response flagResponse =
+        moderationClient.flagActivity(activityResponse.getID(), reportingUser, "blood", null).join();
+    assertNotNull(flagResponse);
+    assertEquals(201, flagResponse.getCode());
+  }
+
+  @Test
   public void testFlagUser() throws Exception {
 
     ModerationClient moderationClient = client.moderation();
 
-    String userId = UUID.randomUUID().toString();
-    User user = client.user(userId);
-    user.getOrCreate().join();
-    Data result = user.get().join();
-
-    Response flagResponse = moderationClient.flagUser(userId, "blood", null).join();
+    Response flagResponse = moderationClient.flagUser("bad-user", "reporting-user", "blood", null).join();
     assertNotNull(flagResponse);
-  }
-
-  @Test
-  public void testFlagActivity() throws Exception {
-    ModerationClient moderationClient = client.moderation();
-
-    Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
-
-    Activity activityResponse = client.flatFeed("flat", "1").addActivity(activity).join();
-    assertNotNull(activityResponse);
-
-    Response flagResponse =
-        moderationClient.flagActivity(activityResponse.getID(), "vishal", "blood", null).join();
-    assertNotNull(flagResponse);
+    assertEquals(201, flagResponse.getCode());
   }
 
   @Test
   public void testFlagReaction() throws Exception {
     ModerationClient moderationClient = client.moderation();
 
-    Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
+    Activity activity = Activity.builder().actor("bad-user").verb("test").object("test").moderationTemplate("moderation_template_reaction").time(new Date()).foreignID("fid").build();
 
     Activity activityResponse = client.flatFeed("flat", "1").addActivity(activity).join();
     assertNotNull(activityResponse);
 
     Reaction reactionResponse =
-        client.reactions().add("test", "like", activityResponse.getID()).join();
+        client.reactions().add("bad-user", "like", activityResponse.getID()).join();
     assertNotNull(reactionResponse);
 
     Response flagResponse =
-        moderationClient.flagReaction(reactionResponse.getId(), "test", "blood", null).join();
+        moderationClient.flagReaction(reactionResponse.getId(), "reporting-user", "blood", null).join();
     assertNotNull(flagResponse);
     assertEquals(201, flagResponse.getCode());
-    assertNotNull(flagResponse);
 
   }
 

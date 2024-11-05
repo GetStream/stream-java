@@ -45,14 +45,10 @@ public class Moderation {
                 public final String reason = Reason;
               });
 
-        String strsing = new String(payload);
-        System.out.println(strsing);
-        final URL url = buildModerationFlagURL(baseURL);
+      final URL url = buildModerationFlagURL(baseURL);
       return httpClient.execute(buildPost(url, key, token, payload));
     } catch (JsonProcessingException | MalformedURLException | URISyntaxException e) {
       throw new CompletionException(e);
-    } catch (Exception e){
-        throw e;
     }
   }
 }

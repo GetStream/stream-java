@@ -23,14 +23,14 @@ public class ModerationClient {
   }
 
   public CompletableFuture<Response> flagUser(
-      String flaggedUserId, String reason, Map<String, Object> options) throws StreamException {
-    return flag("stream:user", flaggedUserId, "", reason, options);
+      String flaggedUserId,String reportingUser, String reason, Map<String, Object> options) throws StreamException {
+    return flag("stream:user", flaggedUserId, reportingUser, reason, options);
   }
 
   public CompletableFuture<Response> flagActivity(
-      String entityId, String entityCreatorId, String reason, Map<String, Object> options)
+      String entityId, String reportingUser, String reason, Map<String, Object> options)
       throws StreamException {
-    return flag("stream:feeds:v2:activity", entityId, entityCreatorId, reason, options);
+    return flag("stream:feeds:v2:activity", entityId, reportingUser, reason, options);
   }
 
   public CompletableFuture<Response> flagReaction(
