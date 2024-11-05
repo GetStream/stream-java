@@ -6,7 +6,12 @@ import io.getstream.core.models.FeedID;
 import io.getstream.core.models.Paginated;
 import io.getstream.core.models.Reaction;
 import java.util.List;
+
+import io.getstream.core.options.Filter;
+import io.getstream.core.options.Limit;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ReactionsClientTest {
   private static final String apiKey =
@@ -47,6 +52,37 @@ public class ReactionsClientTest {
             .reactions()
             .filter(LookupKind.ACTIVITY_WITH_DATA, activity.getID(), "comment")
             .join();
+  }
+
+  @Test
+  public void filterWithUserID() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    Activity activity =
+        client
+            .flatFeed("flat", "reactor")
+            .addActivity(Activity.builder().actor("this").verb("done").object("that").build())
+            .join();
+
+    client.reactions().add("user1", "like", activity.getID()).join();
+    client.reactions().add("user1", "comment", activity.getID()).join();
+    client.reactions().add("user1", "share", activity.getID()).join();
+    client.reactions().add("user2", "like", activity.getID()).join();
+    client.reactions().add("user2", "comment", activity.getID()).join();
+    client.reactions().add("user3", "comment", activity.getID()).join();
+
+    List<Reaction> result = client.reactions().filter(LookupKind.ACTIVITY, activity.getID(), new Filter(), new Limit(10), "",false,  "user1").join();
+    assertEquals(3, result.size());
+
+    result = client.reactions().filter(LookupKind.ACTIVITY, activity.getID(), new Filter(), new Limit(10), "like",false, "user1").join();
+    assertEquals(1, result.size());
+
+
+    result = client.reactions().filter(LookupKind.ACTIVITY, activity.getID(), new Filter(), new Limit(10), "",false, "user2").join();
+    assertEquals(2, result.size());
+
+    result = client.reactions().filter(LookupKind.ACTIVITY, activity.getID(), new Filter(), new Limit(10), "",false, "user3").join();
+    assertEquals(1, result.size());
   }
 
   @Test
