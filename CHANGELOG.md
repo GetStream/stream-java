@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.12.0](https://github.com/GetStream/stream-java/compare/v3.11.0...v3.12.0) (2024-11-05)
+
+
+### Bug Fixes
+
+* fix tests ([4ae4d24](https://github.com/GetStream/stream-java/commit/4ae4d2434c81334c82115fd610caf507ce32ac5c))
+* fix tests, fix token moderation ([f4f6596](https://github.com/GetStream/stream-java/commit/f4f6596c240349c67f66094ccd5117a7fd3d60e6))
+* fix tests, fix token moderation ([1ea89d9](https://github.com/GetStream/stream-java/commit/1ea89d90e19c773dd120d96883d8bd08252e6d86))
+
 ## [3.11.0](https://github.com/GetStream/stream-java/compare/v3.10.0...v3.11.0) (2024-10-08)
 
 ## [3.10.0](https://github.com/GetStream/stream-java/compare/v3.9.2...v3.10.0) (2024-03-12)
