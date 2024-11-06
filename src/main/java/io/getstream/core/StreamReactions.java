@@ -87,17 +87,18 @@ public final class StreamReactions {
   public CompletableFuture<List<Reaction>> filter(
       Token token, LookupKind lookup, String id, Filter filter, Limit limit, String kind)
       throws StreamException {
-    return filter(token, lookup, id, filter, limit, kind, null);
+    return filter(token, lookup, id, filter, limit, kind, null, "");
   }
 
   public CompletableFuture<List<Reaction>> filter(
-      Token token,
-      LookupKind lookup,
-      String id,
-      Filter filter,
-      Limit limit,
-      String kind,
-      Boolean withOwnChildren)
+          Token token,
+          LookupKind lookup,
+          String id,
+          Filter filter,
+          Limit limit,
+          String kind,
+          Boolean withOwnChildren,
+          String filterUserId)
       throws StreamException {
     checkNotNull(lookup, "Lookup kind can't be null");
     checkNotNull(id, "Reaction ID can't be null");
@@ -113,8 +114,12 @@ public final class StreamReactions {
       RequestOption ownChildren =
           new CustomQueryParameter(
               "withOwnChildren", Boolean.toString(withOwnChildren != null && withOwnChildren));
+      RequestOption filterByUser =
+          new CustomQueryParameter(
+              "filter_user_id", filterUserId);
+
       return httpClient
-          .execute(buildGet(url, key, token, filter, limit, withActivityData, ownChildren))
+          .execute(buildGet(url, key, token, filter, limit, withActivityData, ownChildren, filterByUser))
           .thenApply(
               response -> {
                 try {
