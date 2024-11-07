@@ -20,8 +20,7 @@ public class BatchDeleteActivitiesClient {
     }
 
     public CompletableFuture<Object> deleteActivities(BatchDeleteActivitiesRequest request) throws StreamException {
-        final Token token =buildDataPrivacyToken(secret, Auth.TokenAction.WRITE); // Assuming Token can be created with a secret
-
+        final Token token = buildDataPrivacyToken(secret, Auth.TokenAction.WRITE);
         return batchDeleteActivities.deleteActivities(token, request);
     }
 }
