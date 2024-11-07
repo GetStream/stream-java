@@ -42,7 +42,8 @@ public final class Auth {
     PERSONALIZATION("personalization"),
     REACTIONS("reactions"),
     USERS("users"),
-    MODERATION("moderation");
+    MODERATION("moderation"),
+    DATAPRIVACY("data_privacy");
 
     private final String resource;
 
@@ -101,6 +102,10 @@ public final class Auth {
 
   public static Token buildModerationToken(String secret, TokenAction action) {
     return buildBackendToken(secret, TokenResource.MODERATION, action, "*");
+  }
+
+  public static Token buildDataPrivacy(String secret, TokenAction action) {
+    return buildBackendToken(secret, TokenResource.DATAPRIVACY, action, "*");
   }
 
   public static Token buildAnalyticsToken(String secret, TokenAction action) {

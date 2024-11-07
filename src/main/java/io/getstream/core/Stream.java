@@ -63,6 +63,10 @@ public final class Stream {
     return new Moderation(key, baseURL, httpClient);
   }
 
+  public ExportIDs exportIDs() {
+    return new ExportIDs(key, baseURL, httpClient);
+  }
+
   public StreamFiles files() {
     return new StreamFiles(key, baseURL, httpClient);
   }

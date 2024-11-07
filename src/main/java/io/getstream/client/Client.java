@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Auth.*;
 
 import com.google.common.collect.Iterables;
+import io.getstream.core.ExportIDs;
 import io.getstream.core.Region;
 import io.getstream.core.Stream;
 import io.getstream.core.exceptions.StreamException;
@@ -252,6 +253,10 @@ public final class Client {
 
   public ModerationClient moderation() {
     return new ModerationClient(secret, stream.moderation());
+  }
+
+  public ExportIDsClient exportIDs() {
+    return new ExportIDsClient(secret, stream.exportIDs());
   }
 
   public FileStorageClient files() {
