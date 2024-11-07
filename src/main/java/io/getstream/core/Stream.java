@@ -67,6 +67,10 @@ public final class Stream {
     return new ExportIDs(key, baseURL, httpClient);
   }
 
+  public BatchDeleteActivities batchDeleteActivities() {
+    return new BatchDeleteActivities(key, baseURL, httpClient);
+  }
+
   public StreamFiles files() {
     return new StreamFiles(key, baseURL, httpClient);
   }

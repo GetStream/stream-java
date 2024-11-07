@@ -104,7 +104,7 @@ public final class Auth {
     return buildBackendToken(secret, TokenResource.MODERATION, action, "*");
   }
 
-  public static Token buildDataPrivacy(String secret, TokenAction action) {
+  public static Token buildDataPrivacyToken(String secret, TokenAction action) {
     return buildBackendToken(secret, TokenResource.DATAPRIVACY, action, "*");
   }
 

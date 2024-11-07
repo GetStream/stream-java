@@ -1,6 +1,6 @@
 package io.getstream.client;
 
-import static io.getstream.core.utils.Auth.buildDataPrivacy;
+import static io.getstream.core.utils.Auth.buildDataPrivacyToken;
 import static io.getstream.core.utils.Serialization.deserialize;
 
 import io.getstream.core.ExportIDs;
@@ -20,7 +20,7 @@ public class ExportIDsClient {
     }
 
     public CompletableFuture<ExportIDsResponse> exportUserActivities(String userId) throws StreamException {
-        final Token token = buildDataPrivacy(secret, Auth.TokenAction.READ);
+        final Token token = buildDataPrivacyToken(secret, Auth.TokenAction.READ);
         return exportIDs.exportUserActivities(token, userId);
     }
 }

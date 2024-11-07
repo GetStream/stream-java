@@ -259,6 +259,10 @@ public final class Client {
     return new ExportIDsClient(secret, stream.exportIDs());
   }
 
+  public BatchDeleteActivitiesClient batchDeleteActivities() {
+    return new BatchDeleteActivitiesClient(secret, stream.batchDeleteActivities());
+  }
+
   public FileStorageClient files() {
     return new FileStorageClient(secret, stream.files());
   }
