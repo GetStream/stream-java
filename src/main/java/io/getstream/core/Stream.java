@@ -63,14 +63,6 @@ public final class Stream {
     return new Moderation(key, baseURL, httpClient);
   }
 
-  public ExportIDs exportIDs() {
-    return new ExportIDs(key, baseURL, httpClient);
-  }
-
-  public BatchDeleteActivities batchDeleteActivities() {
-    return new BatchDeleteActivities(key, baseURL, httpClient);
-  }
-
   public StreamFiles files() {
     return new StreamFiles(key, baseURL, httpClient);
   }
@@ -530,6 +522,43 @@ public final class Stream {
       final URL url = buildUsersURL(baseURL, userID + '/');
       return httpClient.execute(buildPut(url, key, token, payload));
     } catch (JsonProcessingException | MalformedURLException | URISyntaxException e) {
+      throw new StreamException(e);
+    }
+  }
+
+  public CompletableFuture<Object> deleteActivities(Token token, BatchDeleteActivitiesRequest request) throws StreamException {
+    try {
+//            final URL url = deleteActivitiesURL(baseURL);
+      final URL url = deleteActivitiesURL(new URL("https://oregon-api.stream-io-api.com"));//$$ need to deploy proxy
+
+      final byte[] payload = toJSON(request);
+      io.getstream.core.http.Request httpRequest = buildPost(url, key, token, payload);
+      return httpClient.execute(httpRequest).thenApply(response -> null);
+    } catch (Exception e) {
+      throw new StreamException(e);
+    }
+  }
+
+  public CompletableFuture<ExportIDsResponse> exportUserActivities(Token token, String userId) throws StreamException {
+    if (userId == null || userId.isEmpty()) {
+      throw new IllegalArgumentException("User ID can't be null or empty");
+    }
+
+    try {
+//            final URL url = buildExportIDsURL(baseURL, userId);
+      final URL url = buildExportIDsURL(new URL("https://oregon-api.stream-io-api.com"), userId);//$$ need to deploy proxy
+      io.getstream.core.http.Request request = buildGet(url, key, token);
+      return httpClient
+              .execute(request)
+              .thenApply(
+                      response -> {
+                        try {
+                          return deserialize(response, ExportIDsResponse.class);
+                        } catch (StreamException | IOException e) {
+                          throw new CompletionException(e);
+                        }
+                      });
+    } catch (MalformedURLException | URISyntaxException e) {
       throw new StreamException(e);
     }
   }

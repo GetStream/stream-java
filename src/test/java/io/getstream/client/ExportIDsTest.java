@@ -29,7 +29,6 @@ public class ExportIDsTest {
 
     @Test
     public void testExportUserActivities() throws Exception {
-        ExportIDsClient exportIDsClient = client.exportIDs();
 
         String userId = "test-user";
 
@@ -48,10 +47,10 @@ public class ExportIDsTest {
                 .object("object2")
                 .time(new Date())
                 .build();
-        Activity activity2Res =client.flatFeed("user", userId).addActivity(activity2).join();
+        Activity activity2Res = client.flatFeed("user", userId).addActivity(activity2).join();
 
         // Export user activities
-        ExportIDsResponse exportResult = exportIDsClient.exportUserActivities(userId).join();
+        ExportIDsResponse exportResult = client.exportUserActivities(userId).join();
         ExportIDsResult exports = exportResult.getExport();
 
         // Test the output

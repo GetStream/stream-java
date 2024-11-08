@@ -3,18 +3,14 @@ package io.getstream.client;
 import static org.junit.Assert.*;
 
 import com.google.common.collect.Lists;
-import io.getstream.core.BatchDeleteActivities;
-import io.getstream.core.http.HTTPClient;
 import io.getstream.core.models.BatchDeleteActivitiesRequest;
 import io.getstream.core.models.BatchDeleteActivitiesRequest.ActivityToDelete;
 import io.getstream.core.models.Activity;
-import io.getstream.core.models.FeedID;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
 import java8.util.concurrent.CompletableFuture;
 import org.junit.*;
 
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -39,7 +35,6 @@ public class BatchDeleteActivitiesTest {
 
     @Test
     public void testDeleteActivities() throws Exception {
-        BatchDeleteActivitiesClient batchDeleteClient = client.batchDeleteActivities();
         String uuid1 = UUID.randomUUID().toString().replace("-", "");
         FlatFeed feed = client.flatFeed("flat", uuid1);
 
@@ -75,7 +70,7 @@ public class BatchDeleteActivitiesTest {
         BatchDeleteActivitiesRequest request = new BatchDeleteActivitiesRequest(activities);
 
         // Delete activities
-        CompletableFuture<Object> future = batchDeleteClient.deleteActivities(request);
+        CompletableFuture<Object> future = client.deleteActivities(request);
         future.join();
 
         assertTrue(future.isDone());
@@ -90,7 +85,6 @@ public class BatchDeleteActivitiesTest {
 
     @Test
     public void testDeleteActivitis() throws Exception {
-        BatchDeleteActivitiesClient batchDeleteClient = client.batchDeleteActivities();
 
         // Insert some activities
         String uuid1 = UUID.randomUUID().toString().replace("-", "");
@@ -124,8 +118,18 @@ public class BatchDeleteActivitiesTest {
                 new ActivityToDelete(activity1Res.getID(), Arrays.asList(feed.getID().toString())),
                 new ActivityToDelete(activity2Res.getID(), Arrays.asList(feedAlice.getID().toString()))
         );
+
+        activities =feedAlice.getActivities(
+                new Limit(10), new Filter()).join();
+        assertEquals(2, activities.size());//0
+
+        activities =feedAlice.getActivities(
+                new Limit(10), new Filter().discardDeletedActivities()).join();
+        assertEquals(2, activities.size());//1
+
+
         BatchDeleteActivitiesRequest request = new BatchDeleteActivitiesRequest(activitiesToDelete);
-        CompletableFuture<Object> future = batchDeleteClient.deleteActivities(request);
+        CompletableFuture<Object> future = client.deleteActivities(request);
         future.join();
 
 
@@ -146,7 +150,13 @@ public class BatchDeleteActivitiesTest {
         assertEquals(0, activities.size());
 
         activities =feedAlice.getActivities(
+                new Limit(10), new Filter()).join();
+        assertEquals(2, activities.size());//0
+
+        activities =feedAlice.getActivities(
                 new Limit(10), new Filter().discardDeletedActivities()).join();
-        assertEquals(1, activities.size());
+        assertEquals(0, activities.size());//1
+
+
     }
 }

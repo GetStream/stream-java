@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Auth.*;
 
 import com.google.common.collect.Iterables;
-import io.getstream.core.ExportIDs;
 import io.getstream.core.Region;
 import io.getstream.core.Stream;
 import io.getstream.core.exceptions.StreamException;
@@ -20,6 +19,8 @@ import java.net.URL;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import io.getstream.core.utils.Auth;
 import java8.util.concurrent.CompletableFuture;
 
 public final class Client {
@@ -255,14 +256,6 @@ public final class Client {
     return new ModerationClient(secret, stream.moderation());
   }
 
-  public ExportIDsClient exportIDs() {
-    return new ExportIDsClient(secret, stream.exportIDs());
-  }
-
-  public BatchDeleteActivitiesClient batchDeleteActivities() {
-    return new BatchDeleteActivitiesClient(secret, stream.batchDeleteActivities());
-  }
-
   public FileStorageClient files() {
     return new FileStorageClient(secret, stream.files());
   }
@@ -371,5 +364,15 @@ public final class Client {
   CompletableFuture<Response> userProfile(String id) throws StreamException {
     final Token token = buildUsersToken(secret, TokenAction.READ);
     return stream.getUser(token, id, true);
+  }
+
+  public CompletableFuture<Object> deleteActivities(BatchDeleteActivitiesRequest request) throws StreamException {
+    final Token token = buildDataPrivacyToken(secret, Auth.TokenAction.WRITE);
+    return stream.deleteActivities(token, request);
+  }
+
+  public CompletableFuture<ExportIDsResponse> exportUserActivities(String userId) throws StreamException {
+    final Token token = buildDataPrivacyToken(secret, Auth.TokenAction.READ);
+    return stream.exportUserActivities(token, userId);
   }
 }
