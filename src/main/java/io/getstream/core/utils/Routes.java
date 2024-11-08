@@ -28,6 +28,9 @@ public final class Routes {
   private static final String usersPath = "user/";
   private static final String followStatsPath = "stats/follow/";
 
+  private static final String exportIDsPath = "data_privacy/export_ids/";
+  private static final String deleteActivitiesPath = "data_privacy/delete_activities/";
+
   private Routes() {
     /* nothing to see here */
   }
@@ -116,6 +119,14 @@ public final class Routes {
 
   public static URL buildModerationFlagURL(URL baseURL) throws MalformedURLException {
     return new URL(baseURL, basePath + moderationFlagPath);
+  }
+
+  public static URL buildExportIDsURL(URL baseURL, String userID) throws MalformedURLException {
+    return new URL(baseURL, basePath + exportIDsPath+userID);
+  }
+
+  public static URL deleteActivitiesURL(URL baseURL) throws MalformedURLException {
+    return new URL(baseURL, basePath + deleteActivitiesPath);
   }
 
   public static URL followStatsPath(URL baseURL) throws MalformedURLException {
