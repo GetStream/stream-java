@@ -10,7 +10,8 @@ public final class Filter implements RequestOption {
     ID_GREATER_THAN("id_gt"),
     ID_LESS_THAN_OR_EQUAL("id_lte"),
     ID_LESS_THAN("id_lt"),
-    REFRESH("refresh");
+    REFRESH("refresh"),
+    DISCARD_DELETED_ACTIVITIES("discard_deleted_activities");
 
     private String operator;
 
@@ -43,6 +44,11 @@ public final class Filter implements RequestOption {
 
   public Filter idGreaterThanEqual(String id) {
     ops.add(new OpEntry(OpType.ID_GREATER_THAN_OR_EQUAL, id));
+    return this;
+  }
+
+  public Filter discardDeletedActivities() {
+    ops.add(new OpEntry(OpType.DISCARD_DELETED_ACTIVITIES, "true"));
     return this;
   }
 

@@ -525,4 +525,51 @@ public final class Stream {
       throw new StreamException(e);
     }
   }
+
+  public CompletableFuture<Object> deleteActivities(Token token, BatchDeleteActivitiesRequest request) throws StreamException {
+    try {
+      final URL url = deleteActivitiesURL(baseURL);
+      final byte[] payload = toJSON(request);
+      io.getstream.core.http.Request httpRequest = buildPost(url, key, token, payload);
+      return httpClient.execute(httpRequest).thenApply(response -> null);
+    } catch (Exception e) {
+      throw new StreamException(e);
+    }
+  }
+
+  public CompletableFuture<Object> deleteReactions(Token token, BatchDeleteReactionsRequest request) throws StreamException {
+    try {
+
+      final URL url = deleteReactionsURL(baseURL);
+      final byte[] payload = toJSON(request);
+      io.getstream.core.http.Request httpRequest = buildPost(url, key, token, payload);
+
+      return httpClient.execute(httpRequest).thenApply(response -> null);
+    } catch (Exception e) {
+      throw new StreamException(e);
+    }
+  }
+
+  public CompletableFuture<ExportIDsResponse> exportUserActivities(Token token, String userId) throws StreamException {
+    if (userId == null || userId.isEmpty()) {
+      throw new IllegalArgumentException("User ID can't be null or empty");
+    }
+
+    try {
+      final URL url = buildExportIDsURL(baseURL, userId);
+      io.getstream.core.http.Request request = buildGet(url, key, token);
+      return httpClient
+              .execute(request)
+              .thenApply(
+                      response -> {
+                        try {
+                          return deserialize(response, ExportIDsResponse.class);
+                        } catch (StreamException | IOException e) {
+                          throw new CompletionException(e);
+                        }
+                      });
+    } catch (MalformedURLException | URISyntaxException e) {
+      throw new StreamException(e);
+    }
+  }
 }
