@@ -371,6 +371,11 @@ public final class Client {
     return stream.deleteActivities(token, request);
   }
 
+  public CompletableFuture<Object> deleteReactions(BatchDeleteReactionsRequest request) throws StreamException {
+    final Token token = buildDataPrivacyToken(secret, Auth.TokenAction.WRITE);
+    return stream.deleteReactions(token, request);
+  }
+
   public CompletableFuture<ExportIDsResponse> exportUserActivities(String userId) throws StreamException {
     final Token token = buildDataPrivacyToken(secret, Auth.TokenAction.READ);
     return stream.exportUserActivities(token, userId);

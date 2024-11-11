@@ -30,6 +30,7 @@ public final class Routes {
 
   private static final String exportIDsPath = "data_privacy/export_ids/";
   private static final String deleteActivitiesPath = "data_privacy/delete_activities/";
+  private static final String deleteReactionsPath = "data_privacy/delete_reactions/";
 
   private Routes() {
     /* nothing to see here */
@@ -127,6 +128,10 @@ public final class Routes {
 
   public static URL deleteActivitiesURL(URL baseURL) throws MalformedURLException {
     return new URL(baseURL, basePath + deleteActivitiesPath);
+  }
+
+  public static URL deleteReactionsURL(URL baseURL) throws MalformedURLException {
+    return new URL(baseURL, basePath + deleteReactionsPath);
   }
 
   public static URL followStatsPath(URL baseURL) throws MalformedURLException {

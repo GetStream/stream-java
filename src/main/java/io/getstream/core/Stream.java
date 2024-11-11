@@ -528,11 +528,27 @@ public final class Stream {
 
   public CompletableFuture<Object> deleteActivities(Token token, BatchDeleteActivitiesRequest request) throws StreamException {
     try {
-//            final URL url = deleteActivitiesURL(baseURL);
-      final URL url = deleteActivitiesURL(new URL("https://oregon-api.stream-io-api.com"));//$$ need to deploy proxy
+            final URL url = deleteActivitiesURL(baseURL);
+//      final URL url = deleteActivitiesURL(new URL("https://oregon-api.stream-io-api.com"));//$$ need to deploy proxy
 
       final byte[] payload = toJSON(request);
       io.getstream.core.http.Request httpRequest = buildPost(url, key, token, payload);
+      return httpClient.execute(httpRequest).thenApply(response -> null);
+    } catch (Exception e) {
+      throw new StreamException(e);
+    }
+  }
+
+  public CompletableFuture<Object> deleteReactions(Token token, BatchDeleteReactionsRequest request) throws StreamException {
+    try {
+      final URL url = deleteReactionsURL(baseURL);
+//      final URL url = deleteReactionsURL(new URL("https://oregon-api.stream-io-api.com"));//$$ need to deploy proxy
+
+      final byte[] payload = toJSON(request);
+      io.getstream.core.http.Request httpRequest = buildPost(url, key, token, payload);
+
+      //print the response
+
       return httpClient.execute(httpRequest).thenApply(response -> null);
     } catch (Exception e) {
       throw new StreamException(e);
@@ -545,8 +561,8 @@ public final class Stream {
     }
 
     try {
-//            final URL url = buildExportIDsURL(baseURL, userId);
-      final URL url = buildExportIDsURL(new URL("https://oregon-api.stream-io-api.com"), userId);//$$ need to deploy proxy
+            final URL url = buildExportIDsURL(baseURL, userId);
+//      final URL url = buildExportIDsURL(new URL("https://oregon-api.stream-io-api.com"), userId);//$$ need to deploy proxy
       io.getstream.core.http.Request request = buildGet(url, key, token);
       return httpClient
               .execute(request)
