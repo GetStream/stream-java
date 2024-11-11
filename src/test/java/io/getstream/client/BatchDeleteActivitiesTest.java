@@ -152,7 +152,7 @@ public class BatchDeleteActivitiesTest {
     }
 
     @Test
-    public void testDeleteActivitis() throws Exception {
+    public void testDeleteActivitiesMultipleFeeds() throws Exception {
 
         // Insert some activities
         String uuid1 = UUID.randomUUID().toString().replace("-", "");
@@ -219,12 +219,10 @@ public class BatchDeleteActivitiesTest {
 
         activities =feedAlice.getActivities(
                 new Limit(10), new Filter()).join();
-        assertEquals(2, activities.size());//0
+        assertEquals(2, activities.size());
 
         activities =feedAlice.getActivities(
                 new Limit(10), new Filter().discardDeletedActivities()).join();
-        assertEquals(0, activities.size());//1
-
-
+        assertEquals(0, activities.size());
     }
 }
