@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Request.*;
 import static io.getstream.core.utils.Routes.buildReactionsURL;
+import static io.getstream.core.utils.Routes.buildGetReactionsBatchURL;
 import static io.getstream.core.utils.Serialization.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -17,6 +18,7 @@ import io.getstream.core.http.Token;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.Paginated;
 import io.getstream.core.models.Reaction;
+import io.getstream.core.models.ReactionBatch;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
@@ -337,6 +339,31 @@ public final class StreamReactions {
                   throw new CompletionException(e);
                 }
               });
+    } catch (MalformedURLException | URISyntaxException e) {
+      throw new StreamException(e);
+    }
+  }
+
+  public CompletableFuture<ReactionBatch> getBatchReactions(Token token, List<String> ids) throws StreamException {
+    checkNotNull(ids, "Reaction IDs can't be null");
+    checkArgument(!ids.isEmpty(), "Reaction IDs can't be empty");
+
+    try {
+      final URL url = buildGetReactionsBatchURL(baseURL);
+      RequestOption optionIds =
+              new CustomQueryParameter(
+                      "ids", String.join(",", ids));
+
+      return httpClient
+              .execute(buildGet(url, key, token, optionIds))
+              .thenApply(
+                      response -> {
+                        try {
+                          return deserialize(response, ReactionBatch.class);
+                        } catch (StreamException | IOException e) {
+                          throw new CompletionException(e);
+                        }
+                      });
     } catch (MalformedURLException | URISyntaxException e) {
       throw new StreamException(e);
     }

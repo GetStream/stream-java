@@ -24,6 +24,7 @@ public final class Routes {
   private static final String imagesPath = "images/";
   private static final String openGraphPath = "og/";
   private static final String reactionsPath = "reaction/";
+  private static final String reactionsBatchPath = "reaction/get_many/";
   private static final String toTargetUpdatePath = "/activity_to_targets/";
   private static final String usersPath = "user/";
   private static final String followStatsPath = "stats/follow/";
@@ -69,6 +70,10 @@ public final class Routes {
   public static URL buildReactionsURL(URL baseURL, String path) throws MalformedURLException {
     return new URL(baseURL, basePath + reactionsPath + path);
   }
+
+ public static URL buildGetReactionsBatchURL(URL baseURL) throws MalformedURLException {
+  return new URL(baseURL, basePath + reactionsBatchPath);
+}
 
   public static URL buildUsersURL(URL baseURL) throws MalformedURLException {
     return new URL(baseURL, basePath + usersPath);
