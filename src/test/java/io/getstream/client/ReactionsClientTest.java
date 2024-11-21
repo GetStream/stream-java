@@ -86,6 +86,34 @@ public class ReactionsClientTest {
   }
 
   @Test
+  public void batchFetchReactions() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    Activity activity =
+        client
+            .flatFeed("flat", "reactor")
+            .addActivity(Activity.builder().actor("this").verb("done").object("that").build())
+            .join();
+
+    Reaction r1=client.reactions().add("user1", "like", activity.getID()).join();
+    Reaction r2=client.reactions().add("user1", "comment", activity.getID()).join();
+    Reaction r3=client.reactions().add("user1", "share", activity.getID()).join();
+    Reaction r4=client.reactions().add("user2", "like", activity.getID()).join();
+    Reaction r5=client.reactions().add("user2", "comment", activity.getID()).join();
+    Reaction r6=client.reactions().add("user3", "comment", activity.getID()).join();
+
+    List<Reaction> result = client.reactions().getBatch(List.of(r1.getId(), r2.getId(), r3.getId(), r4.getId(), r5.getId(), r6.getId())).join();
+    assertEquals(6, result.size());
+
+    assertEquals("like", result.get(0).getKind());
+    assertEquals("comment", result.get(1).getKind());
+    assertEquals("share", result.get(2).getKind());
+    assertEquals("like", result.get(3).getKind());
+    assertEquals("comment", result.get(4).getKind());
+    assertEquals("comment", result.get(5).getKind());
+  }
+
+  @Test
   public void pagedFilter() throws Exception {
     Client client = Client.builder(apiKey, secret).build();
 

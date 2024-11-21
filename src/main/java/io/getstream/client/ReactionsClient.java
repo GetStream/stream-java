@@ -33,6 +33,11 @@ public final class ReactionsClient {
     return reactions.get(token, id);
   }
 
+  public CompletableFuture<List<Reaction>> getBatch(List<String> ids) throws StreamException {
+      final Token token = buildReactionsToken(secret, TokenAction.READ);
+      return reactions.getBatchReactions(token, ids);
+    }
+
   public CompletableFuture<List<Reaction>> filter(LookupKind lookup, String id)
       throws StreamException {
     return filter(lookup, id, DefaultOptions.DEFAULT_FILTER, DefaultOptions.DEFAULT_LIMIT, "");

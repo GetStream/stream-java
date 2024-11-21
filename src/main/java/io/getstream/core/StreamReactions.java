@@ -5,6 +5,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static io.getstream.core.utils.Request.*;
 import static io.getstream.core.utils.Routes.buildReactionsURL;
+import static io.getstream.core.utils.Routes.buildGetReactionsBatchURL;
 import static io.getstream.core.utils.Serialization.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -338,6 +339,32 @@ public final class StreamReactions {
                 }
               });
     } catch (MalformedURLException | URISyntaxException e) {
+      throw new StreamException(e);
+    }
+  }
+
+
+
+  public CompletableFuture<List<Reaction>> getBatchReactions(Token token, List<String> ids) throws StreamException {
+    checkNotNull(ids, "Reaction IDs can't be null");
+    checkArgument(!ids.isEmpty(), "Reaction IDs can't be empty");
+
+    try {
+      final URL url = buildGetReactionsBatchURL(baseURL);
+      Map<String, List<String>> payload = ImmutableMap.of("ids", ids);
+      final byte[] payloadBytes = toJSON(payload);
+
+      return httpClient
+              .execute(buildPost(url, key, token, payloadBytes))
+              .thenApply(
+                      response -> {
+                        try {
+                          return deserializeContainer(response, Reaction.class);
+                        } catch (StreamException | IOException e) {
+                          throw new CompletionException(e);
+                        }
+                      });
+    } catch (JsonProcessingException | MalformedURLException | URISyntaxException e) {
       throw new StreamException(e);
     }
   }
