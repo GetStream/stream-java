@@ -12,6 +12,7 @@ import io.getstream.core.http.Token;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.Paginated;
 import io.getstream.core.models.Reaction;
+import io.getstream.core.models.ReactionBatch;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
 import io.getstream.core.utils.Auth.TokenAction;
@@ -33,7 +34,7 @@ public final class ReactionsClient {
     return reactions.get(token, id);
   }
 
-  public CompletableFuture<List<Reaction>> getBatch(List<String> ids) throws StreamException {
+  public CompletableFuture<ReactionBatch> getBatch(List<String> ids) throws StreamException {
       final Token token = buildReactionsToken(secret, TokenAction.READ);
       return reactions.getBatchReactions(token, ids);
     }

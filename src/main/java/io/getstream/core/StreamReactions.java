@@ -18,6 +18,7 @@ import io.getstream.core.http.Token;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.Paginated;
 import io.getstream.core.models.Reaction;
+import io.getstream.core.models.ReactionBatch;
 import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
@@ -343,28 +344,27 @@ public final class StreamReactions {
     }
   }
 
-
-
-  public CompletableFuture<List<Reaction>> getBatchReactions(Token token, List<String> ids) throws StreamException {
+  public CompletableFuture<ReactionBatch> getBatchReactions(Token token, List<String> ids) throws StreamException {
     checkNotNull(ids, "Reaction IDs can't be null");
     checkArgument(!ids.isEmpty(), "Reaction IDs can't be empty");
 
     try {
       final URL url = buildGetReactionsBatchURL(baseURL);
-      Map<String, List<String>> payload = ImmutableMap.of("ids", ids);
-      final byte[] payloadBytes = toJSON(payload);
+      RequestOption optionIds =
+              new CustomQueryParameter(
+                      "ids", String.join(",", ids));
 
       return httpClient
-              .execute(buildPost(url, key, token, payloadBytes))
+              .execute(buildGet(url, key, token, optionIds))
               .thenApply(
                       response -> {
                         try {
-                          return deserializeContainer(response, Reaction.class);
+                          return deserialize(response, ReactionBatch.class);
                         } catch (StreamException | IOException e) {
                           throw new CompletionException(e);
                         }
                       });
-    } catch (JsonProcessingException | MalformedURLException | URISyntaxException e) {
+    } catch (MalformedURLException | URISyntaxException e) {
       throw new StreamException(e);
     }
   }

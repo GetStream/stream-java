@@ -1,11 +1,12 @@
 package io.getstream.client;
 
 import io.getstream.core.LookupKind;
-import io.getstream.core.models.Activity;
-import io.getstream.core.models.FeedID;
-import io.getstream.core.models.Paginated;
-import io.getstream.core.models.Reaction;
+import io.getstream.core.models.*;
+
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
@@ -102,15 +103,19 @@ public class ReactionsClientTest {
     Reaction r5=client.reactions().add("user2", "comment", activity.getID()).join();
     Reaction r6=client.reactions().add("user3", "comment", activity.getID()).join();
 
-    List<Reaction> result = client.reactions().getBatch(List.of(r1.getId(), r2.getId(), r3.getId(), r4.getId(), r5.getId(), r6.getId())).join();
-    assertEquals(6, result.size());
+    Map<String, Reaction> reactionsRequest = Map.of(r1.getId(), r1, r2.getId(), r2, r3.getId(), r3, r4.getId(), r4, r5.getId(), r5, r6.getId(), r6);
 
-    assertEquals("like", result.get(0).getKind());
-    assertEquals("comment", result.get(1).getKind());
-    assertEquals("share", result.get(2).getKind());
-    assertEquals("like", result.get(3).getKind());
-    assertEquals("comment", result.get(4).getKind());
-    assertEquals("comment", result.get(5).getKind());
+    ReactionBatch response = client.reactions().getBatch(List.of(r1.getId(), r2.getId(), r3.getId(), r4.getId(), r5.getId(), r6.getId())).join();
+    List<Reaction> result = response.getReactions();
+
+    //convert result to map and compare each id and type mapping from reactionsRequest to result
+    Map<String, Reaction> resultMap = result.stream().collect(Collectors.toMap(Reaction::getId, Function.identity()));
+    assertEquals(6, resultMap.size());
+    for (Reaction r : result) {
+      Reaction req = reactionsRequest.get(r.getId());
+      assertEquals(req.getActivityID(), r.getActivityID());
+      assertEquals(req.getKind(), r.getKind());
+    }
   }
 
   @Test
