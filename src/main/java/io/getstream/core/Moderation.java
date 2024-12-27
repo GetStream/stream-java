@@ -33,7 +33,7 @@ public class Moderation {
       String entityId,
       String reportingUser,
       String Reason,
-      Map<String, Object> options)
+      Map<String, Object> Custom)
       throws StreamException {
     try {
       final byte[] payload =
@@ -43,6 +43,7 @@ public class Moderation {
                 public final String entity_type = entityType;
                 public final String entity_id = entityId;
                 public final String reason = Reason;
+                public final Map<String, Object> custom = Custom;
               });
 
       final URL url = buildModerationFlagURL(baseURL);
