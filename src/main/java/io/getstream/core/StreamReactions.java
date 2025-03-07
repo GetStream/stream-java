@@ -344,7 +344,7 @@ public final class StreamReactions {
     }
   }
 
-  public CompletableFuture<ReactionBatch> getBatchReactions(Token token, List<String> ids) throws StreamException {
+  public CompletableFuture<ReactionBatch> getBatchReactions(Token token, List<String> ids, Boolean includeDeleted) throws StreamException {
     checkNotNull(ids, "Reaction IDs can't be null");
     checkArgument(!ids.isEmpty(), "Reaction IDs can't be empty");
 
@@ -352,10 +352,15 @@ public final class StreamReactions {
       final URL url = buildGetReactionsBatchURL(baseURL);
       RequestOption optionIds =
               new CustomQueryParameter(
-                      "ids", String.join(",", ids));
+                      "ids", String.join(",", ids)
+              );
+      RequestOption includeDeletedOption =
+              new CustomQueryParameter(
+                      "include_deleted", includeDeleted.toString()
+              );
 
       return httpClient
-              .execute(buildGet(url, key, token, optionIds))
+              .execute(buildGet(url, key, token, optionIds, includeDeletedOption))
               .thenApply(
                       response -> {
                         try {
