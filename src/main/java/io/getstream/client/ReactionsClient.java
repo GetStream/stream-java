@@ -36,8 +36,13 @@ public final class ReactionsClient {
 
   public CompletableFuture<ReactionBatch> getBatch(List<String> ids) throws StreamException {
       final Token token = buildReactionsToken(secret, TokenAction.READ);
-      return reactions.getBatchReactions(token, ids);
+      return reactions.getBatchReactions(token, ids, false);
     }
+    
+  public CompletableFuture<ReactionBatch> getBatch(List<String> ids, Boolean includeDeleted) throws StreamException {
+    final Token token = buildReactionsToken(secret, TokenAction.READ);
+    return reactions.getBatchReactions(token, ids, includeDeleted);
+  }
 
   public CompletableFuture<List<Reaction>> filter(LookupKind lookup, String id)
       throws StreamException {

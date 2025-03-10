@@ -116,6 +116,17 @@ public class ReactionsClientTest {
       assertEquals(req.getActivityID(), r.getActivityID());
       assertEquals(req.getKind(), r.getKind());
     }
+
+    client.reactions().delete(r1.getId()).join();
+    response = client.reactions().getBatch(List.of(r1.getId(), r2.getId(), r3.getId(), r4.getId(), r5.getId(), r6.getId()), true).join();
+    result = response.getReactions();
+    //Deleted reaction should be present in the response
+    assertEquals(6, resultMap.size());
+    for (Reaction r : result) {
+      Reaction req = reactionsRequest.get(r.getId());
+      assertEquals(req.getActivityID(), r.getActivityID());
+      assertEquals(req.getKind(), r.getKind());
+    }
   }
 
   @Test
