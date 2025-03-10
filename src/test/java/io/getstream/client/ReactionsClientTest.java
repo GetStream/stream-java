@@ -117,10 +117,13 @@ public class ReactionsClientTest {
       assertEquals(req.getKind(), r.getKind());
     }
 
-    client.reactions().delete(r1.getId()).join();
+    client.reactions().delete(r1.getId(), true).join();
     response = client.reactions().getBatch(List.of(r1.getId(), r2.getId(), r3.getId(), r4.getId(), r5.getId(), r6.getId()), true).join();
     result = response.getReactions();
     //Deleted reaction should be present in the response
+
+    //convert result to map and compare each id and type mapping from reactionsRequest to result
+    resultMap = result.stream().collect(Collectors.toMap(Reaction::getId, Function.identity()));
     assertEquals(6, resultMap.size());
     for (Reaction r : result) {
       Reaction req = reactionsRequest.get(r.getId());
