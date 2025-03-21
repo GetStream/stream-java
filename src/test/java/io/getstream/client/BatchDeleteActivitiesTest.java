@@ -4,11 +4,8 @@ import static org.junit.Assert.*;
 
 import com.google.common.collect.Lists;
 import io.getstream.core.http.Response;
-import io.getstream.core.models.BatchDeleteActivitiesRequest;
+import io.getstream.core.models.*;
 import io.getstream.core.models.BatchDeleteActivitiesRequest.ActivityToDelete;
-import io.getstream.core.models.Activity;
-import io.getstream.core.models.BatchDeleteReactionsRequest;
-import io.getstream.core.models.Reaction;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
 import java8.util.concurrent.CompletableFuture;
@@ -149,6 +146,57 @@ public class BatchDeleteActivitiesTest {
         });
 
 
+    }
+    @Test
+    public void testSoftDeleteReactions() throws Exception {
+        String uuid1 = UUID.randomUUID().toString().replace("-", "");
+        FlatFeed feed = client.flatFeed("user", uuid1);
+
+        // Insert two activities
+        Activity activity1Res = feed.addActivity(Activity.builder()
+                .actor("user1")
+                .verb("post")
+                .object("object1")
+                .build()).join();
+
+        Activity activity2Res = feed.addActivity(Activity.builder()
+                .actor("user1")
+                .verb("like")
+                .object("object2")
+                .build()).join();
+
+        // Add reactions to both activities
+        Reaction u1 = client.reactions().add("user1", "like", activity1Res.getID()).join();
+        Reaction u2 = client.reactions().add("user2", "like", activity1Res.getID()).join();
+        Reaction u3 = client.reactions().add("user1", "like", activity2Res.getID()).join();
+        Reaction u4 = client.reactions().add("user2", "like", activity2Res.getID()).join();
+
+        // Verify reactions were created
+        assertNotNull(client.reactions().get(u1.getId()).join());
+        assertNotNull(client.reactions().get(u2.getId()).join());
+        assertNotNull(client.reactions().get(u3.getId()).join());
+        assertNotNull(client.reactions().get(u4.getId()).join());
+
+        // Soft delete reactions
+        BatchDeleteReactionsRequest deleteReactionsRequest = 
+                new BatchDeleteReactionsRequest(Arrays.asList(u1.getId(), u2.getId(), u3.getId()), true);
+        client.deleteReactions(deleteReactionsRequest).join();
+
+        // Verify reactions were soft deleted
+        assertThrows(Exception.class, () -> client.reactions().get(u1.getId()).join());
+        assertThrows(Exception.class, () -> client.reactions().get(u2.getId()).join());
+        assertThrows(Exception.class, () -> client.reactions().get(u3.getId()).join());
+
+        // Restore reactions and verify
+        client.reactions().restore(u1.getId()).join();
+        client.reactions().restore(u2.getId()).join();
+
+        ReactionBatch restoredReactions = client.reactions().getBatch(Arrays.asList(u1.getId(), u2.getId())).join();
+        List<Reaction> result = restoredReactions.getReactions();
+        
+        assertEquals(2, result.size());
+        assertTrue(result.stream().anyMatch(r -> r.getId().equals(u1.getId())));
+        assertTrue(result.stream().anyMatch(r -> r.getId().equals(u2.getId())));
     }
 
     @Test
