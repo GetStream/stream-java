@@ -23,4 +23,9 @@ public class BatchDeleteReactionsRequest {
     public List<String> getIds() {
         return ids;
     }
+
+    @JsonProperty("soft_delete")
+    public Boolean getSoftDelete() {
+        return SoftDelete;
+    }
 }
