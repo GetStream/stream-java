@@ -8,12 +8,24 @@ import java.util.List;
 public class BatchDeleteReactionsRequest {
 
     private final List<String> ids;
+    private final Boolean SoftDelete;
+
 
     public BatchDeleteReactionsRequest(@JsonProperty("ids") List<String> ids) {
         this.ids = ids;
+        SoftDelete = null;
+    }
+    public BatchDeleteReactionsRequest(@JsonProperty("ids") List<String> ids, @JsonProperty("soft_delete") Boolean softDelete) {
+        this.ids = ids;
+        SoftDelete = softDelete;
     }
 
     public List<String> getIds() {
         return ids;
+    }
+
+    @JsonProperty("soft_delete")
+    public Boolean getSoftDelete() {
+        return SoftDelete;
     }
 }
