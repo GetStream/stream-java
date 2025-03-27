@@ -256,6 +256,10 @@ public final class Client {
     return new ModerationClient(secret, stream.moderation());
   }
 
+  public AuditLogsClient auditLogs() {
+    return new AuditLogsClient(secret, stream);
+  }
+
   public FileStorageClient files() {
     return new FileStorageClient(secret, stream.files());
   }
