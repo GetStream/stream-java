@@ -47,7 +47,8 @@ public final class Routes {
     return new URL(baseURL, basePath + enrichedFeedPath(feed) + path);
   }
 
-  public static URL buildToTargetUpdateURL(URL baseURL, FeedID feed) throws MalformedURLException {
+  public static URL buildToTargetUpdateURL(URL baseURL, FeedID feed)
+      throws MalformedURLException, URISyntaxException {
     return new URL(baseURL, basePath + feedTargetsPath(feed) + toTargetUpdatePath);
   }
 
@@ -141,6 +142,10 @@ public final class Routes {
 
   public static URL followStatsPath(URL baseURL) throws MalformedURLException {
     return new URL(baseURL, basePath + followStatsPath);
+  }
+
+  public static URL buildAuditLogsURL(URL baseURL) throws MalformedURLException, URISyntaxException {
+    return new URL(baseURL, basePath + "audit_logs/");
   }
 
   private static URL buildSubdomainPath(URL baseURL, String subdomain, String apiPath, String path)

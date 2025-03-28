@@ -572,4 +572,22 @@ public final class Stream {
       throw new StreamException(e);
     }
   }
+
+  public CompletableFuture<io.getstream.client.QueryAuditLogsResponse> queryAuditLogs(Token token, RequestOption... options) throws StreamException {
+    try {
+      final URL url = buildAuditLogsURL(baseURL);
+      return httpClient
+          .execute(buildGet(url, key, token, options))
+          .thenApply(
+              response -> {
+                try {
+                  return deserialize(response, io.getstream.client.QueryAuditLogsResponse.class);
+                } catch (StreamException | IOException e) {
+                  throw new CompletionException(e);
+                }
+              });
+    } catch (MalformedURLException | URISyntaxException e) {
+      throw new StreamException(e);
+    }
+  }
 }

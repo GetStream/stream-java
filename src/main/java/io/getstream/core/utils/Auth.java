@@ -43,7 +43,8 @@ public final class Auth {
     REACTIONS("reactions"),
     USERS("users"),
     MODERATION("moderation"),
-    DATAPRIVACY("data_privacy");
+    DATAPRIVACY("data_privacy"),
+    AUDITLOGS("audit_logs");
 
     private final String resource;
 
@@ -126,6 +127,10 @@ public final class Auth {
 
   public static Token buildFilesToken(String secret, TokenAction action) {
     return buildBackendToken(secret, TokenResource.FILES, action, "*");
+  }
+
+  public static Token buildAuditLogsToken(String secret, TokenAction action) {
+    return buildBackendToken(secret, TokenResource.AUDITLOGS, action, "*");
   }
 
   public static Token buildFrontendToken(String secret, String userID) {
