@@ -66,7 +66,7 @@ public class ModerationClientTest {
     Activity activityResponse = client.flatFeed("flat", "1").addActivity(activity).join();
     assertNotNull(activityResponse);
 
-    Reaction r=Reaction.builder().activityID(activityResponse.getID()).kind("like").userID("bad-user").moderationTemplate("moderation_template_reaction").build();
+    Reaction r = Reaction.builder().activityID(activityResponse.getID()).kind("like").userID("bad-user").moderationTemplate("moderation_template_reaction").build();
     Reaction reactionResponse = client.reactions().add("bad-user", r).join();
     assertNotNull(reactionResponse);
 
