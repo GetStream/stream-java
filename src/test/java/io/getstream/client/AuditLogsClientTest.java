@@ -26,14 +26,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class AuditLogsClientTest {
-    private static final String apiKey =
-            System.getenv("STREAM_KEY") != null
-                    ? System.getenv("STREAM_KEY")
-                    : System.getProperty("STREAM_KEY");
-    private static final String secret =
-            System.getenv("STREAM_SECRET") != null
-                    ? System.getenv("STREAM_SECRET")
-                    : System.getProperty("STREAM_SECRET");
+    // Using fixed test credentials for unit tests
+    private static final String apiKey = "test_key";
+    private static final String secret = "test_secret";
 
     private MockHTTPClient mockHTTPClient;
     private Client client;
@@ -84,7 +79,8 @@ public class AuditLogsClientTest {
                 "    }\n" +
                 "  ],\n" +
                 "  \"next\": \"next-page-token\",\n" +
-                "  \"prev\": \"prev-page-token\"\n" +
+                "  \"prev\": \"prev-page-token\",\n" +
+                "  \"duration\": \"42ms\"\n" +
                 "}";
         
         mockHTTPClient = new MockHTTPClient(mockResponse);
@@ -95,7 +91,7 @@ public class AuditLogsClientTest {
 
     @Test
     public void testQueryAuditLogs() throws Exception {
-        QueryAuditLogsFilters filters = new QueryAuditLogsFilters("user", "user-123");
+        QueryAuditLogsFilters filters = QueryAuditLogsFilters.forEntity("user", "user-123");
         QueryAuditLogsPager pager = new QueryAuditLogsPager(10);
         
         QueryAuditLogsResponse response = client.auditLogs().queryAuditLogs(filters, pager).join();
@@ -137,8 +133,7 @@ public class AuditLogsClientTest {
     
     @Test
     public void testQueryAuditLogsWithUserFilter() throws Exception {
-        QueryAuditLogsFilters filters = new QueryAuditLogsFilters();
-        filters.setUserID("admin-user");
+        QueryAuditLogsFilters filters = QueryAuditLogsFilters.forUser("admin-user");
         
         client.auditLogs().queryAuditLogs(filters).join();
         
@@ -158,7 +153,8 @@ public class AuditLogsClientTest {
         QueryAuditLogsPager pager = new QueryAuditLogsPager();
         pager.setNext("next-token");
         
-        client.auditLogs().queryAuditLogs(new QueryAuditLogsFilters(), pager).join();
+        QueryAuditLogsFilters filters = QueryAuditLogsFilters.forUser("admin-user");
+        client.auditLogs().queryAuditLogs(filters, pager).join();
         
         // Verify request parameters
         Request lastRequest = mockHTTPClient.lastRequest;
@@ -169,6 +165,7 @@ public class AuditLogsClientTest {
         Map<String, String> queryParams = extractQueryParams(urlQuery);
         
         assertEquals("next-token", queryParams.get("next"));
+        assertEquals("admin-user", queryParams.get("user_id"));
     }
     
     @Test
@@ -179,7 +176,8 @@ public class AuditLogsClientTest {
                 .httpClient(mockHTTPClient)
                 .build();
         
-        client.auditLogs().queryAuditLogs(new QueryAuditLogsFilters()).join();
+        QueryAuditLogsFilters filters = QueryAuditLogsFilters.forUser("admin-user");
+        client.auditLogs().queryAuditLogs(filters).join();
         
         // Verify the token was generated using the correct resource and action
         Request lastRequest = mockHTTPClient.lastRequest;
@@ -188,6 +186,30 @@ public class AuditLogsClientTest {
         Token token = lastRequest.getToken();
         assertNotNull(token);
         // We can't directly test the token's contents, but we can verify it's not null
+    }
+    
+    @Test
+    public void testBuilderPatternFlexibility() throws Exception {
+        // Test the full builder pattern flexibility
+        QueryAuditLogsFilters filters = QueryAuditLogsFilters.builder()
+            .withEntityType("feed")
+            .withEntityID("user:123")
+            .withUserID("admin")
+            .build();
+        
+        client.auditLogs().queryAuditLogs(filters).join();
+        
+        // Verify request parameters
+        Request lastRequest = mockHTTPClient.lastRequest;
+        assertNotNull(lastRequest);
+        
+        // Extract query parameters from URL
+        String urlQuery = lastRequest.getURL().getQuery();
+        Map<String, String> queryParams = extractQueryParams(urlQuery);
+        
+        assertEquals("feed", queryParams.get("entity_type"));
+        assertEquals("user:123", queryParams.get("entity_id"));
+        assertEquals("admin", queryParams.get("user_id"));
     }
     
     private Map<String, String> extractQueryParams(String query) {

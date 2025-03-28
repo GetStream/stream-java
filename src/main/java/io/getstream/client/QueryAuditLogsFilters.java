@@ -12,67 +12,84 @@ public class QueryAuditLogsFilters {
     private String userID;
     
     /**
-     * Default constructor.
-     * Note: You must set either (entityType AND entityID) OR userID before using.
+     * Private constructor, use builder instead.
      */
-    public QueryAuditLogsFilters() {
+    private QueryAuditLogsFilters() {
     }
     
     /**
-     * Constructor with entity type and ID.
+     * Creates a new builder for QueryAuditLogsFilters.
+     * 
+     * @return a new QueryAuditLogsFilters.Builder
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+    
+    /**
+     * Creates a new filter for user ID queries.
+     * 
+     * @param userID The ID of the user
+     * @return a new QueryAuditLogsFilters with the user ID set
+     */
+    public static QueryAuditLogsFilters forUser(String userID) {
+        return builder().withUserID(userID).build();
+    }
+    
+    /**
+     * Creates a new filter for entity type and ID queries.
      * 
      * @param entityType The type of entity (e.g., "user", "feed")
      * @param entityID The ID of the entity
+     * @return a new QueryAuditLogsFilters with the entity type and ID set
      */
-    public QueryAuditLogsFilters(String entityType, String entityID) {
-        this.entityType = entityType;
-        this.entityID = entityID;
-    }
-    
-    /**
-     * Constructor with entity type, entity ID, and user ID.
-     * 
-     * @param entityType The type of entity (e.g., "user", "feed")
-     * @param entityID The ID of the entity
-     * @param userID The ID of the user
-     */
-    public QueryAuditLogsFilters(String entityType, String entityID, String userID) {
-        this.entityType = entityType;
-        this.entityID = entityID;
-        this.userID = userID;
-    }
-    
-    /**
-     * Constructor with user ID only.
-     * 
-     * @param userID The ID of the user
-     */
-    public QueryAuditLogsFilters(String userID) {
-        this.userID = userID;
+    public static QueryAuditLogsFilters forEntity(String entityType, String entityID) {
+        return builder().withEntityType(entityType).withEntityID(entityID).build();
     }
     
     public String getEntityType() {
         return entityType;
     }
     
-    public void setEntityType(String entityType) {
-        this.entityType = entityType;
-    }
-    
     public String getEntityID() {
         return entityID;
-    }
-    
-    public void setEntityID(String entityID) {
-        this.entityID = entityID;
     }
     
     public String getUserID() {
         return userID;
     }
     
-    public void setUserID(String userID) {
+    /**
+     * Set the entity type for existing filter instance.
+     * 
+     * @param entityType The type of entity
+     * @return this instance for method chaining
+     */
+    public QueryAuditLogsFilters setEntityType(String entityType) {
+        this.entityType = entityType;
+        return this;
+    }
+    
+    /**
+     * Set the entity ID for existing filter instance.
+     * 
+     * @param entityID The ID of the entity
+     * @return this instance for method chaining
+     */
+    public QueryAuditLogsFilters setEntityID(String entityID) {
+        this.entityID = entityID;
+        return this;
+    }
+    
+    /**
+     * Set the user ID for existing filter instance.
+     * 
+     * @param userID The ID of the user
+     * @return this instance for method chaining
+     */
+    public QueryAuditLogsFilters setUserID(String userID) {
         this.userID = userID;
+        return this;
     }
     
     /**
@@ -102,5 +119,58 @@ public class QueryAuditLogsFilters {
         boolean hasUserID = userID != null && !userID.isEmpty();
         
         return hasEntityFields || hasUserID;
+    }
+    
+    /**
+     * Builder class for QueryAuditLogsFilters.
+     */
+    public static class Builder {
+        private final QueryAuditLogsFilters filters;
+        
+        private Builder() {
+            filters = new QueryAuditLogsFilters();
+        }
+        
+        /**
+         * Set the entity type.
+         * 
+         * @param entityType The type of entity (e.g., "user", "feed")
+         * @return this builder for method chaining
+         */
+        public Builder withEntityType(String entityType) {
+            filters.entityType = entityType;
+            return this;
+        }
+        
+        /**
+         * Set the entity ID.
+         * 
+         * @param entityID The ID of the entity
+         * @return this builder for method chaining
+         */
+        public Builder withEntityID(String entityID) {
+            filters.entityID = entityID;
+            return this;
+        }
+        
+        /**
+         * Set the user ID.
+         * 
+         * @param userID The ID of the user
+         * @return this builder for method chaining
+         */
+        public Builder withUserID(String userID) {
+            filters.userID = userID;
+            return this;
+        }
+        
+        /**
+         * Builds the QueryAuditLogsFilters instance.
+         * 
+         * @return a new QueryAuditLogsFilters instance
+         */
+        public QueryAuditLogsFilters build() {
+            return filters;
+        }
     }
 } 
