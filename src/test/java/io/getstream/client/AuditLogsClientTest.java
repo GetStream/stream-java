@@ -91,7 +91,7 @@ public class AuditLogsClientTest {
 
     @Test
     public void testQueryAuditLogs() throws Exception {
-        QueryAuditLogsFilters filters = QueryAuditLogsFilters.forEntity("user", "user-123");
+        QueryAuditLogsFilters filters = QueryAuditLogsFilters.forEntity("activity", "activity-123");
         QueryAuditLogsPager pager = new QueryAuditLogsPager(10);
         
         QueryAuditLogsResponse response = client.auditLogs().queryAuditLogs(filters, pager).join();
@@ -126,8 +126,8 @@ public class AuditLogsClientTest {
         String urlQuery = lastRequest.getURL().getQuery();
         Map<String, String> queryParams = extractQueryParams(urlQuery);
         
-        assertEquals("user", queryParams.get("entity_type"));
-        assertEquals("user-123", queryParams.get("entity_id"));
+        assertEquals("activity", queryParams.get("entity_type"));
+        assertEquals("activity-123", queryParams.get("entity_id"));
         assertEquals("10", queryParams.get("limit"));
     }
     
@@ -192,8 +192,8 @@ public class AuditLogsClientTest {
     public void testBuilderPatternFlexibility() throws Exception {
         // Test the full builder pattern flexibility
         QueryAuditLogsFilters filters = QueryAuditLogsFilters.builder()
-            .withEntityType("feed")
-            .withEntityID("user:123")
+            .withEntityType("reaction")
+            .withEntityID("reaction-123")
             .withUserID("admin")
             .build();
         
@@ -207,9 +207,47 @@ public class AuditLogsClientTest {
         String urlQuery = lastRequest.getURL().getQuery();
         Map<String, String> queryParams = extractQueryParams(urlQuery);
         
-        assertEquals("feed", queryParams.get("entity_type"));
-        assertEquals("user:123", queryParams.get("entity_id"));
+        assertEquals("reaction", queryParams.get("entity_type"));
+        assertEquals("reaction-123", queryParams.get("entity_id"));
         assertEquals("admin", queryParams.get("user_id"));
+    }
+    
+    @Test
+    public void testForActivityConvenienceMethod() throws Exception {
+        // Test the convenience method for activities
+        QueryAuditLogsFilters filters = QueryAuditLogsFilters.forActivity("activity-789");
+        
+        client.auditLogs().queryAuditLogs(filters).join();
+        
+        // Verify request parameters
+        Request lastRequest = mockHTTPClient.lastRequest;
+        assertNotNull(lastRequest);
+        
+        // Extract query parameters from URL
+        String urlQuery = lastRequest.getURL().getQuery();
+        Map<String, String> queryParams = extractQueryParams(urlQuery);
+        
+        assertEquals("activity", queryParams.get("entity_type"));
+        assertEquals("activity-789", queryParams.get("entity_id"));
+    }
+    
+    @Test
+    public void testForReactionConvenienceMethod() throws Exception {
+        // Test the convenience method for reactions
+        QueryAuditLogsFilters filters = QueryAuditLogsFilters.forReaction("reaction-456");
+        
+        client.auditLogs().queryAuditLogs(filters).join();
+        
+        // Verify request parameters
+        Request lastRequest = mockHTTPClient.lastRequest;
+        assertNotNull(lastRequest);
+        
+        // Extract query parameters from URL
+        String urlQuery = lastRequest.getURL().getQuery();
+        Map<String, String> queryParams = extractQueryParams(urlQuery);
+        
+        assertEquals("reaction", queryParams.get("entity_type"));
+        assertEquals("reaction-456", queryParams.get("entity_id"));
     }
     
     private Map<String, String> extractQueryParams(String query) {

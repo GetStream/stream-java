@@ -52,8 +52,6 @@ public final class AuditLogsClient {
             throw new StreamException("Filters cannot be null for audit logs queries");
         }
         
-        filters.validate();
-        
         final Token token = buildAuditLogsToken(secret, TokenAction.READ);
         
         RequestOption[] options = buildRequestOptions(filters, pager);

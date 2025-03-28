@@ -5,6 +5,12 @@ import io.getstream.core.exceptions.StreamException;
 /**
  * Filters for querying audit logs.
  * Either entityType+entityID pair OR userID is required by the API.
+ * 
+ * Common entity types in Stream include:
+ * - "activity" - for feed activities
+ * - "reaction" - for activity reactions
+ * - "user" - for Stream users
+ * - "feed" - for feed configurations
  */
 public class QueryAuditLogsFilters {
     private String entityType;
@@ -39,12 +45,32 @@ public class QueryAuditLogsFilters {
     /**
      * Creates a new filter for entity type and ID queries.
      * 
-     * @param entityType The type of entity (e.g., "user", "feed")
+     * @param entityType The type of entity (e.g., "activity", "reaction", "user", "feed")
      * @param entityID The ID of the entity
      * @return a new QueryAuditLogsFilters with the entity type and ID set
      */
     public static QueryAuditLogsFilters forEntity(String entityType, String entityID) {
         return builder().withEntityType(entityType).withEntityID(entityID).build();
+    }
+    
+    /**
+     * Convenience method to create a filter for activity entities.
+     * 
+     * @param activityID The ID of the activity
+     * @return a new QueryAuditLogsFilters for the activity
+     */
+    public static QueryAuditLogsFilters forActivity(String activityID) {
+        return forEntity("activity", activityID);
+    }
+    
+    /**
+     * Convenience method to create a filter for reaction entities.
+     * 
+     * @param reactionID The ID of the reaction
+     * @return a new QueryAuditLogsFilters for the reaction
+     */
+    public static QueryAuditLogsFilters forReaction(String reactionID) {
+        return forEntity("reaction", reactionID);
     }
     
     public String getEntityType() {
@@ -62,7 +88,7 @@ public class QueryAuditLogsFilters {
     /**
      * Set the entity type for existing filter instance.
      * 
-     * @param entityType The type of entity
+     * @param entityType The type of entity (e.g., "activity", "reaction")
      * @return this instance for method chaining
      */
     public QueryAuditLogsFilters setEntityType(String entityType) {
@@ -134,7 +160,7 @@ public class QueryAuditLogsFilters {
         /**
          * Set the entity type.
          * 
-         * @param entityType The type of entity (e.g., "user", "feed")
+         * @param entityType The type of entity (e.g., "activity", "reaction")
          * @return this builder for method chaining
          */
         public Builder withEntityType(String entityType) {
