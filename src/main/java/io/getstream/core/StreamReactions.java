@@ -272,12 +272,15 @@ public final class StreamReactions {
         J8Arrays.stream(targetFeeds).map(feed -> feed.toString()).toArray(String[]::new);
 
     try {
-      final byte[] payload =
-          toJSON(
-              new Object() {
-                public final Map<String, Object> data = reaction.getExtra();
-                public final String[] target_feeds = targetFeedIDs;
-              });
+      ImmutableMap.Builder<String, Object> payloadBuilder = ImmutableMap.builder();
+      payloadBuilder.put("data", reaction.getExtra());
+      payloadBuilder.put("target_feeds", targetFeedIDs);
+      
+      if (reaction.getModerationTemplate() != null) {
+        payloadBuilder.put("moderation_template", reaction.getModerationTemplate());
+      }
+      
+      final byte[] payload = toJSON(payloadBuilder.build());
       final URL url = buildReactionsURL(baseURL, reaction.getId() + '/');
       return httpClient
           .execute(buildPut(url, key, token, payload))

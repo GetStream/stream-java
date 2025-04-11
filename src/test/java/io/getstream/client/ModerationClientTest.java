@@ -136,4 +136,55 @@ public class ModerationClientTest {
     assertEquals(m.getStatus(), "complete");
     assertEquals(m.getRecommendedAction(), "remove");
   }
+
+  @Test
+  public void testReactionModerationDuringUpdate() throws Exception {
+    // Create a test activity first
+    Activity activity = Activity.builder()
+            .actor("test-user")
+            .verb("post")
+            .object("test-object")
+            .build();
+    
+    // Add the activity to a test feed
+    Activity createdActivity = client.flatFeed("user", "test-user").addActivity(activity).join();
+    String activityId = createdActivity.getID();
+    
+    // Create initial reaction with safe text
+    Reaction initialReaction = Reaction.builder()
+            .activityID(activityId)
+            .kind("comment")
+            .userID("test-user")
+            .extraField("text", "This is a perfectly fine comment")
+            .moderationTemplate("moderation_template_reaction")
+            .build();
+    
+    // Add reaction and verify it passes moderation
+    Reaction createdReaction = client.reactions().add("test-user", initialReaction).join();
+    ModerationResponse initialModeration = createdReaction.getModerationResponse();
+    assertEquals("keep", initialModeration.getRecommendedAction());
+    
+    // Now update the reaction with text that should trigger moderation
+    Reaction updateData = Reaction.builder()
+            .id(createdReaction.getId())
+            .kind("comment")
+            .extraField("text", "pissoar")  // Using same blocked word as in testActivityModeratedReactions
+            .moderationTemplate("moderation_template_reaction")
+            .build();
+    
+    // Update the reaction
+    client.reactions().update(updateData).join();
+    
+    // Fetch the updated reaction and verify moderation was applied
+    Reaction updatedReaction = client.reactions().get(createdReaction.getId()).join();
+    ModerationResponse updatedModeration = updatedReaction.getModerationResponse();
+    
+    // With our fix to include moderation_template in updates, this should now be "remove"
+    assertEquals("complete", updatedModeration.getStatus());
+    assertEquals("remove", updatedModeration.getRecommendedAction());
+    
+    // Clean up
+    client.reactions().delete(createdReaction.getId(), false).join();
+    client.flatFeed("user", "test-user").removeActivityByID(activityId).join();
+  }
 }
