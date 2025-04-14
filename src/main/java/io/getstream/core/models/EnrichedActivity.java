@@ -35,6 +35,8 @@ public class EnrichedActivity {
   private final Map<String, List<Reaction>> ownReactions;
   private final Map<String, List<Reaction>> latestReactions;
   private final Map<String, Object> extra;
+  private final String moderationTemplate;
+  private final ModerationResponse moderationResponse;
 
   private EnrichedActivity(Builder builder) {
     id = builder.id;
@@ -51,6 +53,8 @@ public class EnrichedActivity {
     ownReactions = builder.ownReactions;
     latestReactions = builder.latestReactions;
     extra = builder.extra;
+    moderationTemplate = builder.moderationTemplate;
+    moderationResponse = builder.moderationResponse;
   }
 
   public String getID() {
@@ -114,6 +118,16 @@ public class EnrichedActivity {
     return latestReactions;
   }
 
+  @JsonProperty("moderation")
+  public ModerationResponse getModerationResponse() {
+    return moderationResponse;
+  }
+
+  @JsonProperty("moderation_template")
+  public String getModerationTemplate() {
+    return moderationTemplate;
+  }
+
   @JsonAnyGetter
   public Map<String, Object> getExtra() {
     return extra;
@@ -158,6 +172,8 @@ public class EnrichedActivity {
         .add("ownReactions", this.ownReactions)
         .add("latestReactions", this.latestReactions)
         .add("reactionCounts", this.reactionCounts)
+        .add("moderationTemplate", this.moderationTemplate)
+        .add("moderationResponse", this.moderationResponse)
         .add("extra", this.extra)
         .toString();
   }
@@ -182,6 +198,8 @@ public class EnrichedActivity {
     private Map<String, List<Reaction>> ownReactions;
     private Map<String, List<Reaction>> latestReactions;
     private Map<String, Object> extra;
+    private String moderationTemplate;
+    private ModerationResponse moderationResponse;
 
     public Builder id(String id) {
       this.id = id;
@@ -294,6 +312,18 @@ public class EnrichedActivity {
       return this;
     }
 
+    @JsonProperty("moderation_template")
+    public Builder moderationTemplate(String moderationTemplate) {
+      this.moderationTemplate = moderationTemplate;
+      return this;
+    }
+
+    @JsonProperty("moderation")
+    public Builder moderationResponse(ModerationResponse moderationResponse) {
+      this.moderationResponse = moderationResponse;
+      return this;
+    }
+
     @JsonAnySetter
     public Builder extraField(String key, Object value) {
       if (extra == null) {
@@ -326,6 +356,8 @@ public class EnrichedActivity {
       this.ownReactions = activity.ownReactions;
       this.latestReactions = activity.latestReactions;
       this.reactionCounts = activity.reactionCounts;
+      this.moderationTemplate = activity.moderationTemplate;
+      this.moderationResponse = activity.moderationResponse;
       this.extra = activity.extra;
       return this;
     }
