@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.19.0](https://github.com/GetStream/stream-java/compare/v3.17.1...v3.19.0) (2025-04-14)
+
 ### [3.17.1](https://github.com/GetStream/stream-java/compare/v3.17.0...v3.17.1) (2025-04-11)
 
 
