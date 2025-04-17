@@ -14,6 +14,7 @@ import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
 import io.getstream.core.utils.DefaultOptions;
 import java.util.List;
+import java.util.Map;
 import java8.util.concurrent.CompletableFuture;
 
 public final class CloudReactionsClient {
@@ -150,6 +151,11 @@ public final class CloudReactionsClient {
     return reactions.add(token, userID, reaction, targetFeeds);
   }
 
+  public CompletableFuture<Reaction> add(String userID, Reaction reaction, FeedID[] targetFeeds, Map<String, Object> targetFeedsExtraData)
+      throws StreamException {
+    return reactions.add(token, userID, reaction, targetFeeds, targetFeedsExtraData);
+  }
+
   public CompletableFuture<Reaction> addChild(
       String userID, String kind, String parentID, Iterable<FeedID> targetFeeds)
       throws StreamException {
@@ -164,6 +170,12 @@ public final class CloudReactionsClient {
   }
 
   public CompletableFuture<Reaction> addChild(
+      String userID, String kind, String parentID, FeedID[] targetFeeds, Map<String, Object> targetFeedsExtraData) throws StreamException {
+    Reaction child = Reaction.builder().kind(kind).parent(parentID).build();
+    return add(userID, child, targetFeeds, targetFeedsExtraData);
+  }
+
+  public CompletableFuture<Reaction> addChild(
       String userID, String parentID, Reaction reaction, Iterable<FeedID> targetFeeds)
       throws StreamException {
     Reaction child = Reaction.builder().fromReaction(reaction).parent(parentID).build();
@@ -175,6 +187,13 @@ public final class CloudReactionsClient {
       throws StreamException {
     Reaction child = Reaction.builder().fromReaction(reaction).parent(parentID).build();
     return add(userID, child, targetFeeds);
+  }
+
+  public CompletableFuture<Reaction> addChild(
+      String userID, String parentID, Reaction reaction, FeedID[] targetFeeds, Map<String, Object> targetFeedsExtraData)
+      throws StreamException {
+    Reaction child = Reaction.builder().fromReaction(reaction).parent(parentID).build();
+    return add(userID, child, targetFeeds, targetFeedsExtraData);
   }
 
   public CompletableFuture<Void> update(String id, Iterable<FeedID> targetFeeds)
