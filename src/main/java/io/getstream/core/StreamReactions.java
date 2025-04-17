@@ -204,6 +204,11 @@ public final class StreamReactions {
 
   public CompletableFuture<Reaction> add(
       Token token, String userID, Reaction reaction, FeedID... targetFeeds) throws StreamException {
+    return add(token, userID, reaction, targetFeeds, null);
+  }
+
+  public CompletableFuture<Reaction> add(
+      Token token, String userID, Reaction reaction, FeedID[] targetFeeds, Map<String, Object> targetFeedsExtraData) throws StreamException {
     checkNotNull(reaction, "Reaction can't be null");
     checkArgument(
         reaction.getActivityID() != null || reaction.getParent() != null,
@@ -227,6 +232,9 @@ public final class StreamReactions {
       ImmutableMap.Builder<String, Object> payloadBuilder = ImmutableMap.builder();
       payloadBuilder.put("kind", reaction.getKind());
       payloadBuilder.put("target_feeds", targetFeedIDs);
+      if (targetFeedsExtraData != null) {
+        payloadBuilder.put("target_feeds_extra_data", targetFeedsExtraData);
+      }
       if (reaction.getActivityID() != null) {
         payloadBuilder.put("activity_id", reaction.getActivityID());
       }
