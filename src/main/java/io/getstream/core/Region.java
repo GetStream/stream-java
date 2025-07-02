@@ -5,6 +5,11 @@ public enum Region {
   TOKYO("tokyo-api"),
   DUBLIN("dublin-api"),
   SINGAPORE("singapore-api"),
+  OHIO("ohio-api"),
+  JAKARTA("jakarta-api"),
+  MUMBAI("mumbai-api"),
+  OREGON("oregon-api"),
+  SYDNEY("sydney-api"),
   CANADA("ca-central-1");
 
   private final String region;
