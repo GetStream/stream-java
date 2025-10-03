@@ -7,12 +7,17 @@ import io.getstream.core.http.OKHTTPClientAdapter;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.Data;
 import io.getstream.core.models.EnrichedActivity;
+import io.getstream.core.options.DiscardActors;
 import io.getstream.core.options.EnrichmentFlags;
+import io.getstream.core.options.Filter;
+import io.getstream.core.options.Limit;
+import io.getstream.core.options.Offset;
 import java.util.Collections;
 import java.util.List;
 import java8.util.concurrent.CompletionException;
 import okhttp3.OkHttpClient;
 import org.junit.Test;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class FlatFeedTest {
   private static final String apiKey =
@@ -101,6 +106,118 @@ public class FlatFeedTest {
             .build();
 
     FlatFeed feed = client.flatFeed("aggregated", "1");
-    List<Activity> result = feed.getActivities().join();
+    feed.getActivities().join();
+  }
+
+
+  @Test
+  public void testDiscardActorsOptions() {
+    // Test DiscardActors with array
+    DiscardActors discardActors1 = new DiscardActors("user1", "user2", "user3");
+    
+    // Test DiscardActors with List
+    List<String> actors = java.util.Arrays.asList("user4", "user5");
+    DiscardActors discardActors2 = new DiscardActors(actors);
+    
+    // Test DiscardActors with custom separator
+    DiscardActors discardActors3 = new DiscardActors(new String[]{"user6", "user7"}, ";");
+    
+    // Test DiscardActors with List and custom separator
+    DiscardActors discardActors4 = new DiscardActors(actors, "|");
+    
+    // Basic validation that objects were created
+    assert discardActors1 != null;
+    assert discardActors2 != null;
+    assert discardActors3 != null;
+    assert discardActors4 != null;
+  }
+
+  @Test
+  public void testGetActivitiesWithRequestOptions() throws Exception {
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
+
+    FlatFeed feed = client.flatFeed("flat", "test-request-options");
+    
+    // Test with just DiscardActors
+    DiscardActors discardActors = new DiscardActors("actor1", "actor2", "actor3");
+    List<Activity> result1 = feed.getActivities(discardActors).join();
+    assert result1 != null;
+    
+    // Test with DiscardActors + Limit + Filter
+    List<String> actors = java.util.Arrays.asList("actor4", "actor5");
+    DiscardActors discardActors2 = new DiscardActors(actors);
+    Filter filter = new Filter().refresh();
+    List<Activity> result2 = feed.getActivities(new Limit(10), filter, discardActors2).join();
+    assert result2 != null;
+    
+    // Test with all parameters
+    List<Activity> result3 = feed.getActivities(
+        new Limit(20), 
+        new Offset(5), 
+        new Filter().refresh(), 
+        new DiscardActors("actor6", "actor7")
+    ).join();
+    assert result3 != null;
+  }
+
+  @Test
+  public void testGetActivitiesUrlParameters() throws Exception {
+    // Create a mock HTTP client that captures the request URL
+    AtomicReference<String> capturedUrl = new AtomicReference<>();
+    
+    // Create a custom OkHttpClient that intercepts requests
+    OkHttpClient mockClient = new OkHttpClient.Builder()
+        .addInterceptor(chain -> {
+          capturedUrl.set(chain.request().url().toString());
+          // Return a mock response
+          return new okhttp3.Response.Builder()
+              .request(chain.request())
+              .protocol(okhttp3.Protocol.HTTP_1_1)
+              .code(200)
+              .message("OK")
+              .body(okhttp3.ResponseBody.create(
+                  okhttp3.MediaType.parse("application/json"),
+                  "{\"results\":[],\"next\":\"\",\"duration\":\"0ms\"}"
+              ))
+              .build();
+        })
+        .build();
+
+    Client client = Client.builder("test-key", "test-secret")
+        .httpClient(new OKHTTPClientAdapter(mockClient))
+        .build();
+
+    FlatFeed feed = client.flatFeed("flat", "test-url-params");
+    
+    // Test with multiple RequestOptions
+    feed.getActivities(
+        new Limit(20), 
+        new Offset(5), 
+        new Filter().refresh(), 
+        new DiscardActors("actor1", "actor2", "actor3")
+    ).join();
+    
+    String url = capturedUrl.get();
+    assert url != null;
+    
+    // Verify URL contains expected parameters
+    assert url.contains("limit=20") : "URL should contain limit=20, got: " + url;
+    assert url.contains("offset=5") : "URL should contain offset=5, got: " + url;
+    assert url.contains("refresh=1") : "URL should contain refresh=1, got: " + url;
+    assert url.contains("discard_actors=actor1,actor2,actor3") : "URL should contain discard_actors, got: " + url;
+    
+    // Test with custom separator
+    capturedUrl.set(null);
+    feed.getActivities(
+        new DiscardActors(new String[]{"actor4", "actor5"}, "|")
+    ).join();
+    
+    url = capturedUrl.get();
+    assert url != null;
+    assert url.contains("discard_actors=actor4%7Cactor5") : "URL should contain pipe-separated actors, got: " + url;
+    assert url.contains("discard_actors_sep=%7C") : "URL should contain discard_actors_sep, got: " + url;
   }
 }
