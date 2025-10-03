@@ -99,7 +99,8 @@ public class ModerationClientTest {
     assertNotNull(activityResponse);
     ModerationResponse m = activityResponse.getModerationResponse();
     assertEquals(m.getStatus(), "complete");
-    assertEquals(m.getRecommendedAction(), "remove");
+    assertEquals(m.getRecommendedAction(), "remove");//if this fails,most likely blocklist is missing
+    //https://getstream.slack.com/archives/C02PXEZ6MCN/p1759493441067379
   }
 
   @Test
