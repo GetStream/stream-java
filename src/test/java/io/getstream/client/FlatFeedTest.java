@@ -17,6 +17,7 @@ import java.util.List;
 import java8.util.concurrent.CompletionException;
 import okhttp3.OkHttpClient;
 import org.junit.Test;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class FlatFeedTest {
   private static final String apiKey =
@@ -160,5 +161,63 @@ public class FlatFeedTest {
         new DiscardActors("actor6", "actor7")
     ).join();
     assert result3 != null;
+  }
+
+  @Test
+  public void testGetActivitiesUrlParameters() throws Exception {
+    // Create a mock HTTP client that captures the request URL
+    AtomicReference<String> capturedUrl = new AtomicReference<>();
+    
+    // Create a custom OkHttpClient that intercepts requests
+    OkHttpClient mockClient = new OkHttpClient.Builder()
+        .addInterceptor(chain -> {
+          capturedUrl.set(chain.request().url().toString());
+          // Return a mock response
+          return new okhttp3.Response.Builder()
+              .request(chain.request())
+              .protocol(okhttp3.Protocol.HTTP_1_1)
+              .code(200)
+              .message("OK")
+              .body(okhttp3.ResponseBody.create(
+                  okhttp3.MediaType.parse("application/json"),
+                  "{\"results\":[],\"next\":\"\",\"duration\":\"0ms\"}"
+              ))
+              .build();
+        })
+        .build();
+
+    Client client = Client.builder("test-key", "test-secret")
+        .httpClient(new OKHTTPClientAdapter(mockClient))
+        .build();
+
+    FlatFeed feed = client.flatFeed("flat", "test-url-params");
+    
+    // Test with multiple RequestOptions
+    feed.getActivities(
+        new Limit(20), 
+        new Offset(5), 
+        new Filter().refresh(), 
+        new DiscardActors("actor1", "actor2", "actor3")
+    ).join();
+    
+    String url = capturedUrl.get();
+    assert url != null;
+    
+    // Verify URL contains expected parameters
+    assert url.contains("limit=20") : "URL should contain limit=20, got: " + url;
+    assert url.contains("offset=5") : "URL should contain offset=5, got: " + url;
+    assert url.contains("refresh=1") : "URL should contain refresh=1, got: " + url;
+    assert url.contains("discard_actors=actor1,actor2,actor3") : "URL should contain discard_actors, got: " + url;
+    
+    // Test with custom separator
+    capturedUrl.set(null);
+    feed.getActivities(
+        new DiscardActors(new String[]{"actor4", "actor5"}, "|")
+    ).join();
+    
+    url = capturedUrl.get();
+    assert url != null;
+    assert url.contains("discard_actors=actor4%7Cactor5") : "URL should contain pipe-separated actors, got: " + url;
+    assert url.contains("discard_actors_sep=%7C") : "URL should contain discard_actors_sep, got: " + url;
   }
 }
