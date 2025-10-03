@@ -127,6 +127,29 @@ public final class FlatFeed extends Feed {
             });
   }
 
+  public CompletableFuture<List<Activity>> getActivities(RequestOption... options)
+      throws StreamException {
+    // If no options provided, use defaults
+    if (options == null || options.length == 0) {
+      options = new RequestOption[] {
+          DefaultOptions.DEFAULT_LIMIT,
+          DefaultOptions.DEFAULT_OFFSET,
+          DefaultOptions.DEFAULT_FILTER,
+          DefaultOptions.DEFAULT_MARKER
+      };
+    }
+    
+    return getClient()
+        .getActivities(getID(), options)
+        .thenApply(
+            response -> {
+              try {
+                return deserializeContainer(response, Activity.class);
+              } catch (StreamException | IOException e) {
+                throw new CompletionException(e);
+              }
+            });
+  }
 
   public <T> CompletableFuture<List<T>> getCustomActivities(Class<T> type) throws StreamException {
     return getCustomActivities(
