@@ -32,7 +32,9 @@ public final class FollowRelation {
     this.activityCopyLimit = activityCopyLimit;
   }
 
-  public FollowRelation(String source, String target) {
+  public FollowRelation(
+      @JsonProperty("feed_id") String source,
+      @JsonProperty("target_id") String target) {
     this(source, target, null);
   }
 
