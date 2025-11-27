@@ -45,6 +45,19 @@ public class BatchClientTest {
   }
 
   @Test
+  public void followManyWithPerRelationActivityCopyLimit() throws Exception {
+    BatchClient client = Client.builder(apiKey, secret).build().batch();
+    // Test per-relationship activity_copy_limit
+    client
+        .followMany(
+            new FollowRelation[] {
+              new FollowRelation("flat:1", "flat:2", 10),
+              new FollowRelation("aggregated:1", "flat:1", 20)
+            })
+        .join();
+  }
+
+  @Test
   public void unfollowMany() throws Exception {
     BatchClient client = Client.builder(apiKey, secret).build().batch();
 
