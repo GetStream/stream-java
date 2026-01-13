@@ -421,6 +421,31 @@ public final class CloudFlatFeed extends CloudFeed {
             });
   }
 
+  public CompletableFuture<List<EnrichedActivity>> getEnrichedActivities(RequestOption... options)
+      throws StreamException {
+    // If no options provided, use defaults
+    if (options == null || options.length == 0) {
+      options = new RequestOption[] {
+          DefaultOptions.DEFAULT_LIMIT,
+          DefaultOptions.DEFAULT_OFFSET,
+          DefaultOptions.DEFAULT_FILTER,
+          DefaultOptions.DEFAULT_ENRICHMENT_FLAGS,
+          DefaultOptions.DEFAULT_MARKER
+      };
+    }
+    
+    return getClient()
+        .getEnrichedActivities(getID(), options)
+        .thenApply(
+            (Response response) -> {
+              try {
+                return deserializeContainer(response, EnrichedActivity.class);
+              } catch (StreamException | IOException e) {
+                throw new CompletionException(e);
+              }
+            });
+  }
+
   public <T> CompletableFuture<List<T>> getEnrichedCustomActivities(Class<T> type)
       throws StreamException {
     return getEnrichedCustomActivities(
