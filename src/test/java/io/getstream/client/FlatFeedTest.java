@@ -220,4 +220,104 @@ public class FlatFeedTest {
     assert url.contains("discard_actors=actor4%7Cactor5") : "URL should contain pipe-separated actors, got: " + url;
     assert url.contains("discard_actors_sep=%7C") : "URL should contain discard_actors_sep, got: " + url;
   }
+
+  @Test
+  public void testGetEnrichedActivitiesWithDiscardActors() throws Exception {
+    if (apiKey == null || secret == null) {
+      System.out.println("Skipping testGetEnrichedActivitiesWithDiscardActors - API credentials not set");
+      return;
+    }
+    
+    Client client =
+        Client.builder(apiKey, secret)
+            .httpClient(new OKHTTPClientAdapter(new OkHttpClient()))
+            .build();
+
+    FlatFeed feed = client.flatFeed("flat", "test-enriched-discard");
+    
+    // Test with just DiscardActors on enriched activities
+    DiscardActors discardActors = new DiscardActors("actor1", "actor2", "actor3");
+    List<EnrichedActivity> result1 = feed.getEnrichedActivities(discardActors).join();
+    assert result1 != null;
+    
+    // Test with DiscardActors + Limit + EnrichmentFlags
+    List<String> actors = java.util.Arrays.asList("actor4", "actor5");
+    DiscardActors discardActors2 = new DiscardActors(actors);
+    EnrichmentFlags flags = new EnrichmentFlags().withOwnReactions().withReactionCounts();
+    List<EnrichedActivity> result2 = feed.getEnrichedActivities(
+        new Limit(10), 
+        flags, 
+        discardActors2
+    ).join();
+    assert result2 != null;
+    
+    // Test with all parameters including custom separator
+    List<EnrichedActivity> result3 = feed.getEnrichedActivities(
+        new Limit(20), 
+        new Offset(5), 
+        new Filter().refresh(), 
+        new EnrichmentFlags().withRecentReactions(),
+        new DiscardActors(new String[]{"actor6", "actor7"}, "|")
+    ).join();
+    assert result3 != null;
+  }
+
+  @Test
+  public void testGetEnrichedActivitiesUrlParameters() throws Exception {
+    // Create a mock HTTP client that captures the request URL
+    AtomicReference<String> capturedUrl = new AtomicReference<>();
+    
+    // Create a custom OkHttpClient that intercepts requests
+    OkHttpClient mockClient = new OkHttpClient.Builder()
+        .addInterceptor(chain -> {
+          capturedUrl.set(chain.request().url().toString());
+          // Return a mock response for enriched activities
+          return new okhttp3.Response.Builder()
+              .request(chain.request())
+              .protocol(okhttp3.Protocol.HTTP_1_1)
+              .code(200)
+              .message("OK")
+              .body(okhttp3.ResponseBody.create(
+                  okhttp3.MediaType.parse("application/json"),
+                  "{\"results\":[],\"next\":\"\",\"duration\":\"0ms\"}"
+              ))
+              .build();
+        })
+        .build();
+
+    Client client = Client.builder("test-key", "test-secret")
+        .httpClient(new OKHTTPClientAdapter(mockClient))
+        .build();
+
+    FlatFeed feed = client.flatFeed("flat", "test-enriched-url");
+    
+    // Test enriched activities with discard_actors
+    feed.getEnrichedActivities(
+        new Limit(15), 
+        new EnrichmentFlags().withOwnReactions(),
+        new DiscardActors("user1", "user2")
+    ).join();
+    
+    String url = capturedUrl.get();
+    assert url != null;
+    
+    // Verify URL contains expected parameters
+    assert url.contains("limit=15") : "URL should contain limit=15, got: " + url;
+    assert url.contains("discard_actors=user1,user2") : "URL should contain discard_actors, got: " + url;
+    assert url.contains("with_own_reactions=true") : "URL should contain enrichment flags, got: " + url;
+    
+    // Test with custom separator on enriched activities
+    capturedUrl.set(null);
+    feed.getEnrichedActivities(
+        new DiscardActors(new String[]{"userA", "userB", "userC"}, ";")
+    ).join();
+    
+    url = capturedUrl.get();
+    assert url != null;
+    // Note: The semicolon may or may not be URL-encoded depending on the HTTP client
+    assert (url.contains("discard_actors=userA%3BuserB%3BuserC") || url.contains("discard_actors=userA;userB;userC")) 
+        : "URL should contain semicolon-separated actors, got: " + url;
+    assert (url.contains("discard_actors_sep=%3B") || url.contains("discard_actors_sep=;")) 
+        : "URL should contain discard_actors_sep, got: " + url;
+  }
 }
