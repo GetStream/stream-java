@@ -12,6 +12,7 @@ import io.getstream.core.models.FeedID;
 import io.getstream.core.models.Reaction;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
+import io.getstream.core.options.RequestOption;
 import io.getstream.core.utils.DefaultOptions;
 import java.util.List;
 import java.util.Map;
@@ -151,9 +152,16 @@ public final class CloudReactionsClient {
     return reactions.add(token, userID, reaction, targetFeeds);
   }
 
-  public CompletableFuture<Reaction> add(String userID, Reaction reaction, FeedID[] targetFeeds, Map<String, Object> targetFeedsExtraData)
+  public CompletableFuture<Reaction> add(
+      String userID, Reaction reaction, FeedID[] targetFeeds, RequestOption... options)
       throws StreamException {
-    return reactions.add(token, userID, reaction, targetFeeds, targetFeedsExtraData);
+    return reactions.add(token, userID, reaction, targetFeeds, null, options);
+  }
+
+  public CompletableFuture<Reaction> add(
+      String userID, Reaction reaction, FeedID[] targetFeeds,
+      Map<String, Object> targetFeedsExtraData, RequestOption... options) throws StreamException {
+    return reactions.add(token, userID, reaction, targetFeeds, targetFeedsExtraData, options);
   }
 
   public CompletableFuture<Reaction> addChild(
@@ -216,6 +224,11 @@ public final class CloudReactionsClient {
   public CompletableFuture<Void> update(Reaction reaction, FeedID... targetFeeds)
       throws StreamException {
     return reactions.update(token, reaction, targetFeeds);
+  }
+
+  public CompletableFuture<Void> update(
+      Reaction reaction, FeedID[] targetFeeds, RequestOption... options) throws StreamException {
+    return reactions.update(token, reaction, targetFeeds, options);
   }
 
   public CompletableFuture<Void> delete(String id) throws StreamException {

@@ -50,9 +50,10 @@ public class Feed {
     return id.getUserID();
   }
 
-  public final CompletableFuture<Activity> addActivity(Activity activity) throws StreamException {
+  public final CompletableFuture<Activity> addActivity(Activity activity, RequestOption... options)
+      throws StreamException {
     return getClient()
-        .addActivity(id, activity)
+        .addActivity(id, activity, options)
         .thenApply(
             response -> {
               try {
@@ -63,9 +64,10 @@ public class Feed {
             });
   }
 
-  public final <T> CompletableFuture<T> addCustomActivity(T activity) throws StreamException {
+  public final <T> CompletableFuture<T> addCustomActivity(T activity, RequestOption... options)
+      throws StreamException {
     return getClient()
-        .addActivity(id, Activity.builder().fromCustomActivity(activity).build())
+        .addActivity(id, Activity.builder().fromCustomActivity(activity).build(), options)
         .thenApply(
             response -> {
               try {
@@ -78,7 +80,7 @@ public class Feed {
 
   public final CompletableFuture<List<Activity>> addActivities(Iterable<Activity> activities)
       throws StreamException {
-    return addActivities(Iterables.toArray(activities, Activity.class));
+    return addActivities(Iterables.toArray(activities, Activity.class), new RequestOption[0]);
   }
 
   public final <T> CompletableFuture<List<T>> addCustomActivities(Iterable<T> activities)
@@ -88,7 +90,7 @@ public class Feed {
             .map(activity -> Activity.builder().fromCustomActivity(activity).build())
             .toArray(Activity[]::new);
     return getClient()
-        .addActivities(id, custom)
+        .addActivities(id, custom, new RequestOption[0])
         .thenApply(
             response -> {
               try {
@@ -105,8 +107,13 @@ public class Feed {
 
   public final CompletableFuture<List<Activity>> addActivities(Activity... activities)
       throws StreamException {
+    return addActivities(activities, new RequestOption[0]);
+  }
+
+  public final CompletableFuture<List<Activity>> addActivities(
+      Activity[] activities, RequestOption... options) throws StreamException {
     return getClient()
-        .addActivities(id, activities)
+        .addActivities(id, activities, options)
         .thenApply(
             response -> {
               try {
@@ -124,7 +131,7 @@ public class Feed {
             .map(activity -> Activity.builder().fromCustomActivity(activity).build())
             .toArray(Activity[]::new);
     return getClient()
-        .addActivities(id, custom)
+        .addActivities(id, custom, new RequestOption[0])
         .thenApply(
             response -> {
               try {

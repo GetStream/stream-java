@@ -3,6 +3,7 @@ package io.getstream.client;
 import com.google.common.collect.ImmutableMap;
 import io.getstream.core.KeepHistory;
 import io.getstream.core.models.*;
+import io.getstream.core.options.CustomQueryParameter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import org.junit.Test;
@@ -159,6 +160,83 @@ public class BatchClientTest {
             .build();
 
     List<Activity> result = client.updateActivitiesByForeignID(update).join();
+  }
+
+  @Test
+  public void partiallyUpdateActivityByIDWithRequestOptions() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    Map<String, Object> set = ImmutableMap.of("value", "message");
+    Iterable<String> unset = Collections.emptyList();
+    Activity result =
+        client
+            .updateActivityByID(
+                "1657b300-a648-11d5-8080-800020fde6c3",
+                set,
+                new String[0],
+                new CustomQueryParameter("skip_moderation", "true"))
+            .join();
+  }
+
+  @Test
+  public void partiallyUpdateActivitiesByIDWithRequestOptions() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    ActivityUpdate update =
+        ActivityUpdate.builder()
+            .id("1657b300-a648-11d5-8080-800020fde6c3")
+            .set(ImmutableMap.of("value", "message"))
+            .unset(Collections.emptyList())
+            .build();
+
+    List<Activity> result =
+        client
+            .updateActivitiesByID(
+                new ActivityUpdate[] {update},
+                new CustomQueryParameter("skip_moderation", "true"))
+            .join();
+  }
+
+  @Test
+  public void partiallyUpdateActivityByForeignIDWithRequestOptions() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
+    isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+    Date time = isoFormat.parse("2001-09-11T00:01:02.000000");
+
+    Activity result =
+        client
+            .updateActivityByForeignID(
+                "foreignID",
+                time,
+                ImmutableMap.of("value", "message"),
+                new String[0],
+                new CustomQueryParameter("skip_moderation", "true"))
+            .join();
+  }
+
+  @Test
+  public void partiallyUpdateActivitiesByForeignIDWithRequestOptions() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
+    isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+    ActivityUpdate update =
+        ActivityUpdate.builder()
+            .foreignID("foreignID")
+            .time(isoFormat.parse("2001-09-11T00:01:02.000000"))
+            .set(ImmutableMap.of("value", "message"))
+            .unset(Collections.emptyList())
+            .build();
+
+    List<Activity> result =
+        client
+            .updateActivitiesByForeignID(
+                new ActivityUpdate[] {update},
+                new CustomQueryParameter("skip_moderation", "true"))
+            .join();
   }
 
   @Test

@@ -10,6 +10,7 @@ import io.getstream.core.http.OKHTTPClientAdapter;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.FollowStats;
+import io.getstream.core.options.CustomQueryParameter;
 import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.Date;
@@ -48,6 +49,25 @@ public class FeedTest {
     Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
     FlatFeed feed = client.flatFeed("flat", "1");
     Activity result = feed.addActivity(activity).join();
+  }
+
+  @Test
+  public void addActivityWithRequestOptions() throws Exception {
+    Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
+    FlatFeed feed = client.flatFeed("flat", "1");
+    Activity result =
+        feed.addActivity(activity, new CustomQueryParameter("skip_moderation", "true")).join();
+  }
+
+  @Test
+  public void addActivitiesWithRequestOptions() throws Exception {
+    Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
+    FlatFeed feed = client.flatFeed("flat", "1");
+    List<Activity> result =
+        feed.addActivities(
+                new Activity[] {activity},
+                new CustomQueryParameter("skip_moderation", "true"))
+            .join();
   }
 
   @Test

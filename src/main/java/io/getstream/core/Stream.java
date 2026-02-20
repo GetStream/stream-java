@@ -72,7 +72,7 @@ public final class Stream {
   }
 
   public CompletableFuture<List<Activity>> updateActivitiesByID(
-      Token token, ActivityUpdate[] updates) throws StreamException {
+      Token token, ActivityUpdate[] updates, RequestOption... options) throws StreamException {
     checkNotNull(updates, "No updates");
     checkArgument(updates.length > 0, "No updates");
     for (ActivityUpdate update : updates) {
@@ -89,7 +89,7 @@ public final class Stream {
               });
       final URL url = buildActivityUpdateURL(baseURL);
       return httpClient
-          .execute(buildPost(url, key, token, payload))
+          .execute(buildPost(url, key, token, payload, options))
           .thenApply(
               response -> {
                 try {
@@ -104,7 +104,8 @@ public final class Stream {
   }
 
   public CompletableFuture<Activity> updateActivityByID(
-      Token token, String id, Map<String, Object> set, String[] unset) throws StreamException {
+      Token token, String id, Map<String, Object> set, String[] unset, RequestOption... options)
+      throws StreamException {
     checkNotNull(id, "No activity to update");
     checkNotNull(set, "No activity properties to set");
     checkNotNull(unset, "No activity properties to unset");
@@ -123,7 +124,7 @@ public final class Stream {
               });
       final URL url = buildActivityUpdateURL(baseURL);
       return httpClient
-          .execute(buildPost(url, key, token, payload))
+          .execute(buildPost(url, key, token, payload, options))
           .thenApply(
               response -> {
                 try {
@@ -138,7 +139,7 @@ public final class Stream {
   }
 
   public CompletableFuture<List<Activity>> updateActivitiesByForeignID(
-      Token token, ActivityUpdate[] updates) throws StreamException {
+      Token token, ActivityUpdate[] updates, RequestOption... options) throws StreamException {
     checkNotNull(updates, "No updates");
     checkArgument(updates.length > 0, "No updates");
     for (ActivityUpdate update : updates) {
@@ -156,7 +157,7 @@ public final class Stream {
               });
       final URL url = buildActivityUpdateURL(baseURL);
       return httpClient
-          .execute(buildPost(url, key, token, payload))
+          .execute(buildPost(url, key, token, payload, options))
           .thenApply(
               response -> {
                 try {
@@ -171,7 +172,12 @@ public final class Stream {
   }
 
   public CompletableFuture<Activity> updateActivityByForeignID(
-      Token token, String foreignID, Date timestamp, Map<String, Object> set, String[] unset)
+      Token token,
+      String foreignID,
+      Date timestamp,
+      Map<String, Object> set,
+      String[] unset,
+      RequestOption... options)
       throws StreamException {
     checkNotNull(foreignID, "No activity to update");
     checkNotNull(timestamp, "Missing timestamp");
@@ -199,7 +205,7 @@ public final class Stream {
               });
       final URL url = buildActivityUpdateURL(baseURL);
       return httpClient
-          .execute(buildPost(url, key, token, payload))
+          .execute(buildPost(url, key, token, payload, options))
           .thenApply(
               response -> {
                 try {
@@ -263,14 +269,14 @@ public final class Stream {
     }
   }
 
-  public CompletableFuture<Response> addActivity(Token token, FeedID feed, Activity activity)
-      throws StreamException {
+  public CompletableFuture<Response> addActivity(
+      Token token, FeedID feed, Activity activity, RequestOption... options) throws StreamException {
     checkNotNull(activity, "No activity to add");
 
     try {
       final byte[] payload = toJSON(activity);
       final URL url = buildFeedURL(baseURL, feed, "/");
-      return httpClient.execute(buildPost(url, key, token, payload));
+      return httpClient.execute(buildPost(url, key, token, payload, options));
     } catch (JsonProcessingException | MalformedURLException | URISyntaxException e) {
       throw new StreamException(e);
     }
@@ -278,6 +284,12 @@ public final class Stream {
 
   public CompletableFuture<Response> addActivities(
       Token token, FeedID feed, Activity... activityObjects) throws StreamException {
+    return addActivities(token, feed, activityObjects, new RequestOption[0]);
+  }
+
+  public CompletableFuture<Response> addActivities(
+      Token token, FeedID feed, Activity[] activityObjects, RequestOption... options)
+      throws StreamException {
     checkNotNull(activityObjects, "No activities to add");
 
     try {
@@ -287,7 +299,7 @@ public final class Stream {
                 public final Activity[] activities = activityObjects;
               });
       final URL url = buildFeedURL(baseURL, feed, "/");
-      return httpClient.execute(buildPost(url, key, token, payload));
+      return httpClient.execute(buildPost(url, key, token, payload, options));
     } catch (JsonProcessingException | MalformedURLException | URISyntaxException e) {
       throw new StreamException(e);
     }
