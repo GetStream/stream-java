@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.26.0](https://github.com/GetStream/stream-java/compare/v3.25.0...v3.26.0) (2026-02-20)
+
+
+### Features
+
+* **moderation:** skip moderation ([b7738e2](https://github.com/GetStream/stream-java/commit/b7738e25c2553b4fc55edae0b05f1333fba1fc48))
+
 ## [3.25.0](https://github.com/GetStream/stream-java/compare/v3.24.0...v3.25.0) (2026-01-16)
 
 ## [3.24.0](https://github.com/GetStream/stream-java/compare/v3.23.0...v3.24.0) (2025-11-27)
