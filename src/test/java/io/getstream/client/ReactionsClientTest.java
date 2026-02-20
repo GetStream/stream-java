@@ -197,30 +197,38 @@ public class ReactionsClientTest {
 
     Activity activity =
         client
-            .flatFeed("user", "reactor")
+            .flatFeed("user", "1")
             .addActivity(
-                Activity.builder().actor("test").verb("post").object("test").build())
+                Activity.builder().actor("test").verb("test").object("test").build())
             .join();
 
     Reaction blocked =
         Reaction.builder()
             .activityID(activity.getID())
-            .kind("comment")
-            .userID("test-user")
+            .kind("like")
+            .userID("user123")
             .extraField("text", "pissoar")
             .moderationTemplate("moderation_template_reaction")
             .build();
 
-    Reaction withModeration = client.reactions().add("test-user", blocked).join();
+    Reaction withModeration = client.reactions().add("user", blocked).join();
     assertNotNull(withModeration.getModerationResponse());
     assertEquals("remove", withModeration.getModerationResponse().getRecommendedAction());
 
+    Reaction skipped =
+        Reaction.builder()
+            .activityID(activity.getID())
+            .kind("like")
+            .userID("user123")
+            .extraField("text", "pissoar")
+            .moderationTemplate("moderation_template_reaction")
+            .build();
     Reaction withoutModeration =
         client
             .reactions()
             .add(
-                "test-user",
-                blocked,
+                "user",
+                skipped,
                 new FeedID[0],
                 new CustomQueryParameter("skip_moderation", "true"))
             .join();
@@ -233,27 +241,27 @@ public class ReactionsClientTest {
 
     Activity activity =
         client
-            .flatFeed("user", "reactor")
+            .flatFeed("user", "1")
             .addActivity(
-                Activity.builder().actor("test").verb("post").object("test").build())
+                Activity.builder().actor("test").verb("test").object("test").build())
             .join();
 
     Reaction safe =
         Reaction.builder()
             .activityID(activity.getID())
-            .kind("comment")
-            .userID("test-user")
+            .kind("like")
+            .userID("user123")
             .extraField("text", "safe text")
             .moderationTemplate("moderation_template_reaction")
             .build();
-    Reaction created = client.reactions().add("test-user", safe).join();
+    Reaction created = client.reactions().add("user", safe).join();
     assertNotNull(created.getModerationResponse());
     assertEquals("keep", created.getModerationResponse().getRecommendedAction());
 
     Reaction blockedUpdate =
         Reaction.builder()
             .id(created.getId())
-            .kind("comment")
+            .kind("like")
             .extraField("text", "pissoar")
             .moderationTemplate("moderation_template_reaction")
             .build();
