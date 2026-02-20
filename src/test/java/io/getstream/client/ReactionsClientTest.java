@@ -232,7 +232,10 @@ public class ReactionsClientTest {
                 new FeedID[0],
                 new CustomQueryParameter("skip_moderation", "true"))
             .join();
-    assertNull(withoutModeration.getModerationResponse());
+    Map<String, Object> moderation = withoutModeration.getModeration();
+    if (moderation != null) {
+      assertNull(moderation.get("response"));
+    }
   }
 
   @Test
