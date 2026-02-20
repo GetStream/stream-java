@@ -208,7 +208,7 @@ public final class StreamReactions {
   }
 
   public CompletableFuture<Reaction> add(
-      Token token, String userID, Reaction reaction, FeedID[] targetFeeds, Map<String, Object> targetFeedsExtraData) throws StreamException {
+      Token token, String userID, Reaction reaction, FeedID[] targetFeeds, Map<String, Object> targetFeedsExtraData, RequestOption... options) throws StreamException {
     checkNotNull(reaction, "Reaction can't be null");
     checkArgument(
         reaction.getActivityID() != null || reaction.getParent() != null,
@@ -256,7 +256,7 @@ public final class StreamReactions {
       final byte[] payload = toJSON(payloadBuilder.build());
       final URL url = buildReactionsURL(baseURL);
       return httpClient
-          .execute(buildPost(url, key, token, payload))
+          .execute(buildPost(url, key, token, payload, options))
           .thenApply(
               response -> {
                 try {
@@ -271,6 +271,12 @@ public final class StreamReactions {
   }
 
   public CompletableFuture<Void> update(Token token, Reaction reaction, FeedID... targetFeeds)
+      throws StreamException {
+    return update(token, reaction, targetFeeds, new RequestOption[0]);
+  }
+
+  public CompletableFuture<Void> update(
+      Token token, Reaction reaction, FeedID[] targetFeeds, RequestOption... options)
       throws StreamException {
     checkNotNull(reaction, "Reaction can't be null");
     checkNotNull(reaction.getId(), "Reaction id can't be null");
@@ -291,7 +297,7 @@ public final class StreamReactions {
       final byte[] payload = toJSON(payloadBuilder.build());
       final URL url = buildReactionsURL(baseURL, reaction.getId() + '/');
       return httpClient
-          .execute(buildPut(url, key, token, payload))
+          .execute(buildPut(url, key, token, payload, options))
           .thenApply(
               response -> {
                 try {

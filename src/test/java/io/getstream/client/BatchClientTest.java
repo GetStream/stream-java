@@ -1,8 +1,13 @@
 package io.getstream.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import com.google.common.collect.ImmutableMap;
 import io.getstream.core.KeepHistory;
 import io.getstream.core.models.*;
+import io.getstream.core.options.CustomQueryParameter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import org.junit.Test;
@@ -159,6 +164,138 @@ public class BatchClientTest {
             .build();
 
     List<Activity> result = client.updateActivitiesByForeignID(update).join();
+  }
+
+  @Test
+  public void partiallyUpdateActivityByIDSkipModeration() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    Activity activity =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .moderationTemplate("moderation_template_activity")
+            .extraField("text", "safe text")
+            .foreignID(UUID.randomUUID().toString())
+            .time(new Date())
+            .build();
+    Activity created = client.flatFeed("user", "1").addActivity(activity).join();
+    assertNotNull(created.getModerationResponse());
+    assertEquals("keep", created.getModerationResponse().getRecommendedAction());
+
+    Activity updated =
+        client
+            .updateActivityByID(
+                created.getID(),
+                ImmutableMap.of("text", "pissoar"),
+                new String[0],
+                new CustomQueryParameter("skip_moderation", "true"))
+            .join();
+    assertEquals("keep", updated.getModerationResponse().getRecommendedAction());
+  }
+
+  @Test
+  public void partiallyUpdateActivitiesByIDSkipModeration() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    Activity activity =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .moderationTemplate("moderation_template_activity")
+            .extraField("text", "safe text")
+            .foreignID(UUID.randomUUID().toString())
+            .time(new Date())
+            .build();
+    Activity created = client.flatFeed("user", "1").addActivity(activity).join();
+
+    ActivityUpdate update =
+        ActivityUpdate.builder()
+            .id(created.getID())
+            .set(ImmutableMap.of("text", "pissoar"))
+            .unset(Collections.emptyList())
+            .build();
+
+    List<Activity> result =
+        client
+            .updateActivitiesByID(
+                new ActivityUpdate[] {update},
+                new CustomQueryParameter("skip_moderation", "true"))
+            .join();
+    assertEquals(1, result.size());
+    assertEquals("keep", result.get(0).getModerationResponse().getRecommendedAction());
+  }
+
+  @Test
+  public void partiallyUpdateActivityByForeignIDSkipModeration() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    String foreignID = UUID.randomUUID().toString();
+    Date time = new Date();
+
+    Activity activity =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .moderationTemplate("moderation_template_activity")
+            .extraField("text", "safe text")
+            .foreignID(foreignID)
+            .time(time)
+            .build();
+    Activity created = client.flatFeed("user", "1").addActivity(activity).join();
+    assertNotNull(created.getModerationResponse());
+    assertEquals("keep", created.getModerationResponse().getRecommendedAction());
+
+    Activity updated =
+        client
+            .updateActivityByForeignID(
+                foreignID,
+                time,
+                ImmutableMap.of("text", "pissoar"),
+                new String[0],
+                new CustomQueryParameter("skip_moderation", "true"))
+            .join();
+    assertEquals("keep", updated.getModerationResponse().getRecommendedAction());
+  }
+
+  @Test
+  public void partiallyUpdateActivitiesByForeignIDSkipModeration() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    String foreignID = UUID.randomUUID().toString();
+    Date time = new Date();
+
+    Activity activity =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .moderationTemplate("moderation_template_activity")
+            .extraField("text", "safe text")
+            .foreignID(foreignID)
+            .time(time)
+            .build();
+    client.flatFeed("user", "1").addActivity(activity).join();
+
+    ActivityUpdate update =
+        ActivityUpdate.builder()
+            .foreignID(foreignID)
+            .time(time)
+            .set(ImmutableMap.of("text", "pissoar"))
+            .unset(Collections.emptyList())
+            .build();
+
+    List<Activity> result =
+        client
+            .updateActivitiesByForeignID(
+                new ActivityUpdate[] {update},
+                new CustomQueryParameter("skip_moderation", "true"))
+            .join();
+    assertEquals(1, result.size());
+    assertEquals("keep", result.get(0).getModerationResponse().getRecommendedAction());
   }
 
   @Test

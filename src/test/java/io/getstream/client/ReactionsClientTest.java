@@ -8,11 +8,14 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class ReactionsClientTest {
   private static final String apiKey =
@@ -186,6 +189,96 @@ public class ReactionsClientTest {
             .extraField("key", "value")
             .build();
     client.reactions().update(data, new FeedID("flat", "1")).join();
+  }
+
+  @Test
+  public void addReactionSkipModeration() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    Activity activity =
+        client
+            .flatFeed("user", "1")
+            .addActivity(
+                Activity.builder().actor("test").verb("test").object("test").build())
+            .join();
+
+    Reaction blocked =
+        Reaction.builder()
+            .activityID(activity.getID())
+            .kind("like")
+            .userID("user123")
+            .extraField("text", "pissoar")
+            .moderationTemplate("moderation_template_reaction")
+            .build();
+
+    Reaction withModeration = client.reactions().add("user", blocked).join();
+    assertNotNull(withModeration.getModerationResponse());
+    assertEquals("remove", withModeration.getModerationResponse().getRecommendedAction());
+
+    Reaction skipped =
+        Reaction.builder()
+            .activityID(activity.getID())
+            .kind("like")
+            .userID("user123")
+            .extraField("text", "pissoar")
+            .moderationTemplate("moderation_template_reaction")
+            .build();
+    Reaction withoutModeration =
+        client
+            .reactions()
+            .add(
+                "user",
+                skipped,
+                new FeedID[0],
+                new CustomQueryParameter("skip_moderation", "true"))
+            .join();
+    Map<String, Object> moderation = withoutModeration.getModeration();
+    if (moderation != null) {
+      assertNull(moderation.get("response"));
+    }
+  }
+
+  @Test
+  public void updateReactionSkipModeration() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    Activity activity =
+        client
+            .flatFeed("user", "1")
+            .addActivity(
+                Activity.builder().actor("test").verb("test").object("test").build())
+            .join();
+
+    Reaction safe =
+        Reaction.builder()
+            .activityID(activity.getID())
+            .kind("like")
+            .userID("user123")
+            .extraField("text", "safe text")
+            .moderationTemplate("moderation_template_reaction")
+            .build();
+    Reaction created = client.reactions().add("user", safe).join();
+    assertNotNull(created.getModerationResponse());
+    assertEquals("keep", created.getModerationResponse().getRecommendedAction());
+
+    Reaction blockedUpdate =
+        Reaction.builder()
+            .id(created.getId())
+            .kind("like")
+            .extraField("text", "pissoar")
+            .moderationTemplate("moderation_template_reaction")
+            .build();
+    client
+        .reactions()
+        .update(
+            blockedUpdate,
+            new FeedID[0],
+            new CustomQueryParameter("skip_moderation", "true"))
+        .join();
+
+    Reaction fetched = client.reactions().get(created.getId()).join();
+    ModerationResponse m = fetched.getModerationResponse();
+    assertEquals("keep", m.getRecommendedAction());
   }
 
   @Test

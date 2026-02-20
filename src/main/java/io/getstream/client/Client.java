@@ -47,9 +47,10 @@ public final class Client {
   }
 
   public CompletableFuture<Activity> updateActivityByID(
-      String id, Map<String, Object> set, String[] unset) throws StreamException {
+      String id, Map<String, Object> set, String[] unset, RequestOption... options)
+      throws StreamException {
     final Token token = buildActivityToken(secret, TokenAction.WRITE);
-    return stream.updateActivityByID(token, id, set, unset);
+    return stream.updateActivityByID(token, id, set, unset, options);
   }
 
   public CompletableFuture<Activity> updateActivityByForeignID(
@@ -82,10 +83,10 @@ public final class Client {
   }
 
   public CompletableFuture<Activity> updateActivityByForeignID(
-      String foreignID, Date timestamp, Map<String, Object> set, String[] unset)
-      throws StreamException {
+      String foreignID, Date timestamp, Map<String, Object> set, String[] unset,
+      RequestOption... options) throws StreamException {
     final Token token = buildActivityToken(secret, TokenAction.WRITE);
-    return stream.updateActivityByForeignID(token, foreignID, timestamp, set, unset);
+    return stream.updateActivityByForeignID(token, foreignID, timestamp, set, unset, options);
   }
 
   public CompletableFuture<OGData> openGraph(URL url) throws StreamException {
@@ -95,24 +96,34 @@ public final class Client {
 
   public CompletableFuture<List<Activity>> updateActivitiesByID(Iterable<ActivityUpdate> updates)
       throws StreamException {
-    return updateActivitiesByID(Iterables.toArray(updates, ActivityUpdate.class));
+    return updateActivitiesByID(Iterables.toArray(updates, ActivityUpdate.class), new RequestOption[0]);
   }
 
   public CompletableFuture<List<Activity>> updateActivitiesByID(ActivityUpdate... updates)
       throws StreamException {
+    return updateActivitiesByID(updates, new RequestOption[0]);
+  }
+
+  public CompletableFuture<List<Activity>> updateActivitiesByID(
+      ActivityUpdate[] updates, RequestOption... options) throws StreamException {
     final Token token = buildActivityToken(secret, TokenAction.WRITE);
-    return stream.updateActivitiesByID(token, updates);
+    return stream.updateActivitiesByID(token, updates, options);
   }
 
   public CompletableFuture<List<Activity>> updateActivitiesByForeignID(
       Iterable<ActivityUpdate> updates) throws StreamException {
-    return updateActivitiesByForeignID(Iterables.toArray(updates, ActivityUpdate.class));
+    return updateActivitiesByForeignID(Iterables.toArray(updates, ActivityUpdate.class), new RequestOption[0]);
   }
 
   public CompletableFuture<List<Activity>> updateActivitiesByForeignID(ActivityUpdate... updates)
       throws StreamException {
+    return updateActivitiesByForeignID(updates, new RequestOption[0]);
+  }
+
+  public CompletableFuture<List<Activity>> updateActivitiesByForeignID(
+      ActivityUpdate[] updates, RequestOption... options) throws StreamException {
     final Token token = buildActivityToken(secret, TokenAction.WRITE);
-    return stream.updateActivitiesByForeignID(token, updates);
+    return stream.updateActivitiesByForeignID(token, updates, options);
   }
 
   public static final class Builder {
@@ -280,15 +291,21 @@ public final class Client {
     return stream.getEnrichedActivities(token, feed, options);
   }
 
-  CompletableFuture<Response> addActivity(FeedID feed, Activity activity) throws StreamException {
+  CompletableFuture<Response> addActivity(FeedID feed, Activity activity, RequestOption... options)
+      throws StreamException {
     final Token token = buildFeedToken(secret, feed, TokenAction.WRITE);
-    return stream.addActivity(token, feed, activity);
+    return stream.addActivity(token, feed, activity, options);
   }
 
   CompletableFuture<Response> addActivities(FeedID feed, Activity... activities)
       throws StreamException {
+    return addActivities(feed, activities, new RequestOption[0]);
+  }
+
+  CompletableFuture<Response> addActivities(
+      FeedID feed, Activity[] activities, RequestOption... options) throws StreamException {
     final Token token = buildFeedToken(secret, feed, TokenAction.WRITE);
-    return stream.addActivities(token, feed, activities);
+    return stream.addActivities(token, feed, activities, options);
   }
 
   CompletableFuture<Response> removeActivityByID(FeedID feed, String id) throws StreamException {
