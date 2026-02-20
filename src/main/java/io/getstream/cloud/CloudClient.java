@@ -337,13 +337,19 @@ public final class CloudClient {
     return stream.getEnrichedActivities(token, feed, options);
   }
 
-  CompletableFuture<Response> addActivity(FeedID feed, Activity activity) throws StreamException {
-    return stream.addActivity(token, feed, activity);
+  CompletableFuture<Response> addActivity(FeedID feed, Activity activity, RequestOption... options)
+      throws StreamException {
+    return stream.addActivity(token, feed, activity, options);
   }
 
   CompletableFuture<Response> addActivities(FeedID feed, Activity... activities)
       throws StreamException {
-    return stream.addActivities(token, feed, activities);
+    return addActivities(feed, activities, new RequestOption[0]);
+  }
+
+  CompletableFuture<Response> addActivities(
+      FeedID feed, Activity[] activities, RequestOption... options) throws StreamException {
+    return stream.addActivities(token, feed, activities, options);
   }
 
   CompletableFuture<Response> removeActivityByID(FeedID feed, String id) throws StreamException {

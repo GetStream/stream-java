@@ -15,6 +15,7 @@ import io.getstream.core.models.Reaction;
 import io.getstream.core.models.ReactionBatch;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
+import io.getstream.core.options.RequestOption;
 import io.getstream.core.utils.Auth.TokenAction;
 import io.getstream.core.utils.DefaultOptions;
 import java.util.List;
@@ -168,10 +169,18 @@ public final class ReactionsClient {
     return reactions.add(token, userID, reaction, targetFeeds);
   }
 
-  public CompletableFuture<Reaction> add(String userID, Reaction reaction, FeedID[] targetFeeds, Map<String, Object> targetFeedsExtraData)
+  public CompletableFuture<Reaction> add(
+      String userID, Reaction reaction, FeedID[] targetFeeds, RequestOption... options)
       throws StreamException {
     final Token token = buildReactionsToken(secret, TokenAction.WRITE);
-    return reactions.add(token, userID, reaction, targetFeeds, targetFeedsExtraData);
+    return reactions.add(token, userID, reaction, targetFeeds, null, options);
+  }
+
+  public CompletableFuture<Reaction> add(
+      String userID, Reaction reaction, FeedID[] targetFeeds,
+      Map<String, Object> targetFeedsExtraData, RequestOption... options) throws StreamException {
+    final Token token = buildReactionsToken(secret, TokenAction.WRITE);
+    return reactions.add(token, userID, reaction, targetFeeds, targetFeedsExtraData, options);
   }
 
   public CompletableFuture<Reaction> addChild(
@@ -235,6 +244,12 @@ public final class ReactionsClient {
       throws StreamException {
     final Token token = buildReactionsToken(secret, TokenAction.WRITE);
     return reactions.update(token, reaction, targetFeeds);
+  }
+
+  public CompletableFuture<Void> update(
+      Reaction reaction, FeedID[] targetFeeds, RequestOption... options) throws StreamException {
+    final Token token = buildReactionsToken(secret, TokenAction.WRITE);
+    return reactions.update(token, reaction, targetFeeds, options);
   }
 
   public CompletableFuture<Void> delete(String id) throws StreamException {

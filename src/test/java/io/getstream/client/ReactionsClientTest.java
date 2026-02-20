@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import io.getstream.core.options.CustomQueryParameter;
 import io.getstream.core.options.Filter;
 import io.getstream.core.options.Limit;
 import org.junit.Test;
@@ -186,6 +187,41 @@ public class ReactionsClientTest {
             .extraField("key", "value")
             .build();
     client.reactions().update(data, new FeedID("flat", "1")).join();
+  }
+
+  @Test
+  public void addWithRequestOptions() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    Reaction data =
+        Reaction.builder().activityID("ed2837a6-0a3b-4679-adc1-778a1704852d").kind("like").build();
+    client
+        .reactions()
+        .add(
+            "user-id",
+            data,
+            new FeedID[] {new FeedID("flat", "1")},
+            new CustomQueryParameter("skip_moderation", "true"))
+        .join();
+  }
+
+  @Test
+  public void updateWithRequestOptions() throws Exception {
+    Client client = Client.builder(apiKey, secret).build();
+
+    Reaction data =
+        Reaction.builder()
+            .id("b5c46f9b-0839-4207-86aa-6a7f388b7748")
+            .kind("like")
+            .extraField("key", "value")
+            .build();
+    client
+        .reactions()
+        .update(
+            data,
+            new FeedID[] {new FeedID("flat", "1")},
+            new CustomQueryParameter("skip_moderation", "true"))
+        .join();
   }
 
   @Test
