@@ -1,6 +1,8 @@
 package io.getstream.client;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import com.google.common.collect.Lists;
 import io.getstream.client.entities.FootballMatch;
@@ -10,6 +12,7 @@ import io.getstream.core.http.OKHTTPClientAdapter;
 import io.getstream.core.models.Activity;
 import io.getstream.core.models.FeedID;
 import io.getstream.core.models.FollowStats;
+import io.getstream.core.models.ModerationResponse;
 import io.getstream.core.options.CustomQueryParameter;
 import java.net.MalformedURLException;
 import java.util.Collections;
@@ -52,22 +55,51 @@ public class FeedTest {
   }
 
   @Test
-  public void addActivityWithRequestOptions() throws Exception {
-    Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
-    FlatFeed feed = client.flatFeed("flat", "1");
-    Activity result =
-        feed.addActivity(activity, new CustomQueryParameter("skip_moderation", "true")).join();
+  public void addActivitySkipModeration() throws Exception {
+    FlatFeed feed = client.flatFeed("user", "1");
+
+    Activity blocked =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .moderationTemplate("moderation_template_activity")
+            .extraField("text", "pissoar")
+            .foreignID(UUID.randomUUID().toString())
+            .time(new Date())
+            .build();
+
+    Activity withModeration = feed.addActivity(blocked).join();
+    assertNotNull(withModeration.getModerationResponse());
+    assertEquals("remove", withModeration.getModerationResponse().getRecommendedAction());
+
+    Activity withoutModeration =
+        feed.addActivity(blocked, new CustomQueryParameter("skip_moderation", "true")).join();
+    assertNull(withoutModeration.getModerationResponse());
   }
 
   @Test
-  public void addActivitiesWithRequestOptions() throws Exception {
-    Activity activity = Activity.builder().actor("test").verb("test").object("test").build();
-    FlatFeed feed = client.flatFeed("flat", "1");
-    List<Activity> result =
+  public void addActivitiesSkipModeration() throws Exception {
+    FlatFeed feed = client.flatFeed("user", "1");
+
+    Activity blocked =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .moderationTemplate("moderation_template_activity")
+            .extraField("text", "pissoar")
+            .foreignID(UUID.randomUUID().toString())
+            .time(new Date())
+            .build();
+
+    List<Activity> withoutModeration =
         feed.addActivities(
-                new Activity[] {activity},
+                new Activity[] {blocked},
                 new CustomQueryParameter("skip_moderation", "true"))
             .join();
+    assertEquals(1, withoutModeration.size());
+    assertNull(withoutModeration.get(0).getModerationResponse());
   }
 
   @Test

@@ -1,5 +1,9 @@
 package io.getstream.client;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import com.google.common.collect.ImmutableMap;
 import io.getstream.core.KeepHistory;
 import io.getstream.core.models.*;
@@ -163,29 +167,54 @@ public class BatchClientTest {
   }
 
   @Test
-  public void partiallyUpdateActivityByIDWithRequestOptions() throws Exception {
+  public void partiallyUpdateActivityByIDSkipModeration() throws Exception {
     Client client = Client.builder(apiKey, secret).build();
 
-    Map<String, Object> set = ImmutableMap.of("value", "message");
-    Iterable<String> unset = Collections.emptyList();
-    Activity result =
+    Activity activity =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .moderationTemplate("moderation_template_activity")
+            .extraField("text", "safe text")
+            .foreignID(UUID.randomUUID().toString())
+            .time(new Date())
+            .build();
+    Activity created = client.flatFeed("user", "1").addActivity(activity).join();
+    assertNotNull(created.getModerationResponse());
+    assertEquals("keep", created.getModerationResponse().getRecommendedAction());
+
+    Activity updated =
         client
             .updateActivityByID(
-                "1657b300-a648-11d5-8080-800020fde6c3",
-                set,
+                created.getID(),
+                ImmutableMap.of("text", "pissoar"),
                 new String[0],
                 new CustomQueryParameter("skip_moderation", "true"))
             .join();
+    assertNull(updated.getModerationResponse());
   }
 
   @Test
-  public void partiallyUpdateActivitiesByIDWithRequestOptions() throws Exception {
+  public void partiallyUpdateActivitiesByIDSkipModeration() throws Exception {
     Client client = Client.builder(apiKey, secret).build();
+
+    Activity activity =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .moderationTemplate("moderation_template_activity")
+            .extraField("text", "safe text")
+            .foreignID(UUID.randomUUID().toString())
+            .time(new Date())
+            .build();
+    Activity created = client.flatFeed("user", "1").addActivity(activity).join();
 
     ActivityUpdate update =
         ActivityUpdate.builder()
-            .id("1657b300-a648-11d5-8080-800020fde6c3")
-            .set(ImmutableMap.of("value", "message"))
+            .id(created.getID())
+            .set(ImmutableMap.of("text", "pissoar"))
             .unset(Collections.emptyList())
             .build();
 
@@ -195,39 +224,67 @@ public class BatchClientTest {
                 new ActivityUpdate[] {update},
                 new CustomQueryParameter("skip_moderation", "true"))
             .join();
+    assertEquals(1, result.size());
+    assertNull(result.get(0).getModerationResponse());
   }
 
   @Test
-  public void partiallyUpdateActivityByForeignIDWithRequestOptions() throws Exception {
+  public void partiallyUpdateActivityByForeignIDSkipModeration() throws Exception {
     Client client = Client.builder(apiKey, secret).build();
 
-    SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
-    isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-    Date time = isoFormat.parse("2001-09-11T00:01:02.000000");
+    String foreignID = UUID.randomUUID().toString();
+    Date time = new Date();
 
-    Activity result =
+    Activity activity =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .moderationTemplate("moderation_template_activity")
+            .extraField("text", "safe text")
+            .foreignID(foreignID)
+            .time(time)
+            .build();
+    Activity created = client.flatFeed("user", "1").addActivity(activity).join();
+    assertNotNull(created.getModerationResponse());
+    assertEquals("keep", created.getModerationResponse().getRecommendedAction());
+
+    Activity updated =
         client
             .updateActivityByForeignID(
-                "foreignID",
+                foreignID,
                 time,
-                ImmutableMap.of("value", "message"),
+                ImmutableMap.of("text", "pissoar"),
                 new String[0],
                 new CustomQueryParameter("skip_moderation", "true"))
             .join();
+    assertNull(updated.getModerationResponse());
   }
 
   @Test
-  public void partiallyUpdateActivitiesByForeignIDWithRequestOptions() throws Exception {
+  public void partiallyUpdateActivitiesByForeignIDSkipModeration() throws Exception {
     Client client = Client.builder(apiKey, secret).build();
 
-    SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S");
-    isoFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+    String foreignID = UUID.randomUUID().toString();
+    Date time = new Date();
+
+    Activity activity =
+        Activity.builder()
+            .actor("test")
+            .verb("test")
+            .object("test")
+            .moderationTemplate("moderation_template_activity")
+            .extraField("text", "safe text")
+            .foreignID(foreignID)
+            .time(time)
+            .build();
+    client.flatFeed("user", "1").addActivity(activity).join();
 
     ActivityUpdate update =
         ActivityUpdate.builder()
-            .foreignID("foreignID")
-            .time(isoFormat.parse("2001-09-11T00:01:02.000000"))
-            .set(ImmutableMap.of("value", "message"))
+            .foreignID(foreignID)
+            .time(time)
+            .set(ImmutableMap.of("text", "pissoar"))
             .unset(Collections.emptyList())
             .build();
 
@@ -237,6 +294,8 @@ public class BatchClientTest {
                 new ActivityUpdate[] {update},
                 new CustomQueryParameter("skip_moderation", "true"))
             .join();
+    assertEquals(1, result.size());
+    assertNull(result.get(0).getModerationResponse());
   }
 
   @Test
