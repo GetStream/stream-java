@@ -192,7 +192,7 @@ public class BatchClientTest {
                 new String[0],
                 new CustomQueryParameter("skip_moderation", "true"))
             .join();
-    assertNull(updated.getModerationResponse());
+    assertEquals("keep", updated.getModerationResponse().getRecommendedAction());
   }
 
   @Test
@@ -225,7 +225,7 @@ public class BatchClientTest {
                 new CustomQueryParameter("skip_moderation", "true"))
             .join();
     assertEquals(1, result.size());
-    assertNull(result.get(0).getModerationResponse());
+    assertEquals("keep", result.get(0).getModerationResponse().getRecommendedAction());
   }
 
   @Test
@@ -258,7 +258,7 @@ public class BatchClientTest {
                 new String[0],
                 new CustomQueryParameter("skip_moderation", "true"))
             .join();
-    assertNull(updated.getModerationResponse());
+    assertEquals("keep", updated.getModerationResponse().getRecommendedAction());
   }
 
   @Test
@@ -295,7 +295,7 @@ public class BatchClientTest {
                 new CustomQueryParameter("skip_moderation", "true"))
             .join();
     assertEquals(1, result.size());
-    assertNull(result.get(0).getModerationResponse());
+    assertEquals("keep", result.get(0).getModerationResponse().getRecommendedAction());
   }
 
   @Test
