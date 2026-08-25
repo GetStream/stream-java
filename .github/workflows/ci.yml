@@ -35,6 +35,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+
+      - name: Repair moderation test policy
+        env:
+          STREAM_KEY: ${{ secrets.STREAM_KEY }}
+          STREAM_SECRET: ${{ secrets.STREAM_SECRET }}
+        run: |
+          npm install --prefix "$RUNNER_TEMP/moderation-repair" --no-save --package-lock=false --ignore-scripts @stream-io/node-sdk@0.8.3
+          NODE_PATH="$RUNNER_TEMP/moderation-repair/node_modules" node .github/scripts/repair-moderation-policy.cjs
+
       - name: Test
         env:
           STREAM_KEY: ${{ secrets.STREAM_KEY }}
