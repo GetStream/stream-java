@@ -45,7 +45,6 @@ async function repairPolicy(client, key) {
     'ai_text_config',
     'ai_video_config',
     'automod_platform_circumvention_config',
-    'automod_semantic_filters_config',
     'automod_toxicity_config',
     'aws_rekognition_config',
     'block_list_config',
