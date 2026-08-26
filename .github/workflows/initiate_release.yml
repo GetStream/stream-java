@@ -7,15 +7,19 @@ on:
         description: "The new version number with a 'v' prefix. Example: v1.40.1"
         required: true
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   init_release:
     name: 🚀 Create release PR
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0 # gives the changelog generator access to all previous commits
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: '17'
@@ -32,7 +36,7 @@ jobs:
           git push -q -u origin "release-$VERSION"
 
       - name: Get changelog diff
-        uses: actions/github-script@v5
+        uses: actions/github-script@v9
         with:
           script: |
             const get_change_log_diff = require('./scripts/get_changelog_diff.js')
