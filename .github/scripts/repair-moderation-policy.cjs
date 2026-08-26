@@ -8,6 +8,29 @@ const blockListName = 'stream_java_moderation_tests';
 const triggerWord = 'pissoar';
 const rule = { name: blockListName, action: 'remove' };
 const unavailableBlockListNames = new Set(['profanity_en']);
+const propagationRetryDelaysMs = [1000, 2000, 4000, 8000];
+
+function sleep(delayMs) {
+  return new Promise((resolve) => setTimeout(resolve, delayMs));
+}
+
+async function retryAfterBlockListPropagation(operation) {
+  for (const delayMs of propagationRetryDelaysMs) {
+    try {
+      return await operation();
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (!message.includes(`Blocklist not found: ${blockListName}`)) {
+        throw error;
+      }
+
+      console.log(`Waiting ${delayMs}ms for ${blockListName} to propagate`);
+      await sleep(delayMs);
+    }
+  }
+
+  return operation();
+}
 
 async function ensureTestBlockList(client) {
   const response = await client.listBlockLists();
@@ -97,7 +120,9 @@ async function repairPolicy(client, key) {
   }
   payload.block_list_config = withRequiredRule(config.block_list_config);
 
-  await client.moderation.upsertConfig(payload);
+  await retryAfterBlockListPropagation(() =>
+    client.moderation.upsertConfig(payload),
+  );
   console.log(`Repaired moderation policy ${key}`);
 }
 
@@ -136,13 +161,15 @@ async function main() {
       continue;
     }
 
-    await client.moderation.v2UpsertTemplate({
-      name,
-      config: {
-        ...template.config,
-        block_list_config: withRequiredRule(template.config.block_list_config),
-      },
-    });
+    await retryAfterBlockListPropagation(() =>
+      client.moderation.v2UpsertTemplate({
+        name,
+        config: {
+          ...template.config,
+          block_list_config: withRequiredRule(template.config.block_list_config),
+        },
+      }),
+    );
     console.log(`Repaired moderation template ${name}`);
   }
 }
