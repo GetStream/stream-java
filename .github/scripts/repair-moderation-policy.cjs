@@ -4,10 +4,43 @@ const templateNames = [
   'moderation_template_activity',
   'moderation_template_reaction',
 ];
-const rule = { name: 'profanity_en', action: 'remove' };
+const blockListName = 'stream_java_moderation_tests';
+const triggerWord = 'pissoar';
+const rule = { name: blockListName, action: 'remove' };
+const unavailableBlockListNames = new Set(['profanity_en']);
+
+async function ensureTestBlockList(client) {
+  const response = await client.listBlockLists();
+  const blockList = response.blocklists.find(
+    (candidate) => candidate.name === blockListName,
+  );
+
+  if (!blockList) {
+    await client.createBlockList({
+      name: blockListName,
+      type: 'word',
+      words: [triggerWord],
+    });
+    console.log(`Created test blocklist ${blockListName}`);
+    return;
+  }
+
+  if (!blockList.words.includes(triggerWord)) {
+    await client.updateBlockList({
+      name: blockListName,
+      words: [...blockList.words, triggerWord],
+    });
+    console.log(`Updated test blocklist ${blockListName}`);
+    return;
+  }
+
+  console.log(`Test blocklist ${blockListName} already exists`);
+}
 
 function withRequiredRule(blockListConfig = {}) {
-  const rules = [...(blockListConfig.rules || [])];
+  const rules = (blockListConfig.rules || []).filter(
+    (candidate) => !unavailableBlockListNames.has(candidate.name),
+  );
   const index = rules.findIndex((candidate) => candidate.name === rule.name);
 
   if (index === -1) {
@@ -77,6 +110,7 @@ async function main() {
     process.env.STREAM_KEY,
     process.env.STREAM_SECRET,
   );
+  await ensureTestBlockList(client);
   const response = await client.moderation.v2QueryTemplates();
   const templates = new Map(
     response.templates.map((template) => [template.name, template]),
