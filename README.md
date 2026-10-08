@@ -30,7 +30,18 @@ For the client-side integrations (web and mobile) have a look at the JavaScript,
 
 ## ⚙️ Installation
 
-Add the following dependency to your `pom.xml`:
+Releases are published to the Stream Maven repository. Add it next to Maven Central, then add the dependency.
+
+In your `pom.xml`:
+
+```xml
+<repositories>
+    <repository>
+        <id>stream</id>
+        <url>https://stream-io-repo.com</url>
+    </repository>
+</repositories>
+```
 
 ```xml
 <dependency>
@@ -43,7 +54,14 @@ Add the following dependency to your `pom.xml`:
 or in your `build.gradle`:
 
 ```gradle
-implementation 'io.getstream.client:stream-java:$stream_version'
+repositories {
+    mavenCentral()
+    maven { url 'https://stream-io-repo.com' }
+}
+
+dependencies {
+    implementation 'io.getstream.client:stream-java:$stream_version'
+}
 ```
 
 In case you want to download the artifact and put it manually into your project,
