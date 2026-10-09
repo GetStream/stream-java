@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 ## [3.27.0](https://github.com/GetStream/stream-java/compare/v3.26.0...v3.27.0) (2026-10-09)
 
+
+### Features
+
+* publish releases to the Stream Maven repository (https://stream-io-repo.com); add it to your build repositories to get this and later versions ([#192](https://github.com/GetStream/stream-java/issues/192)) ([d0c5928](https://github.com/GetStream/stream-java/commit/d0c5928aa57c2c48a505f1406d80f4fb01c35ae4))
+
 ## [3.26.0](https://github.com/GetStream/stream-java/compare/v3.25.0...v3.26.0) (2026-02-20)
 
 
