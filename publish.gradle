@@ -25,6 +25,15 @@ if (secretPropsFile.exists()) {
     ext["sonatypeStagingProfileId"] = System.getenv('SONATYPE_STAGING_PROFILE_ID')
 }
 
+// Where to publish: "streamRepo", "central", or both, comma-separated. CI always passes it;
+// with nothing passed this stays on Central so a local publishToMavenLocal behaves as before.
+// streamRepo stages a Maven-2 tree under build/staged-repo for a separate upload job.
+def publishTargets = (findProperty("streamPublishTargets") ?: "central").toString()
+        .split(",").collect { it.trim() }.findAll { !it.isEmpty() }.toSet()
+if (publishTargets.isEmpty() || !(publishTargets - ["central", "streamRepo"]).isEmpty()) {
+    throw new GradleException("'streamPublishTargets' must be a comma-separated subset of central, streamRepo but was '$publishTargets'")
+}
+
 nexusPublishing {
     repositories {
         sonatype {
@@ -84,6 +93,14 @@ afterEvaluate {
                         developerConnection = 'scm:git:ssh://github.com/getstream/stream-java.git'
                         url = 'https://github.com/getstream/stream-java'
                     }
+                }
+            }
+        }
+        if ("streamRepo" in publishTargets) {
+            repositories {
+                maven {
+                    name = "streamRepoStaging"
+                    url = layout.buildDirectory.dir("staged-repo").get().asFile.toURI()
                 }
             }
         }
