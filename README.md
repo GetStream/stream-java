@@ -1,3 +1,8 @@
+> **`stream-java` is a Feeds v2 client and is now in maintenance mode.** It will continue to
+> receive critical fixes, so it is safe to keep using with a v2 app. New projects should start
+> with Feeds v3 and [`stream-sdk-java`](https://github.com/GetStream/stream-sdk-java) (Maven `io.getstream:stream-sdk-java`).
+> Migration guide: https://getstream.io/activity-feeds/docs/java/v2-to-v3-migration/
+
 # Official Java SDK for [Stream Feeds](https://getstream.io/activity-feeds/)
 
 [![build](https://github.com/GetStream/stream-java/workflows/build/badge.svg)](https://github.com/GetStream/stream-java/actions)
